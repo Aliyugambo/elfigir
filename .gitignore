@@ -1,0 +1,16 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+build/
+.next/
+*.log
+.DS_Store
+.vscode
+.idea
+.env.production.local
+coverage/
+.turbo
+pnpm-lock.yaml
+yarn.lock

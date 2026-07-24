@@ -1,0 +1,125 @@
+'use client';
+
+import { motion, AnimatePresence } from 'framer-motion';
+import { useCartStore } from '@/store/cart.store';
+import { FaTrash, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
+import Link from 'next/link';
+
+export function CartSidebar() {
+  const { items, removeItem, updateQuantity, clear, getSubtotal, restaurantId } = useCartStore();
+  const subtotal = getSubtotal();
+  const tax = subtotal * 0.1;
+  const deliveryFee = 2.5;
+  const total = subtotal + tax + deliveryFee;
+
+  if (items.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="bg-white rounded-lg border border-gray-100 p-6 text-center"
+      >
+        <FaShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+        <h3 className="font-semibold text-gray-900 mb-2">Your cart is empty</h3>
+        <p className="text-sm text-gray-500">Add items to get started!</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm sticky top-24"
+    >
+      {/* Items */}
+      <div className="max-h-64 overflow-y-auto">
+        <AnimatePresence>
+          {items.map((item) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="p-4 border-b border-gray-100 last:border-b-0"
+            >
+              <div className="flex items-start space-x-3">
+                <img
+                  src={item.menuItem.image || 'https://via.placeholder.com/50'}
+                  alt={item.menuItem.name}
+                  className="w-12 h-12 rounded object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-gray-900 truncate">
+                    {item.menuItem.name}
+                  </h4>
+                  <p className="text-sm font-semibold text-primary">
+                    ₦{(item.menuItem.price * item.quantity).toFixed(0)}
+                  </p>
+                </div>
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="text-red-600 hover:text-red-700 transition"
+                >
+                  <FaTrash className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Quantity */}
+              <div className="flex items-center space-x-3 mt-2 justify-end">
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  className="p-1 rounded border border-gray-200 hover:bg-gray-50"
+                >
+                  <FaMinus className="w-3 h-3" />
+                </button>
+                <span className="font-semibold text-sm">{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  className="p-1 rounded border border-gray-200 hover:bg-gray-50"
+                >
+                  <FaPlus className="w-3 h-3" />
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Summary */}
+      <div className="p-4 border-t border-gray-100 space-y-3 bg-gray-50">
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Subtotal</span>
+          <span className="text-gray-900 font-semibold">₦{subtotal.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Tax (10%)</span>
+          <span className="text-gray-900 font-semibold">₦{tax.toFixed(0)}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Delivery</span>
+          <span className="text-gray-900 font-semibold">₦{deliveryFee.toFixed(0)}</span>
+        </div>
+
+        <div className="border-t border-gray-200 pt-3 flex justify-between">
+          <span className="font-semibold text-gray-900">Total</span>
+          <span className="font-bold text-primary text-lg">₦{total.toFixed(0)}</span>
+        </div>
+
+        <Link
+          href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/restaurants'}
+          className="block w-full btn-primary text-center py-3 rounded-lg font-semibold"
+        >
+          Checkout
+        </Link>
+
+        <button
+          onClick={clear}
+          className="w-full btn-outline py-2 rounded-lg text-sm font-medium"
+        >
+          Clear Cart
+        </button>
+      </div>
+    </motion.div>
+  );
+}

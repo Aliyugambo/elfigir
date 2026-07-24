@@ -1,0 +1,169 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
+import { restaurantService } from '@/services/restaurant.service';
+import { RestaurantCard } from '@/components/RestaurantCard';
+import { FaSearch, FaFire, FaStar } from 'react-icons/fa';
+import { useState } from 'react';
+
+export default function HomePage() {
+  const [search, setSearch] = useState('');
+
+  const { data: restaurants, isLoading } = useQuery({
+    queryKey: ['restaurants', search],
+    queryFn: () => restaurantService.searchRestaurants({ search, page: 1, limit: 12 }),
+  });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  return (
+    <div>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary via-primary/90 to-primary-dark text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to Elfigir</h1>
+            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+              Order your favorite meals from the best restaurants and get them delivered to your door
+            </p>
+
+            {/* Search Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex max-w-2xl mx-auto bg-white rounded-full shadow-lg overflow-hidden"
+            >
+              <input
+                type="text"
+                placeholder="Search restaurants, cuisines..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 px-6 py-3 outline-none text-gray-900 placeholder-gray-500"
+              />
+              <button className="bg-primary hover:bg-primary-dark px-8 py-3 text-white font-semibold transition flex items-center space-x-2">
+                <FaSearch />
+                <span>Search</span>
+              </button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Quick Categories */}
+      <section className="py-12 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {['Fast Food', 'Pizza', 'Chinese', 'Nigerian'].map((category, index) => (
+              <motion.button
+                key={category}
+                whileHover={{ y: -4 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center"
+              >
+                <span className="text-2xl mb-2 block">🍽️</span>
+                <span className="font-semibold text-gray-900">{category}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Restaurants */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Restaurants</h2>
+            <p className="text-gray-600">Discover great food and amazing dining experiences</p>
+          </div>
+
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-96 bg-gray-100 rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {restaurants?.data?.map((restaurant: any) => (
+                <motion.div key={restaurant.id} variants={itemVariants}>
+                  <RestaurantCard restaurant={restaurant} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {restaurants?.data?.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <p className="text-gray-500 text-lg mb-4">No restaurants found matching your search</p>
+              <Link href="/" className="btn-primary">
+                Browse All
+              </Link>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-gray-50 py-16 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            <motion.div
+              whileHover={{ y: -4 }}
+              className="text-center p-6"
+            >
+              <FaFire className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Fast Delivery</h3>
+              <p className="text-gray-600 text-sm">Get your food delivered in 30-45 minutes</p>
+            </motion.div>
+            <motion.div
+              whileHover={{ y: -4 }}
+              className="text-center p-6"
+            >
+              <FaStar className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Best Quality</h3>
+              <p className="text-gray-600 text-sm">Fresh meals from verified restaurants</p>
+            </motion.div>
+            <motion.div
+              whileHover={{ y: -4 }}
+              className="text-center p-6"
+            >
+              <FaSearch className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-gray-900 mb-2">Easy Ordering</h3>
+              <p className="text-gray-600 text-sm">Simple and intuitive ordering process</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
