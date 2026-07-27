@@ -50,6 +50,7 @@ export default function AdminMenuItemsPage() {
     menuId: '',
     name: '',
     description: '',
+    image: '',
     price: '',
     category: '',
     isAvailable: true,

@@ -1,8 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import logo from '@/logo.png';
 import { FaPhone, FaMapMarkerAlt, FaWhatsapp, FaInstagram } from 'react-icons/fa';
 
 export function Footer() {
@@ -13,11 +11,13 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <Image src={logo} alt="Elfigir" width={32} height={32} className="w-8 h-8" />
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold">
+                E
+              </div>
               <span className="text-lg font-bold">Elfigir</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Modern food delivery platform connecting you with your favorite restaurants.
+            Delicious jollof ! Tantalising fried rice ! Best swallow 😋 The most appetising shawarma and burger 🍔 😋 in kaduna ! We welcome you with a big hug 🫂 to Elfijr Our kaduna people and guests"
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export function Footer() {
             <div className="space-y-3 text-sm text-gray-400">
               <p className="flex items-center space-x-2">
                 <FaPhone className="text-primary" />
-                <span>+234 123 456 7890</span>
+                <span>+234 907 660 5941</span>
               </p>
               <p className="flex items-center space-x-2">
                 <FaMapMarkerAlt className="text-primary" />
