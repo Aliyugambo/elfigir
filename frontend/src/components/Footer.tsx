@@ -75,13 +75,13 @@ export function Footer() {
               </p>
               <p className="flex items-center space-x-2">
                 <FaMapMarkerAlt className="text-primary" />
-                <span>Lagos, Nigeria</span>
+                <span>Kaduna, Nigeria</span>
               </p>
               <div className="flex space-x-4 pt-2">
                 <a href="#" className="hover:text-white transition">
                   <FaWhatsapp />
                 </a>
-                <a href="#" className="hover:text-white transition">
+                <a href="https://www.instagram.com/elfijr_kitchen_/?hl=en" className="hover:text-white transition">
                   <FaInstagram />
                 </a>
               </div>
@@ -90,7 +90,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2024 Elfigir. All rights reserved.</p>
+          <p>&copy; 2026 Elfigir. All rights reserved.</p>
         </div>
       </div>
     </footer>
