@@ -1,6 +1,6 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
+import { Suspense } from 'react';
 
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store/cart.store';
@@ -13,10 +13,18 @@ import { FaArrowLeft, FaCreditCard, FaMoneyBillWave } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 export default function CheckoutPage() {
+  return (
+    <Suspense>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const restaurantId = searchParams.get('restaurantId');
-  
+   
   const { items, getSubtotal } = useCartStore();
   const { isAuthenticated, user } = useAuthStore();
   const [paymentMethod, setPaymentMethod] = useState('CASH_ON_DELIVERY');

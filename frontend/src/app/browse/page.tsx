@@ -1,7 +1,6 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
+import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -40,6 +39,14 @@ const CATEGORIES = [
 ];
 
 export default function BrowsePage() {
+  return (
+    <Suspense>
+      <BrowseContent />
+    </Suspense>
+  );
+}
+
+function BrowseContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isAuthenticated } = useAuthStore();
