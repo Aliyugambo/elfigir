@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
-import { CreateRestaurantDto, UpdateRestaurantDto, RestaurantFilterDto } from './restaurant.dto';
+import { CreateRestaurantDto, UpdateRestaurantDto, RestaurantFilterDto, MenuItemFilterDto } from './restaurant.dto';
 
 @Injectable()
 export class RestaurantRepository {
@@ -63,6 +63,43 @@ export class RestaurantRepository {
       total,
       page: filters.page || 1,
       limit: filters.limit || 10,
+    };
+  }
+
+  async findMenuItemsByCategory(filters: MenuItemFilterDto) {
+    const skip = ((filters.page || 1) - 1) * (filters.limit || 12);
+
+    const where: any = {
+      isAvailable: true,
+    };
+
+    if (filters.category) {
+      where.category = { equals: filters.category, mode: 'insensitive' };
+    }
+
+    const [items, total] = await Promise.all([
+      this.prisma.menuItem.findMany({
+        where,
+        skip,
+        take: filters.limit || 12,
+        include: {
+          menu: {
+            include: {
+              restaurant: true,
+            },
+          },
+          addOns: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.menuItem.count({ where }),
+    ]);
+
+    return {
+      data: items,
+      total,
+      page: filters.page || 1,
+      limit: filters.limit || 12,
     };
   }
 

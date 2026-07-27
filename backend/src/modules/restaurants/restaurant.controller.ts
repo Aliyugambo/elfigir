@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { RestaurantUseCase } from './restaurant.use-case';
-import { CreateRestaurantDto, RestaurantFilterDto } from './restaurant.dto';
+import { CreateRestaurantDto, RestaurantFilterDto, MenuItemFilterDto } from './restaurant.dto';
 
 @ApiTags('Restaurants')
 @Controller('restaurants')
@@ -18,6 +18,12 @@ export class RestaurantController {
   @ApiOperation({ summary: 'Search restaurants' })
   async search(@Query() filters: RestaurantFilterDto) {
     return this.restaurantUseCase.searchRestaurants(filters);
+  }
+
+  @Get('/menu-items')
+  @ApiOperation({ summary: 'Browse menu items by category' })
+  async getMenuItemsByCategory(@Query() filters: MenuItemFilterDto) {
+    return this.restaurantUseCase.getMenuItemsByCategory(filters);
   }
 
   @Get('/:id')

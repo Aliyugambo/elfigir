@@ -73,17 +73,19 @@ export default function HomePage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {['Fast Food', 'Pizza', 'Chinese', 'Nigerian'].map((category, index) => (
-              <motion.button
+              <motion.div
                 key={category}
-                whileHover={{ y: -4 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center"
               >
-                <span className="text-2xl mb-2 block">🍽️</span>
-                <span className="font-semibold text-gray-900">{category}</span>
-              </motion.button>
+                <Link href={`/browse?category=${encodeURIComponent(category)}`}>
+                  <div className="p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center cursor-pointer">
+                    <span className="text-2xl mb-2 block">🍽️</span>
+                    <span className="font-semibold text-gray-900">{category}</span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>

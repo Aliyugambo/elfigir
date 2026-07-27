@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RestaurantRepository } from './restaurant.repository';
-import { CreateRestaurantDto, UpdateRestaurantDto, RestaurantFilterDto } from './restaurant.dto';
+import { CreateRestaurantDto, UpdateRestaurantDto, RestaurantFilterDto, MenuItemFilterDto } from './restaurant.dto';
 
 @Injectable()
 export class RestaurantUseCase {
@@ -24,5 +24,9 @@ export class RestaurantUseCase {
 
   async updateRestaurant(id: string, dto: UpdateRestaurantDto) {
     return this.restaurantRepository.update(id, dto);
+  }
+
+  async getMenuItemsByCategory(filters: MenuItemFilterDto) {
+    return this.restaurantRepository.findMenuItemsByCategory(filters);
   }
 }

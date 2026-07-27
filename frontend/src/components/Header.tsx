@@ -133,9 +133,6 @@ export function Header() {
                 <Link href="/signup" className="btn-primary">
                   Sign Up
                 </Link>
-                <Link href="/admin/login" className="text-gray-400 hover:text-primary text-sm transition">
-                  Admin
-                </Link>
               </>
             ) : (
               <div className="relative">

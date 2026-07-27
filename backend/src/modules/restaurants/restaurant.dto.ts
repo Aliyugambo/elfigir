@@ -85,3 +85,19 @@ export class RestaurantFilterDto {
   @Type(() => Number)
   limit?: number;
 }
+
+export class MenuItemFilterDto {
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  page?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  limit?: number;
+}

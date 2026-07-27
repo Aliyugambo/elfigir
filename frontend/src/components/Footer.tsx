@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import logo from '@/logo.png';
 import { FaPhone, FaMapMarkerAlt, FaWhatsapp, FaInstagram } from 'react-icons/fa';
 
 export function Footer() {
@@ -11,9 +13,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold">
-                E
-              </div>
+              <Image src={logo} alt="Elfigir" width={32} height={32} className="w-8 h-8" />
               <span className="text-lg font-bold">Elfigir</span>
             </div>
             <p className="text-gray-400 text-sm">
