@@ -137,6 +137,8 @@ export class CreateMenuItemDto {
 
   @IsString()
   @IsOptional()
+@IsString()
+  @IsOptional()
   image?: string;
 
   @IsNumber()
@@ -231,7 +233,7 @@ export class CreateRestaurantDto {
 
   @IsString()
   @IsOptional()
-  image?: string;
+  banner?: string;
 
   @IsBoolean()
   @IsOptional()
@@ -255,6 +257,34 @@ export class UpdateRestaurantDto {
   @IsOptional()
   cuisineType?: string[];
 
+  @IsNumber()
+  @IsOptional()
+  minDeliveryTime?: number;
+
+  @IsNumber()
+  @IsOptional()
+  maxDeliveryTime?: number;
+
+  @IsNumber()
+  @IsOptional()
+  deliveryFee?: number;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  city?: string;
+
+  @IsString()
+  @IsOptional()
+  state?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
   @IsBoolean()
   @IsOptional()
   isOpen?: boolean;
@@ -265,7 +295,7 @@ export class UpdateRestaurantDto {
 
   @IsString()
   @IsOptional()
-  image?: string;
+  banner?: string;
 }
 
 export class CreateMenuDto {

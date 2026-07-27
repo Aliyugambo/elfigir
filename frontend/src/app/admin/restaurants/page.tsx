@@ -87,7 +87,7 @@ export default function AdminRestaurantsPage() {
       isOpen: restaurant.isOpen,
       isActive: restaurant.isActive,
     });
-    setImagePreview(restaurant.image ?? null);
+    setImagePreview(restaurant.banner ?? null);
     setImageFile(null);
     setIsModalOpen(true);
   };
@@ -168,7 +168,7 @@ export default function AdminRestaurantsPage() {
       maxDeliveryTime: Number(form.maxDeliveryTime),
       isOpen: form.isOpen,
       isActive: form.isActive,
-      image: imageUrl || undefined,
+      banner: imageUrl || undefined,
     };
 
     if (editingId) {

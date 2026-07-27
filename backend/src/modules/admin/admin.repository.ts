@@ -368,7 +368,7 @@ export class AdminRepository {
         slug,
         latitude,
         longitude,
-        image: dto.image ?? null,
+        banner: dto.banner ?? null,
         isVerified: true,
       },
       include: {
@@ -394,8 +394,8 @@ export class AdminRepository {
     await this.getRestaurant(id);
 
     const data: any = { ...dto };
-    if (data.image === undefined) {
-      delete data.image;
+    if (data.banner === undefined) {
+      delete data.banner;
     }
 
     return this.prisma.restaurant.update({

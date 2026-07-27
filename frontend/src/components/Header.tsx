@@ -4,6 +4,8 @@ import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import logo from '@/logo.png';
 import { useAuthStore } from '@/store/auth.store';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminService, AdminNotification } from '@/services/admin.service';
@@ -82,9 +84,7 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-              E
-            </div>
+            <Image src={logo} alt="Elfigir" width={32} height={32} className="w-8 h-8" />
             <span className="text-lg font-bold text-gray-900">Elfigir</span>
           </Link>
 

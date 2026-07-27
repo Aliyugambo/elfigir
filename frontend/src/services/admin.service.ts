@@ -75,7 +75,7 @@ export type AdminRestaurant = {
   isOpen: boolean;
   isActive: boolean;
   isVerified: boolean;
-  image?: string;
+  banner?: string;
   createdAt: string;
   menus: { id: string; name: string }[];
 };
