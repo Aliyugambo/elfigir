@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/auth.store';
 import { menuItemService } from '@/services/menuItem.service';
 import { useQuery } from '@tanstack/react-query';
 import { MenuItemCard } from '@/components/MenuItemCard';
-import toast from 'sonner';
+import { toast } from 'sonner';
 
 const CATEGORIES = [
   'All',
@@ -47,7 +47,7 @@ export default function BrowsePage() {
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
-      toast.info('Please log in to browse menu items');
+      toast.message('Please log in to browse menu items');
     }
   }, [isAuthenticated, router]);
 
