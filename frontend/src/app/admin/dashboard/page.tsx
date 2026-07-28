@@ -108,6 +108,10 @@ export default function AdminDashboardPage() {
             <p className="text-sm text-gray-600">Manage customers, riders & chefs</p>
             <h2 className="text-lg font-semibold text-gray-900">Users</h2>
           </Link>
+          <Link href="/admin/staff" className="card hover:border-primary transition">
+            <p className="text-sm text-gray-600">Create, update, and remove chefs and riders</p>
+            <h2 className="text-lg font-semibold text-gray-900">Staff</h2>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
