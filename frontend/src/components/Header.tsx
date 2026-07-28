@@ -90,7 +90,7 @@ export function Header() {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/restaurants" className="text-gray-600 hover:text-primary transition">
+            <Link href="/browse" className="text-gray-600 hover:text-primary transition">
               Browse
             </Link>
             {isAuthenticated && (
