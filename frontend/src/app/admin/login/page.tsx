@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Sign In</h1>
-          <p className="text-gray-600 mt-1">Elfigir Control Panel</p>
+          <p className="text-gray-600 mt-1">Elfijr Control Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

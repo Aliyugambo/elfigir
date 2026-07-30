@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer';
 import '@/globals.css';
 
 export const metadata: Metadata = {
-  title: 'Elfigir - Modern Food Delivery Platform',
+  title: 'Elfijr - Modern Food Delivery Platform',
   description: 'Order your favorite meals from the best restaurants',
   icons: {
     icon: '/favicon.ico',
