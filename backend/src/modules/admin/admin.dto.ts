@@ -149,6 +149,10 @@ export class UpdateStaffDto {
   role?: UserRole;
 
   @IsString()
+  @IsOptional()
+  restaurantId?: string;
+
+  @IsString()
   @MinLength(6)
   @IsOptional()
   password?: string;

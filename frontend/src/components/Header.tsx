@@ -108,6 +108,11 @@ export function Header() {
                     Rider
                   </Link>
                 )}
+                {user?.role === 'STAFF' || user?.role === 'SUPER_ADMIN' ? (
+                  <Link href="/staff" className="text-gray-600 hover:text-primary transition">
+                    Manager
+                  </Link>
+                ) : null}
                 {user?.role === 'ADMIN' && (
                   <>
                     <Link href="/admin/dashboard" className="text-gray-600 hover:text-primary transition">

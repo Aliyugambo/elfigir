@@ -26,6 +26,11 @@ export type StaffMember = {
   role: StaffRole;
   isActive: boolean;
   emailVerified: boolean;
+  restaurantId?: string;
+  restaurant?: {
+    id: string;
+    name: string;
+  };
   createdAt: string;
 };
 
@@ -173,6 +178,7 @@ export const adminService = {
     password: string;
     role: StaffRole;
     phone?: string;
+    restaurantId?: string;
   }): Promise<StaffMember> => {
     const res = await apiClient.post('/auth/staff', data);
     return res.data;
@@ -186,6 +192,7 @@ export const adminService = {
       email?: string;
       phone?: string;
       role?: StaffRole;
+      restaurantId?: string;
       password?: string;
     },
   ): Promise<StaffMember> => {
@@ -208,6 +215,11 @@ export const adminService = {
     return res.data;
   },
 
+  listPendingTransfers: async () => {
+    const res = await apiClient.get('/admin/orders/pending-transfers');
+    return res.data;
+  },
+
   getOrder: async (id: string): Promise<AdminOrder> => {
     const res = await apiClient.get(`/admin/orders/${id}`);
     return res.data;
@@ -215,6 +227,11 @@ export const adminService = {
 
   updateOrderStatus: async (id: string, data: { status: string; cancelReason?: string }) => {
     const res = await apiClient.patch(`/admin/orders/${id}/status`, data);
+    return res.data;
+  },
+
+  confirmPayment: async (orderId: string) => {
+    const res = await apiClient.post(`/admin/orders/${orderId}/confirm-payment`);
     return res.data;
   },
 

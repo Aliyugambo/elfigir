@@ -58,6 +58,10 @@ export class CreateStaffDto {
 
   @IsOptional()
   phone?: string;
+
+  @IsString()
+  @IsOptional()
+  restaurantId?: string;
 }
 
 export class AuthResponseDto {

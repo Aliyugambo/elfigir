@@ -55,7 +55,7 @@ export class AdminController {
 
   @Get('dashboard')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin dashboard statistics' })
   async dashboard() {
@@ -64,7 +64,7 @@ export class AdminController {
 
   @Delete('orders/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete an order' })
   async deleteOrder(@Param('id') id: string) {
@@ -73,7 +73,7 @@ export class AdminController {
 
   @Get('staff/:role')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List staff by role (CHEF or DELIVERY)' })
   async listStaff(@Param('role') role: UserRole) {
@@ -82,7 +82,7 @@ export class AdminController {
 
   @Patch('staff/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a staff member (chef or rider)' })
   async updateStaff(@Param('id') id: string, @Body() dto: UpdateStaffDto) {
@@ -91,7 +91,7 @@ export class AdminController {
 
   @Delete('staff/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a staff member (chef or rider)' })
   async deleteStaff(@Param('id') id: string) {
@@ -100,7 +100,7 @@ export class AdminController {
 
   @Get('menus')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List all menus with their restaurant' })
   async listMenus() {
@@ -109,7 +109,7 @@ export class AdminController {
 
   @Get('notifications')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List notifications for the current admin' })
   async listNotifications(@Req() req: any) {
@@ -118,7 +118,7 @@ export class AdminController {
 
   @Patch('notifications/:id/read')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Mark a notification as read' })
   async markNotificationRead(@Req() req: any, @Param('id') id: string) {
@@ -127,7 +127,7 @@ export class AdminController {
 
   @Post('staff/:id/approve')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Approve a pending CHEF or DELIVERY rider' })
   async approveStaff(@Param('id') id: string) {
@@ -136,16 +136,25 @@ export class AdminController {
 
   @Get('orders')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List orders with optional status filter' })
   async listOrders(@Query() filters: AdminOrderFilterDto) {
     return this.adminUseCase.listOrders(filters);
   }
 
+  @Get('orders/pending-transfers')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List orders pending bank transfer confirmation' })
+  async listPendingTransfers() {
+    return this.adminUseCase.listPendingTransfers();
+  }
+
   @Get('orders/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get an order by ID' })
   async getOrder(@Param('id') id: string) {
@@ -154,7 +163,7 @@ export class AdminController {
 
   @Patch('orders/:id/status')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update the status of an order' })
   async updateOrderStatus(
@@ -166,7 +175,7 @@ export class AdminController {
 
   @Get('users')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List users with optional role filter' })
   async listUsers(@Query() filters: AdminUserFilterDto) {
@@ -175,7 +184,7 @@ export class AdminController {
 
   @Patch('users/:id/status')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Activate or deactivate a user account' })
   async updateUserStatus(
@@ -187,7 +196,7 @@ export class AdminController {
 
   @Patch('users/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user information' })
   async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
@@ -196,7 +205,7 @@ export class AdminController {
 
   @Delete('users/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a user' })
   async deleteUser(@Param('id') id: string) {
@@ -205,7 +214,7 @@ export class AdminController {
 
   @Get('menu-items')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List menu items by menu' })
   async listMenuItems(@Query('menuId') menuId?: string) {
@@ -214,7 +223,7 @@ export class AdminController {
 
   @Post('menu-items')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new menu item' })
   async createMenuItem(@Body() dto: CreateMenuItemDto) {
@@ -223,7 +232,7 @@ export class AdminController {
 
   @Patch('menu-items/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing menu item' })
   async updateMenuItem(
@@ -235,7 +244,7 @@ export class AdminController {
 
   @Delete('menu-items/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a menu item' })
   async deleteMenuItem(@Param('id') id: string) {
@@ -244,7 +253,7 @@ export class AdminController {
 
   @Post('menu-items/upload-image')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Upload menu item image' })
@@ -254,7 +263,7 @@ export class AdminController {
 
   @Get('restaurants')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List all restaurants' })
   async listRestaurants() {
@@ -263,7 +272,7 @@ export class AdminController {
 
   @Post('restaurants')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new restaurant' })
   async createRestaurant(@Body() dto: CreateRestaurantDto) {
@@ -272,7 +281,7 @@ export class AdminController {
 
   @Get('restaurants/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a restaurant by ID' })
   async getRestaurant(@Param('id') id: string) {
@@ -281,7 +290,7 @@ export class AdminController {
 
   @Patch('restaurants/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a restaurant' })
   async updateRestaurant(@Param('id') id: string, @Body() dto: UpdateRestaurantDto) {
@@ -290,7 +299,7 @@ export class AdminController {
 
   @Delete('restaurants/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a restaurant' })
   async deleteRestaurant(@Param('id') id: string) {
@@ -299,7 +308,7 @@ export class AdminController {
 
   @Post('restaurants/upload-image')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Upload restaurant image' })
@@ -309,7 +318,7 @@ export class AdminController {
 
   @Post('menus')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new menu' })
   async createMenu(@Body() dto: CreateMenuDto) {
@@ -318,7 +327,7 @@ export class AdminController {
 
   @Patch('menus/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a menu' })
   async updateMenu(@Param('id') id: string, @Body() dto: UpdateMenuDto) {
@@ -327,7 +336,7 @@ export class AdminController {
 
   @Delete('menus/:id')
   @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a menu' })
   async deleteMenu(@Param('id') id: string) {

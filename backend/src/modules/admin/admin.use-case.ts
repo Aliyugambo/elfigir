@@ -16,7 +16,7 @@ import {
   CreateMenuDto,
   UpdateMenuDto,
 } from './admin.dto';
-import { UserRole } from '@prisma/client';
+import { PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
 export class AdminUseCase {
@@ -44,6 +44,10 @@ export class AdminUseCase {
 
   listOrders(filters: AdminOrderFilterDto) {
     return this.adminRepository.listOrders(filters);
+  }
+
+  listPendingTransfers() {
+    return this.adminRepository.listPendingTransfers();
   }
 
   getOrder(id: string) {

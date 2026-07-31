@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User } from '@/types';
 
-type Role = 'CUSTOMER' | 'RESTAURANT' | 'ADMIN' | 'DELIVERY';
+type Role = 'CUSTOMER' | 'RESTAURANT' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN' | 'DELIVERY';
 
 interface AuthState {
   user: User | null;

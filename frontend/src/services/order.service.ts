@@ -28,4 +28,14 @@ export const orderService = {
     const response = await apiClient.patch(`/orders/${id}/status`, data);
     return response.data;
   },
+
+  confirmTransfer: async (orderId: string) => {
+    const response = await apiClient.post(`/orders/${orderId}/confirm-transfer`);
+    return response.data;
+  },
+
+  confirmPayment: async (orderId: string) => {
+    const response = await apiClient.post(`/orders/${orderId}/confirm-payment`);
+    return response.data;
+  },
 };

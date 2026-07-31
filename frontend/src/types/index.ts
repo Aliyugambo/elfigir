@@ -5,7 +5,7 @@ export type User = {
   lastName: string;
   phone?: string;
   profileImage?: string;
-  role: 'CUSTOMER' | 'RESTAURANT' | 'ADMIN' | 'DELIVERY';
+  role: 'CUSTOMER' | 'RESTAURANT' | 'STAFF' | 'ADMIN' | 'SUPER_ADMIN' | 'DELIVERY';
   createdAt: string;
 };
 
@@ -26,6 +26,9 @@ export type Restaurant = {
   address: string;
   city: string;
   isOpen: boolean;
+  bankName?: string;
+  accountNumber?: string;
+  accountName?: string;
   menus: Menu[];
 };
 
@@ -62,6 +65,10 @@ export type Order = {
   deliveryFee: number;
   tax: number;
   totalAmount: number;
+  paymentMethod: string;
+  paymentStatus: string;
+  deliveryAddress: string;
+  specialInstructions?: string;
   createdAt: string;
   restaurant: Restaurant;
 };

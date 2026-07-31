@@ -24,14 +24,14 @@ export class OrderController {
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.RESTAURANT, UserRole.DELIVERY)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Staff (admin/chef/rider) order list filtered by role & status' })
+  @ApiOperation({ summary: 'Staff (admin/chef/rider) order list filtered by role, status, and restaurant' })
   async getStaffOrders(
     @Req() req: any,
     @Query('status') status?: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 50,
   ) {
-    return this.orderUseCase.getStaffOrders(req.user.role, { status, page, limit });
+    return this.orderUseCase.getStaffOrders(req.user.sub, req.user.role, { status, page, limit });
   }
 
   @Patch(':id/status')
@@ -45,6 +45,23 @@ export class OrderController {
     @Body() dto: UpdateOrderStatusDto,
   ) {
     return this.orderUseCase.updateStatusByRole(req.user.sub, req.user.role, id, dto);
+  }
+
+  @Post(':id/confirm-transfer')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Customer confirms bank transfer was made' })
+  async confirmTransfer(@Req() req: any, @Param('id') id: string) {
+    return this.orderUseCase.confirmTransfer(req.user.sub, id);
+  }
+
+  @Post(':id/confirm-payment')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Admin confirms bank transfer payment was received' })
+  async confirmPayment(@Req() req: any, @Param('id') id: string) {
+    return this.orderUseCase.confirmPayment(req.user.sub, id);
   }
 
   @Get('/:id')

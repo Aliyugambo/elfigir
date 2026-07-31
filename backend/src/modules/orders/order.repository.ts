@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
 import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
-import { OrderStatus, UserRole } from '@prisma/client';
+import { OrderStatus, PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
 export class OrderRepository {
@@ -90,12 +90,24 @@ export class OrderRepository {
     });
   }
 
+  async updatePaymentStatus(orderId: string, status: PaymentStatus) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { paymentStatus: status },
+      include: {
+        items: { include: { menuItem: true } },
+        restaurant: true,
+        user: true,
+      },
+    });
+  }
+
   async findByUserId(userId: string, skip: number, take: number) {
     const [orders, total] = await Promise.all([
       this.prisma.order.findMany({
         where: { userId },
         include: {
-          items: true,
+          items: { include: { menuItem: true } },
           restaurant: true,
         },
         orderBy: { createdAt: 'desc' },
@@ -109,6 +121,7 @@ export class OrderRepository {
   }
 
   async findStaffOrders(
+    userId: string,
     role: string,
     filters: { status?: string; page: number; limit: number },
   ) {
@@ -117,11 +130,22 @@ export class OrderRepository {
     if (filters.status) {
       where.status = filters.status;
     } else if (role === UserRole.RESTAURANT) {
-      // Chefs see orders approved by admin and awaiting preparation
       where.status = { in: [OrderStatus.CONFIRMED, OrderStatus.PREPARING] };
     } else if (role === UserRole.DELIVERY) {
-      // Riders see orders ready to be dispatched that day
       where.status = { in: [OrderStatus.READY_FOR_PICKUP, OrderStatus.OUT_FOR_DELIVERY] };
+    }
+
+    if (role !== UserRole.ADMIN) {
+      const staff = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { restaurantId: true },
+      });
+
+      if (!staff?.restaurantId) {
+        return { orders: [], total: 0, page: filters.page, limit: filters.limit };
+      }
+
+      where.restaurantId = staff.restaurantId;
     }
 
     const skip = (filters.page - 1) * filters.limit;
@@ -182,9 +206,8 @@ export class OrderRepository {
     return updated;
   }
 
-  private async notifyOnTransition(order: any, status: OrderStatus) {
+  async notifyOnTransition(order: any, status: OrderStatus) {
     if (status === OrderStatus.READY_FOR_PICKUP) {
-      // Chef alerts the admin that the food is ready for pickup
       await this.notifyAdmins(
         'Order ready for pickup',
         `Order ${order.orderNumber} from ${order.restaurant?.name} is ready for pickup.`,
@@ -207,7 +230,7 @@ export class OrderRepository {
     }
   }
 
-  private async notifyAdmins(title: string, message: string, type: string) {
+  async notifyAdmins(title: string, message: string, type: string) {
     const admins = await this.prisma.user.findMany({
       where: { role: UserRole.ADMIN },
       select: { id: true },
@@ -220,7 +243,7 @@ export class OrderRepository {
     );
   }
 
-  private async createNotification(
+  async createNotification(
     userId: string,
     title: string,
     message: string,

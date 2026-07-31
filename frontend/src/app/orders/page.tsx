@@ -134,7 +134,7 @@ export default function OrdersPage() {
                           key={item.id}
                           className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
                         >
-                          {item.menuItem.name} x{item.quantity}
+                          {item.menuItem?.name ?? 'Item'} x{item.quantity}
                         </span>
                       ))}
                       {order.items.length > 3 && (

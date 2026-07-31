@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import { useRouter } from 'next/navigation';
-import { adminService, DashboardStats, StaffMember } from '@/services/admin.service';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { adminService, DashboardStats, StaffMember, AdminOrder } from '@/services/admin.service';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -15,6 +16,10 @@ export default function AdminDashboardPage() {
   const [riders, setRiders] = useState<StaffMember[]>([]);
   const [tab, setTab] = useState<'CHEF' | 'DELIVERY'>('CHEF');
   const [loading, setLoading] = useState(true);
+  const [pendingTransfers, setPendingTransfers] = useState<AdminOrder[]>([]);
+  const [showTransfers, setShowTransfers] = useState(false);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== 'ADMIN') {
@@ -27,14 +32,16 @@ export default function AdminDashboardPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [dashboard, chefList, riderList] = await Promise.all([
+      const [dashboard, chefList, riderList, transfers] = await Promise.all([
         adminService.getDashboard(),
         adminService.listStaff('RESTAURANT'),
         adminService.listStaff('DELIVERY'),
+        adminService.listPendingTransfers(),
       ]);
       setStats(dashboard);
       setChefs(chefList);
       setRiders(riderList);
+      setPendingTransfers(transfers.orders || []);
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Failed to load dashboard');
     } finally {
@@ -49,6 +56,17 @@ export default function AdminDashboardPage() {
       loadData();
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Approval failed');
+    }
+  };
+
+  const handleConfirmPayment = async (orderId: string) => {
+    try {
+      await adminService.confirmPayment(orderId);
+      toast.success('Payment confirmed. Rider will be notified.');
+      loadData();
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to confirm payment');
     }
   };
 
@@ -129,6 +147,45 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+        {pendingTransfers.length > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-blue-900">
+                Pending Bank Transfer Confirmations ({pendingTransfers.length})
+              </h2>
+              <button
+                onClick={() => setShowTransfers(!showTransfers)}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                {showTransfers ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            {showTransfers && (
+              <div className="mt-4 space-y-3">
+                {pendingTransfers.map((order) => (
+                  <div key={order.id} className="bg-white rounded-lg p-4 border border-blue-100">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="font-semibold text-gray-900">{order.orderNumber}</p>
+                        <p className="text-sm text-gray-600">
+                          {order.user?.firstName} {order.user?.lastName} - {order.restaurant?.name}
+                        </p>
+                        <p className="text-sm text-gray-500">Total: ₦{order.totalAmount.toFixed(0)}</p>
+                      </div>
+                      <button
+                        onClick={() => handleConfirmPayment(order.id)}
+                        className="btn-primary px-4 py-2 rounded-lg text-sm"
+                      >
+                        Confirm Transfer Received
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="flex border-b border-gray-200">
             <button
@@ -150,6 +207,7 @@ export default function AdminDashboardPage() {
               <tr>
                 <th className="text-left px-6 py-3">Name</th>
                 <th className="text-left px-6 py-3">Email</th>
+                <th className="text-left px-6 py-3">Restaurant</th>
                 <th className="text-left px-6 py-3">Email Verified</th>
                 <th className="text-left px-6 py-3">Status</th>
                 <th className="text-right px-6 py-3">Action</th>
@@ -158,7 +216,7 @@ export default function AdminDashboardPage() {
             <tbody>
               {activeList.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
                     No {tab === 'CHEF' ? 'chefs' : 'riders'} yet.
                   </td>
                 </tr>
@@ -167,6 +225,7 @@ export default function AdminDashboardPage() {
                 <tr key={m.id} className="border-t border-gray-100">
                   <td className="px-6 py-3">{m.firstName} {m.lastName}</td>
                   <td className="px-6 py-3 text-gray-600">{m.email}</td>
+                  <td className="px-6 py-3">{m.restaurant?.name ?? '-'}</td>
                   <td className="px-6 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs ${m.emailVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                       {m.emailVerified ? 'Verified' : 'Unverified'}

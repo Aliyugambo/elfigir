@@ -89,10 +89,28 @@ export class AuthRepository {
         passwordHash,
         role: dto.role,
         isActive: false,
+        restaurantId: dto.restaurantId,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        role: true,
+        restaurantId: true,
+        isActive: true,
+        emailVerified: true,
+        createdAt: true,
       },
     });
 
-    return this.toResponse(user, this.buildTokens(user));
+    const tokens = this.buildTokens(user);
+    return {
+      ...user,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    };
   }
 
   async signIn(dto: SignInDto) {

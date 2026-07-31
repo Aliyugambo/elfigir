@@ -19,7 +19,7 @@ import {
   UpdateMenuDto,
   UpdateUserDto,
 } from './admin.dto';
-import { OrderStatus, UserRole } from '@prisma/client';
+import { OrderStatus, PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
 export class AdminRepository {
@@ -132,6 +132,8 @@ export class AdminRepository {
         phone: true,
         isActive: true,
         emailVerified: true,
+        restaurantId: true,
+        restaurant: { select: { id: true, name: true } },
         createdAt: true,
       },
     });
@@ -179,6 +181,27 @@ export class AdminRepository {
     ]);
 
     return { orders, total, page: filters.page, limit: filters.limit };
+  }
+
+  async listPendingTransfers() {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        paymentMethod: 'BANK_TRANSFER',
+        paymentStatus: PaymentStatus.PROCESSING,
+      },
+      include: {
+        items: {
+          include: {
+            menuItem: true,
+          },
+        },
+        restaurant: true,
+        user: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return { orders };
   }
 
   async getOrder(id: string) {
@@ -369,6 +392,7 @@ export class AdminRepository {
     if (dto.email !== undefined) data.email = dto.email;
     if (dto.phone !== undefined) data.phone = dto.phone;
     if (dto.role !== undefined) data.role = dto.role;
+    if (dto.restaurantId !== undefined) data.restaurantId = dto.restaurantId;
     if (dto.password) {
       data.passwordHash = await this.authService.hashPassword(dto.password);
     }
@@ -384,6 +408,8 @@ export class AdminRepository {
         phone: true,
         role: true,
         isActive: true,
+        emailVerified: true,
+        restaurantId: true,
         createdAt: true,
       },
     });

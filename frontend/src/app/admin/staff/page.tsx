@@ -14,6 +14,7 @@ const emptyForm = {
   phone: '',
   password: '',
   role: 'RESTAURANT' as StaffRole,
+  restaurantId: '',
 };
 
 export default function AdminStaffPage() {
@@ -27,6 +28,13 @@ export default function AdminStaffPage() {
   const { data: staff, isLoading, refetch } = useQuery({
     queryKey: ['admin-staff', tab],
     queryFn: () => adminService.listStaff(tab),
+    enabled: isAuthenticated && user?.role === 'ADMIN',
+    retry: false,
+  });
+
+  const { data: restaurants } = useQuery({
+    queryKey: ['admin-restaurants'],
+    queryFn: () => adminService.listRestaurants(),
     enabled: isAuthenticated && user?.role === 'ADMIN',
     retry: false,
   });
@@ -52,6 +60,7 @@ export default function AdminStaffPage() {
       phone: member.phone ?? '',
       password: '',
       role: member.role,
+      restaurantId: member.restaurantId ?? '',
     });
     setIsModalOpen(true);
   };
@@ -72,6 +81,7 @@ export default function AdminStaffPage() {
           email: form.email,
           phone: form.phone || undefined,
           role: form.role,
+          restaurantId: form.restaurantId || undefined,
           password: form.password || undefined,
         });
         toast.success('Staff updated');
@@ -83,6 +93,7 @@ export default function AdminStaffPage() {
           phone: form.phone || undefined,
           password: form.password,
           role: form.role,
+          restaurantId: form.restaurantId || undefined,
         });
         toast.success('Staff created (pending approval)');
       }
@@ -159,6 +170,7 @@ export default function AdminStaffPage() {
                 <th className="px-6 py-4">Name</th>
                 <th className="px-6 py-4">Email</th>
                 <th className="px-6 py-4">Phone</th>
+                <th className="px-6 py-4">Restaurant</th>
                 <th className="px-6 py-4">Email Verified</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4">Actions</th>
@@ -174,11 +186,12 @@ export default function AdminStaffPage() {
                     <td className="h-12 px-6 py-4 bg-gray-100" />
                     <td className="h-12 px-6 py-4 bg-gray-100" />
                     <td className="h-12 px-6 py-4 bg-gray-100" />
+                    <td className="h-12 px-6 py-4 bg-gray-100" />
                   </tr>
                 ))
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
                     No {tabLabel.toLowerCase()} yet.
                   </td>
                 </tr>
@@ -190,6 +203,7 @@ export default function AdminStaffPage() {
                     </td>
                     <td className="px-6 py-4">{member.email}</td>
                     <td className="px-6 py-4">{member.phone ?? '-'}</td>
+                    <td className="px-6 py-4">{member.restaurant?.name ?? '-'}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
@@ -293,6 +307,19 @@ export default function AdminStaffPage() {
               >
                 <option value="RESTAURANT">Chef</option>
                 <option value="DELIVERY">Rider</option>
+              </select>
+              <select
+                className="input-field text-sm"
+                value={form.restaurantId}
+                onChange={(e) => setForm({ ...form, restaurantId: e.target.value })}
+                required
+              >
+                <option value="">Select a restaurant</option>
+                {restaurants?.map((restaurant) => (
+                  <option key={restaurant.id} value={restaurant.id}>
+                    {restaurant.name}
+                  </option>
+                ))}
               </select>
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={closeModal} className="btn-outline px-4 py-2 rounded-lg">

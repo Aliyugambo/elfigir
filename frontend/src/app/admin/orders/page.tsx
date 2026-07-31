@@ -95,6 +95,16 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleConfirmPayment = async (orderId: string) => {
+    try {
+      await adminService.confirmPayment(orderId);
+      toast.success('Payment confirmed. Rider will be notified.');
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to confirm payment');
+    }
+  };
+
   const orders = ordersData?.orders || [];
 
   return (
@@ -189,6 +199,15 @@ export default function AdminOrdersPage() {
                           className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
                         >
                           Deny
+                        </button>
+                      )}
+                      {order.paymentMethod === 'BANK_TRANSFER' && order.paymentStatus === 'PROCESSING' && (
+                        <button
+                          type="button"
+                          onClick={() => handleConfirmPayment(order.id)}
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                        >
+                          Confirm Transfer Received
                         </button>
                       )}
                       <button
