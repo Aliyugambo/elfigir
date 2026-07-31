@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { authService } from '@/services/auth.service';
@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 type VerificationState = 'loading' | 'success' | 'error' | 'invalid';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -120,5 +120,13 @@ export default function VerifyEmailPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary flex items-center justify-center"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
