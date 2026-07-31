@@ -4,16 +4,15 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
-import { adminService, AdminUser } from '@/services/admin.service';
+import { adminService, AdminUser, Role } from '@/services/admin.service';
 import { toast } from 'sonner';
-import { UserRole } from '@prisma/client';
 
 const emptyForm = {
   firstName: '',
   lastName: '',
   email: '',
   phone: '',
-  role: 'CUSTOMER' as UserRole,
+  role: 'CUSTOMER' as Role,
   password: '',
 };
 
@@ -54,7 +53,7 @@ export default function AdminUsersPage() {
       lastName: userItem.lastName,
       email: userItem.email,
       phone: userItem.phone ?? '',
-      role: userItem.role as UserRole,
+      role: userItem.role as Role,
       password: '',
     });
     setIsModalOpen(true);
@@ -249,7 +248,7 @@ export default function AdminUsersPage() {
               <select
                 className="input-field text-sm"
                 value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value as UserRole })}
+                onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
               >
                 <option value="CUSTOMER">Customer</option>
                 <option value="RESTAURANT">Chef</option>

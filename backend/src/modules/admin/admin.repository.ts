@@ -591,17 +591,19 @@ export class AdminRepository {
   async updateMenuItem(id: string, dto: UpdateMenuItemDto) {
     await this.getMenuItem(id);
 
+    const data: any = {};
+    if (dto.menuId !== undefined) data.menuId = dto.menuId;
+    if (dto.name !== undefined) data.name = dto.name;
+    if (dto.description !== undefined) data.description = dto.description;
+    if (dto.image !== undefined) data.image = dto.image;
+    if (dto.price !== undefined) data.price = dto.price;
+    if (dto.category !== undefined) data.category = dto.category;
+    if (dto.isAvailable !== undefined) data.isAvailable = dto.isAvailable;
+    if (dto.prepTime !== undefined) data.prepTime = dto.prepTime;
+
     return this.prisma.menuItem.update({
       where: { id },
-      data: {
-        name: dto.name,
-        description: dto.description,
-        image: dto.image,
-        price: dto.price,
-        category: dto.category,
-        isAvailable: dto.isAvailable,
-        prepTime: dto.prepTime,
-      },
+      data,
       include: {
         addOns: true,
         menu: true,

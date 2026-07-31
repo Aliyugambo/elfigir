@@ -110,7 +110,18 @@ export default function AdminOrderDetailsPage() {
                 <tbody>
                   {order.items?.map((item: any) => (
                     <tr key={item.id} className="border-t border-gray-100">
-                      <td className="px-4 py-2">{item.menuItem?.name}</td>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center gap-3">
+                          {item.menuItem?.image && (
+                            <img
+                              src={item.menuItem.image}
+                              alt={item.menuItem?.name}
+                              className="h-10 w-10 rounded object-cover border border-gray-200"
+                            />
+                          )}
+                          <span>{item.menuItem?.name}</span>
+                        </div>
+                      </td>
                       <td className="px-4 py-2">{item.quantity}</td>
                       <td className="px-4 py-2">₦{item.price.toFixed(2)}</td>
                       <td className="px-4 py-2">₦{(item.quantity * item.price).toFixed(2)}</td>

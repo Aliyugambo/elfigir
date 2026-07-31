@@ -108,7 +108,15 @@ export type AdminOrder = {
   subtotal: number;
   deliveryFee: number;
   tax: number;
+  discount: number;
   totalAmount: number;
+  paymentMethod: string;
+  paymentStatus: string;
+  deliveryAddress: string;
+  specialInstructions?: string;
+  estimatedDeliveryTime?: string;
+  actualDeliveryTime?: string;
+  cancelReason?: string;
   createdAt: string;
   restaurant: {
     id: string;
@@ -127,6 +135,7 @@ export type AdminOrder = {
     menuItem: {
       id: string;
       name: string;
+      image?: string;
     };
   }[];
 };

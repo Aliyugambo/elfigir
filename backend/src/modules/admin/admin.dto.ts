@@ -192,6 +192,10 @@ export class CreateMenuItemDto {
 export class UpdateMenuItemDto {
   @IsString()
   @IsOptional()
+  menuId?: string;
+
+  @IsString()
+  @IsOptional()
   name?: string;
 
   @IsString()

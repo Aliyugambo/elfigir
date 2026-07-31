@@ -94,12 +94,20 @@ export default function AdminMenuItemsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let imageUrl = formState.image;
+      if (imageFile) {
+        setUploadingImage(true);
+        const uploadResult = await adminService.uploadMenuItemImage(imageFile);
+        imageUrl = uploadResult.url;
+        setUploadingImage(false);
+      }
+
       if (editingId) {
         await adminService.updateMenuItem(editingId, {
           menuId: formState.menuId,
           name: formState.name,
           description: formState.description,
-          image: formState.image,
+          image: imageUrl,
           price: Number(formState.price),
           category: formState.category,
           isAvailable: formState.isAvailable,
@@ -112,7 +120,7 @@ export default function AdminMenuItemsPage() {
           menuId: formState.menuId,
           name: formState.name,
           description: formState.description,
-          image: formState.image,
+          image: imageUrl,
           price: Number(formState.price),
           category: formState.category,
           isAvailable: formState.isAvailable,
@@ -130,6 +138,8 @@ export default function AdminMenuItemsPage() {
         isAvailable: true,
         prepTime: '',
       });
+      setImageFile(null);
+      setImagePreview(null);
       refetch();
     } catch (err: any) {
       toast.error(err?.response?.data?.message || (editingId ? 'Failed to update menu item' : 'Failed to create menu item'));
@@ -153,6 +163,8 @@ export default function AdminMenuItemsPage() {
 
   const handleCancelEdit = () => {
     setEditingId(null);
+    setImageFile(null);
+    setImagePreview(null);
     setFormState({
       menuId: '',
       name: '',
@@ -270,14 +282,40 @@ export default function AdminMenuItemsPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setImageFile(file);
+                        setImagePreview(URL.createObjectURL(file));
+                      }
+                    }}
+                    className="input-field w-full"
+                  />
+                  {(imagePreview || formState.image) && (
+                    <img
+                      src={imagePreview || formState.image}
+                      alt="Preview"
+                      className="mt-2 h-32 w-32 object-cover rounded-lg border border-gray-200"
+                    />
+                  )}
+                  {uploadingImage && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                   <input
                     name="image"
                     value={formState.image}
                     onChange={handleChange}
                     className="input-field w-full"
+                    placeholder="Or paste image URL"
                   />
                 </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Prep Time (mins)</label>
                   <input
