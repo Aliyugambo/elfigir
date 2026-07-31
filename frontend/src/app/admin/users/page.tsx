@@ -6,11 +6,23 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { adminService, AdminUser } from '@/services/admin.service';
 import { toast } from 'sonner';
+import { UserRole } from '@prisma/client';
+
+const emptyForm = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  role: 'CUSTOMER' as UserRole,
+  password: '',
+};
 
 export default function AdminUsersPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
-  const [statusUpdate, setStatusUpdate] = useState<Record<string, boolean>>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyForm);
 
   const {
     data: usersData,
@@ -29,13 +41,69 @@ export default function AdminUsersPage() {
     }
   }, [isAuthenticated, user, router]);
 
-  const handleToggleStatus = (id: string, isActive: boolean) => {
-    setStatusUpdate((prev) => ({ ...prev, [id]: !isActive }));
+  const openCreate = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+    setIsModalOpen(true);
   };
 
-  const handleSaveStatus = async (id: string, isActive: boolean) => {
+  const openEdit = (userItem: AdminUser) => {
+    setEditingId(userItem.id);
+    setForm({
+      firstName: userItem.firstName,
+      lastName: userItem.lastName,
+      email: userItem.email,
+      phone: userItem.phone ?? '',
+      role: userItem.role as UserRole,
+      password: '',
+    });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingId(null);
+    setForm(emptyForm);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      await adminService.updateUserStatus(id, { isActive: statusUpdate[id] ?? isActive });
+      if (editingId) {
+        await adminService.updateUser(editingId, {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone || undefined,
+          role: form.role,
+          password: form.password || undefined,
+        });
+        toast.success('User updated');
+      } else {
+        toast.error('User creation should be done through signup or staff creation');
+        return;
+      }
+      closeModal();
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to save user');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Delete this user? This action cannot be undone.')) return;
+    try {
+      await adminService.deleteUser(id);
+      toast.success('User deleted');
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to delete user');
+    }
+  };
+
+  const handleToggleStatus = async (id: string, isActive: boolean) => {
+    try {
+      await adminService.updateUserStatus(id, { isActive: !isActive });
       toast.success('User status updated');
       refetch();
     } catch (err: any) {
@@ -53,13 +121,22 @@ export default function AdminUsersPage() {
             <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
             <p className="text-gray-600 mt-1">Manage platform users, riders, chefs and customers.</p>
           </div>
-          <button
-            type="button"
-            onClick={() => router.push('/admin/dashboard')}
-            className="btn-outline px-4 py-2 rounded-lg"
-          >
-            Back to Dashboard
-          </button>
+          <div className="flex space-x-3">
+            <button
+              type="button"
+              onClick={openCreate}
+              className="btn-primary px-4 py-2 rounded-lg"
+            >
+              + Add User
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/admin/dashboard')}
+              className="btn-outline px-4 py-2 rounded-lg"
+            >
+              Back to Dashboard
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -70,7 +147,7 @@ export default function AdminUsersPage() {
                 <th className="px-6 py-4">Email</th>
                 <th className="px-6 py-4">Role</th>
                 <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Action</th>
+                <th className="px-6 py-4">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -91,42 +168,114 @@ export default function AdminUsersPage() {
                   </td>
                 </tr>
               ) : (
-                users.map((userItem: AdminUser) => {
-                  const currentStatus = statusUpdate[userItem.id] ?? userItem.isActive;
-                  return (
-                    <tr key={userItem.id} className="border-t border-gray-100">
-                      <td className="px-6 py-4 font-medium text-gray-900">{userItem.firstName} {userItem.lastName}</td>
-                      <td className="px-6 py-4">{userItem.email}</td>
-                      <td className="px-6 py-4">{userItem.role}</td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${currentStatus ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                          {currentStatus ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleStatus(userItem.id, userItem.isActive ?? false)}
-                          className="btn-secondary px-3 py-1 rounded-lg"
-                        >
-                          {currentStatus ? 'Deactivate' : 'Activate'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSaveStatus(userItem.id, userItem.isActive ?? false)}
-                          className="btn-primary px-3 py-1 rounded-lg"
-                        >
-                          Save
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
+                users.map((userItem: AdminUser) => (
+                  <tr key={userItem.id} className="border-t border-gray-100">
+                    <td className="px-6 py-4 font-medium text-gray-900">{userItem.firstName} {userItem.lastName}</td>
+                    <td className="px-6 py-4">{userItem.email}</td>
+                    <td className="px-6 py-4">{userItem.role}</td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${userItem.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        {userItem.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleStatus(userItem.id, userItem.isActive ?? false)}
+                        className="btn-secondary px-3 py-1 rounded-lg text-xs"
+                      >
+                        {userItem.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openEdit(userItem)}
+                        className="btn-primary px-3 py-1 rounded-lg text-xs"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(userItem.id)}
+                        className="text-red-600 hover:text-red-800 px-3 py-1 rounded-lg text-xs border border-red-200"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              {editingId ? 'Edit User' : 'Add User'}
+            </h2>
+            <form className="space-y-3" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className="input-field text-sm"
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                  required
+                />
+                <input
+                  className="input-field text-sm"
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                  required
+                />
+              </div>
+              <input
+                type="email"
+                className="input-field text-sm"
+                placeholder="Email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
+              <input
+                className="input-field text-sm"
+                placeholder="Phone"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              />
+              <select
+                className="input-field text-sm"
+                value={form.role}
+                onChange={(e) => setForm({ ...form, role: e.target.value as UserRole })}
+              >
+                <option value="CUSTOMER">Customer</option>
+                <option value="RESTAURANT">Chef</option>
+                <option value="DELIVERY">Rider</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+              <input
+                type="password"
+                className="input-field text-sm"
+                placeholder={editingId ? 'New password (optional)' : 'Password'}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                minLength={editingId ? undefined : 6}
+              />
+              <div className="flex justify-end gap-2 pt-2">
+                <button type="button" onClick={closeModal} className="btn-outline px-4 py-2 rounded-lg">
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary px-4 py-2 rounded-lg">
+                  {editingId ? 'Save' : 'Create'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

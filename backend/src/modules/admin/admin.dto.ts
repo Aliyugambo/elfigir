@@ -96,6 +96,37 @@ export class UpdateUserStatusDto {
   isActive!: boolean;
 }
 
+export class UpdateUserDto {
+  @IsString()
+  @IsOptional()
+  firstName?: string;
+
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+
+  @IsString()
+  @MinLength(6)
+  @IsOptional()
+  password?: string;
+}
+
 export class UpdateStaffDto {
   @IsString()
   @IsOptional()

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Req, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthUseCase } from './auth.use-case';
 import { SignUpDto, SignInDto, AuthResponseDto, CreateStaffDto } from './auth.dto';
@@ -24,13 +24,37 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin creates a CHEF or DELIVERY staff member' })
   async createStaff(@Req() req: any, @Body() dto: CreateStaffDto): Promise<AuthResponseDto> {
-    return this.authUseCase.createStaff(req.user.sub, dto);
+    const result = await this.authUseCase.createStaff(req.user.sub, dto);
+    
+    if (dto.role === UserRole.RESTAURANT || dto.role === UserRole.DELIVERY) {
+      try {
+        await this.authUseCase.sendVerificationEmail(result.id);
+      } catch (error) {
+        console.error('Failed to send verification email:', error);
+      }
+    }
+    
+    return result;
   }
 
   @Post('sign-in')
   @ApiOperation({ summary: 'Login user' })
   async signIn(@Body() dto: SignInDto): Promise<AuthResponseDto> {
     return this.authUseCase.signIn(dto);
+  }
+
+  @Get('verify-email')
+  @ApiOperation({ summary: 'Verify email address with token' })
+  async verifyEmail(@Query('token') token: string) {
+    return this.authUseCase.verifyEmail(token);
+  }
+
+  @Post('send-verification-email')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Resend verification email' })
+  async sendVerificationEmail(@Req() req: any) {
+    return this.authUseCase.sendVerificationEmail(req.user.sub);
   }
 
   @Get('profile')

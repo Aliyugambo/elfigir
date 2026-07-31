@@ -25,6 +25,7 @@ export type StaffMember = {
   phone?: string;
   role: StaffRole;
   isActive: boolean;
+  emailVerified: boolean;
   createdAt: string;
 };
 
@@ -215,6 +216,24 @@ export const adminService = {
 
   updateUserStatus: async (id: string, data: { isActive: boolean }) => {
     const res = await apiClient.patch(`/admin/users/${id}/status`, data);
+    return res.data;
+  },
+
+  updateUser: async (id: string, data: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    role?: Role;
+    isActive?: boolean;
+    password?: string;
+  }) => {
+    const res = await apiClient.patch(`/admin/users/${id}`, data);
+    return res.data;
+  },
+
+  deleteUser: async (id: string): Promise<{ id: string }> => {
+    const res = await apiClient.delete(`/admin/users/${id}`);
     return res.data;
   },
 

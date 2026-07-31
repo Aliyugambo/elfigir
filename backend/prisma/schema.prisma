@@ -33,6 +33,7 @@ model User {
   favorites     Favorite[]
   addresses     Address[]
   notifications Notification[]
+  emailVerifications EmailVerification[]
 
   @@map("users")
 }
@@ -225,6 +226,17 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@map("notifications")
+}
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("email_verifications")
 }
 
 enum UserRole {

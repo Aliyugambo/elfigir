@@ -21,4 +21,12 @@ export class AuthUseCase {
   async getProfile(userId: string) {
     return this.authRepository.getUserById(userId);
   }
+
+  async sendVerificationEmail(userId: string) {
+    return this.authRepository.sendVerificationEmail(userId);
+  }
+
+  async verifyEmail(token: string) {
+    return this.authRepository.verifyEmail(token);
+  }
 }

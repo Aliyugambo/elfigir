@@ -7,6 +7,7 @@ import {
   UpdateAdminOrderStatusDto,
   AdminUserFilterDto,
   UpdateUserStatusDto,
+  UpdateUserDto,
   CreateMenuItemDto,
   UpdateMenuItemDto,
   UpdateStaffDto,
@@ -59,6 +60,14 @@ export class AdminUseCase {
 
   updateUserStatus(id: string, dto: UpdateUserStatusDto) {
     return this.adminRepository.updateUserStatus(id, dto);
+  }
+
+  updateUser(id: string, dto: UpdateUserDto) {
+    return this.adminRepository.updateUser(id, dto);
+  }
+
+  deleteUser(id: string) {
+    return this.adminRepository.deleteUser(id);
   }
 
   listMenuItems(menuId?: string) {

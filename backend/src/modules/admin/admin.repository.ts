@@ -17,6 +17,7 @@ import {
   UpdateRestaurantDto,
   CreateMenuDto,
   UpdateMenuDto,
+  UpdateUserDto,
 } from './admin.dto';
 import { OrderStatus, UserRole } from '@prisma/client';
 
@@ -130,6 +131,7 @@ export class AdminRepository {
         lastName: true,
         phone: true,
         isActive: true,
+        emailVerified: true,
         createdAt: true,
       },
     });
@@ -270,6 +272,78 @@ export class AdminRepository {
         isActive: true,
       },
     });
+  }
+
+  async updateUser(id: string, dto: UpdateUserDto) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const data: any = {};
+    if (dto.firstName !== undefined) data.firstName = dto.firstName;
+    if (dto.lastName !== undefined) data.lastName = dto.lastName;
+    if (dto.email !== undefined) data.email = dto.email;
+    if (dto.phone !== undefined) data.phone = dto.phone;
+    if (dto.role !== undefined) data.role = dto.role;
+    if (dto.isActive !== undefined) data.isActive = dto.isActive;
+    if (dto.password) {
+      data.passwordHash = await this.authService.hashPassword(dto.password);
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        orders: { select: { id: true } },
+        reviews: true,
+        favorites: true,
+        addresses: true,
+        notifications: true,
+        emailVerifications: true,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.role === UserRole.ADMIN) {
+      throw new BadRequestException('Admin users cannot be deleted');
+    }
+
+    const orderIds = user.orders.map((o) => o.id);
+
+    await this.prisma.$transaction(async (tx) => {
+      if (orderIds.length > 0) {
+        await tx.orderItem.deleteMany({ where: { orderId: { in: orderIds } } });
+        await tx.order.deleteMany({ where: { id: { in: orderIds } } });
+      }
+
+      await tx.emailVerification.deleteMany({ where: { userId: id } });
+      await tx.notification.deleteMany({ where: { userId: id } });
+      await tx.favorite.deleteMany({ where: { userId: id } });
+      await tx.review.deleteMany({ where: { userId: id } });
+      await tx.address.deleteMany({ where: { userId: id } });
+      await tx.user.delete({ where: { id } });
+    });
+
+    return { id };
   }
 
   async deleteOrder(id: string) {

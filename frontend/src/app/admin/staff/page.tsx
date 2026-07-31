@@ -159,6 +159,7 @@ export default function AdminStaffPage() {
                 <th className="px-6 py-4">Name</th>
                 <th className="px-6 py-4">Email</th>
                 <th className="px-6 py-4">Phone</th>
+                <th className="px-6 py-4">Email Verified</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4">Actions</th>
               </tr>
@@ -172,11 +173,12 @@ export default function AdminStaffPage() {
                     <td className="h-12 px-6 py-4 bg-gray-100" />
                     <td className="h-12 px-6 py-4 bg-gray-100" />
                     <td className="h-12 px-6 py-4 bg-gray-100" />
+                    <td className="h-12 px-6 py-4 bg-gray-100" />
                   </tr>
                 ))
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
                     No {tabLabel.toLowerCase()} yet.
                   </td>
                 </tr>
@@ -188,6 +190,17 @@ export default function AdminStaffPage() {
                     </td>
                     <td className="px-6 py-4">{member.email}</td>
                     <td className="px-6 py-4">{member.phone ?? '-'}</td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                          member.emailVerified
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {member.emailVerified ? 'Verified' : 'Unverified'}
+                      </span>
+                    </td>
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${

@@ -150,6 +150,7 @@ export default function AdminDashboardPage() {
               <tr>
                 <th className="text-left px-6 py-3">Name</th>
                 <th className="text-left px-6 py-3">Email</th>
+                <th className="text-left px-6 py-3">Email Verified</th>
                 <th className="text-left px-6 py-3">Status</th>
                 <th className="text-right px-6 py-3">Action</th>
               </tr>
@@ -157,7 +158,7 @@ export default function AdminDashboardPage() {
             <tbody>
               {activeList.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
                     No {tab === 'CHEF' ? 'chefs' : 'riders'} yet.
                   </td>
                 </tr>
@@ -166,6 +167,11 @@ export default function AdminDashboardPage() {
                 <tr key={m.id} className="border-t border-gray-100">
                   <td className="px-6 py-3">{m.firstName} {m.lastName}</td>
                   <td className="px-6 py-3 text-gray-600">{m.email}</td>
+                  <td className="px-6 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs ${m.emailVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                      {m.emailVerified ? 'Verified' : 'Unverified'}
+                    </span>
+                  </td>
                   <td className="px-6 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs ${m.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                       {m.isActive ? 'Active' : 'Pending'}

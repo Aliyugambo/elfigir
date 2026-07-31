@@ -5,6 +5,7 @@ import { PrismaService } from './prisma.service';
 import { AuthService } from './auth.service';
 import { CloudinaryService } from './cloudinary.service';
 import { GeocodingService } from './geocoding.service';
+import { EmailService } from './email.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { GeocodingService } from './geocoding.service';
       }),
     }),
   ],
-  providers: [PrismaService, AuthService, CloudinaryService, GeocodingService],
-  exports: [PrismaService, AuthService, CloudinaryService, GeocodingService, JwtModule],
+  providers: [PrismaService, AuthService, CloudinaryService, GeocodingService, EmailService],
+  exports: [PrismaService, AuthService, CloudinaryService, GeocodingService, JwtModule, EmailService],
 })
 export class CommonModule {}

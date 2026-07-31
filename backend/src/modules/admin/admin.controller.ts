@@ -22,6 +22,7 @@ import {
   UpdateAdminOrderStatusDto,
   AdminUserFilterDto,
   UpdateUserStatusDto,
+  UpdateUserDto,
   CreateMenuItemDto,
   UpdateMenuItemDto,
   UpdateStaffDto,
@@ -182,6 +183,24 @@ export class AdminController {
     @Body() dto: UpdateUserStatusDto,
   ) {
     return this.adminUseCase.updateUserStatus(id, dto);
+  }
+
+  @Patch('users/:id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update user information' })
+  async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.adminUseCase.updateUser(id, dto);
+  }
+
+  @Delete('users/:id')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a user' })
+  async deleteUser(@Param('id') id: string) {
+    return this.adminUseCase.deleteUser(id);
   }
 
   @Get('menu-items')
