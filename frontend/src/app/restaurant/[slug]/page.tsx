@@ -35,7 +35,7 @@ export default function RestaurantPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Restaurant Header */}
+      {/* Kitchen Header */}
       <div className="relative h-64 md:h-80 bg-gray-200">
         <img
           src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
@@ -49,7 +49,7 @@ export default function RestaurantPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Restaurant Info */}
+            {/* Kitchen Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

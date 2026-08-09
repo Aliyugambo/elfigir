@@ -22,6 +22,10 @@ export class RestaurantUseCase {
     return this.restaurantRepository.findBySlug(slug);
   }
 
+  async getRestaurantsBySlugs(slugs: string[]) {
+    return this.restaurantRepository.findBySlugs(slugs);
+  }
+
   async updateRestaurant(id: string, dto: UpdateRestaurantDto) {
     return this.restaurantRepository.update(id, dto);
   }

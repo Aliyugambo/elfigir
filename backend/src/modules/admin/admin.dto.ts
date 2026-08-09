@@ -235,6 +235,10 @@ export class CreateRestaurantDto {
 
   @IsString()
   @IsOptional()
+  slug?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
 
   @IsArray()
@@ -287,6 +291,10 @@ export class UpdateRestaurantDto {
   @IsString()
   @IsOptional()
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  slug?: string;
 
   @IsString()
   @IsOptional()

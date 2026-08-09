@@ -37,4 +37,10 @@ export class RestaurantController {
   async getBySlug(@Param('slug') slug: string) {
     return this.restaurantUseCase.getRestaurantBySlug(slug);
   }
+
+  @Post('/by-slugs')
+  @ApiOperation({ summary: 'Get multiple restaurants by slugs' })
+  async getBySlugs(@Body() body: { slugs: string[] }) {
+    return this.restaurantUseCase.getRestaurantsBySlugs(body.slugs);
+  }
 }

@@ -1,3 +1,7 @@
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,6 +13,26 @@
 }
 
 @layer components {
+  .swiper-button-next,
+  .swiper-button-prev {
+    @apply text-maroon-dark;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullet {
+    @apply bg-maroon-dark/30;
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply bg-maroon;
+  }
+
   .btn-primary {
     @apply px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition;
   }

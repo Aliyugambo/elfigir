@@ -32,14 +32,14 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary via-primary/90 to-primary-dark text-white py-20">
+      <section className="bg-gradient-to-br from-maroon via-maroon/90 to-maroon-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to Elfijr</h1>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to  Elfijr Kitchen</h1>
             <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
               Order your favorite meals from the best restaurants and get them delivered to your door
             </p>
@@ -58,7 +58,7 @@ export default function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
                 className="flex-1 px-6 py-3 outline-none text-gray-900 placeholder-gray-500"
               />
-              <button className="bg-primary hover:bg-primary-dark px-8 py-3 text-white font-semibold transition flex items-center space-x-2">
+              <button className="bg-maroon hover:bg-maroon-dark px-8 py-3 text-white font-semibold transition flex items-center space-x-2">
                 <FaSearch />
                 <span>Search</span>
               </button>
@@ -68,11 +68,11 @@ export default function HomePage() {
       </section>
 
       {/* Quick Categories */}
-      <section className="py-12 border-b border-gray-100">
+      <section className="bg-mustard py-12 border-b border-mustard-dark/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['Fast Food', 'Pizza', 'Chinese', 'Nigerian'].map((category, index) => (
+          <div className="grid grid-cols-2 gap-4">
+            {['Elfijr Kitchen Dine In', 'Elfijr Kitchen Fast Food Outlet'].map((category, index) => (
               <motion.div
                 key={category}
                 initial={{ opacity: 0, y: 20 }}

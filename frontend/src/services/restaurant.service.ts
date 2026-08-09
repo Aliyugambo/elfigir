@@ -23,4 +23,9 @@ export const restaurantService = {
     const response = await apiClient.get(`/restaurants/slug/${slug}`);
     return response.data;
   },
+
+  getKitchensBySlug: async (slugs: string[]): Promise<Restaurant[]> => {
+    const response = await apiClient.post('/restaurants/by-slugs', { slugs });
+    return response.data;
+  },
 };

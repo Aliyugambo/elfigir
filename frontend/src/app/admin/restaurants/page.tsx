@@ -20,6 +20,7 @@ export default function AdminRestaurantsPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [form, setForm] = useState({
     name: '',
+    slug: '',
     description: '',
     cuisineType: '',
     city: '',
@@ -49,6 +50,7 @@ export default function AdminRestaurantsPage() {
   const resetForm = () => {
     setForm({
       name: '',
+      slug: '',
       description: '',
       cuisineType: '',
       city: '',
@@ -75,6 +77,7 @@ export default function AdminRestaurantsPage() {
     setEditingId(restaurant.id);
     setForm({
       name: restaurant.name,
+      slug: restaurant.slug,
       description: restaurant.description ?? '',
       cuisineType: restaurant.cuisineType.join(', '),
       city: restaurant.city,
@@ -157,6 +160,7 @@ export default function AdminRestaurantsPage() {
 
     const data = {
       name: form.name,
+      slug: form.slug || undefined,
       description: form.description || undefined,
       cuisineType: form.cuisineType.split(',').map((c) => c.trim()).filter(Boolean),
       city: form.city,
@@ -281,6 +285,10 @@ export default function AdminRestaurantsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
                   <input className="input-field w-full" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                  <input className="input-field w-full" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="e.g. elfijr-kitchen-dine-in" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">City</label>

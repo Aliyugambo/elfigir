@@ -228,9 +228,9 @@ function CheckoutContent() {
                   {paymentMethod === 'BANK_TRANSFER' && bankDetails && (
                     <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-                      <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'N/A'}</p>
-                      <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'N/A'}</p>
-                      <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || 'N/A'}</p>
+                      <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'GT BANK'}</p>
+                      <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+                      <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
                       <p className="text-sm text-gray-500 mt-2">Total Amount: ₦{total.toFixed(0)}</p>
                     </div>
                   )}
@@ -244,9 +244,9 @@ function CheckoutContent() {
                 {bankDetails && (
                   <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                     <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-                    <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'N/A'}</p>
-                    <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'N/A'}</p>
-                    <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || 'N/A'}</p>
+                    <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'GT BANK'}</p>
+                    <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+                    <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
                   </div>
                 )}
                 <p className="text-sm text-gray-600 mb-4">

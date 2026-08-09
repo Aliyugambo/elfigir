@@ -11,6 +11,10 @@ module.exports = {
         'primary-dark': '#B83A41',
         secondary: '#F5F5F5',
         accent: '#FFF5F7',
+        maroon: '#800000',
+        'maroon-dark': '#5C0000',
+        mustard: '#FFF8E7',
+        'mustard-dark': '#F5E6C8',
       },
       spacing: {
         sm: '0.5rem',

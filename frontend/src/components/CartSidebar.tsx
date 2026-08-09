@@ -107,7 +107,7 @@ export function CartSidebar() {
         </div>
 
         <Link
-          href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/restaurants'}
+          href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/'}
           className="block w-full btn-primary text-center py-3 rounded-lg font-semibold"
         >
           Checkout

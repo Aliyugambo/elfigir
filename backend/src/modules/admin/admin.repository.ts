@@ -446,7 +446,7 @@ export class AdminRepository {
   }
 
   async createRestaurant(dto: CreateRestaurantDto) {
-    const slug = dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+    const slug = dto.slug || (dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now());
 
     let latitude = dto.latitude;
     let longitude = dto.longitude;
@@ -514,6 +514,12 @@ export class AdminRepository {
 
   async deleteRestaurant(id: string) {
     await this.getRestaurant(id);
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.order.deleteMany({ where: { restaurantId: id } });
+      await tx.user.updateMany({ where: { restaurantId: id }, data: { restaurantId: null } });
+    });
+
     return this.prisma.restaurant.delete({ where: { id } });
   }
 

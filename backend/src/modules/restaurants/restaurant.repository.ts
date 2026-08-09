@@ -133,6 +133,15 @@ export class RestaurantRepository {
     });
   }
 
+  async findBySlugs(slugs: string[]) {
+    return this.prisma.restaurant.findMany({
+      where: { slug: { in: slugs } },
+      include: {
+        menus: true,
+      },
+    });
+  }
+
   async update(id: string, dto: UpdateRestaurantDto) {
     return this.prisma.restaurant.update({
       where: { id },

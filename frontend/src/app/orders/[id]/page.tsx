@@ -175,9 +175,9 @@ export default function OrderDetailsPage() {
           {order.paymentMethod === 'BANK_TRANSFER' && order.paymentStatus === 'PENDING' && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-              <p className="text-sm text-gray-600">Bank: {order.restaurant?.bankName || 'N/A'}</p>
-              <p className="text-sm text-gray-600">Account Name: {order.restaurant?.accountName || 'N/A'}</p>
-              <p className="text-sm text-gray-600">Account Number: {order.restaurant?.accountNumber || 'N/A'}</p>
+              <p className="text-sm text-gray-600">Bank: {order.restaurant?.bankName || 'GT BANK'}</p>
+              <p className="text-sm text-gray-600">Account Name: {order.restaurant?.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+              <p className="text-sm text-gray-600">Account Number: {order.restaurant?.accountNumber || '5000530466'}</p>
               <p className="text-sm text-gray-500 mt-2">Please transfer the exact amount to the account above.</p>
               <button
                 type="button"
