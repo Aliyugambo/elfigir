@@ -109,24 +109,24 @@ export default function StaffOrdersPage() {
         ) : (
           <div className="space-y-4">
             {orders.map((order: any) => (
-              <div key={order.id} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-sm text-gray-500">Order</p>
-                    <p className="font-semibold text-gray-900">{order.orderNumber}</p>
-                    <p className="text-sm text-gray-500 mt-1">{new Date(order.createdAt).toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Customer</p>
-                    <p className="font-medium text-gray-900">{order.user?.firstName} {order.user?.lastName}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">Total</p>
-                    <p className="font-semibold text-primary">₦{order.totalAmount.toFixed(0)}</p>
-                  </div>
+            <div key={order.id} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 shadow-sm">
+              <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-xs sm:text-sm text-gray-500">Order</p>
+                  <p className="font-semibold text-sm sm:text-base text-gray-900">{order.orderNumber}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">{new Date(order.createdAt).toLocaleString()}</p>
                 </div>
+                <div>
+                  <p className="text-xs sm:text-sm text-gray-500">Customer</p>
+                  <p className="font-medium text-sm sm:text-base text-gray-900">{order.user?.firstName} {order.user?.lastName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs sm:text-sm text-gray-500">Total</p>
+                  <p className="font-semibold text-primary">₦{order.totalAmount.toFixed(0)}</p>
+                </div>
+              </div>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-2 items-end">
+                <div className="mt-3 sm:mt-6 grid gap-3 sm:gap-4 md:grid-cols-2 items-end">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                     <span className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">

@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -9,7 +9,7 @@ import logo from '@/logo.png';
 import { useAuthStore } from '@/store/auth.store';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { adminService, AdminNotification } from '@/services/admin.service';
-import { FaBell } from 'react-icons/fa';
+import { FaBell, FaBars, FaTimes } from 'react-icons/fa';
 
 function NotificationsBell() {
   const queryClient = useQueryClient();
@@ -77,13 +77,16 @@ function NotificationsBell() {
 export function Header() {
   const { isAuthenticated, logout, user } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
             <Image src={logo} alt="Elfijr" width={32} height={32} className="w-8 h-8" />
             <span className="text-lg font-bold text-gray-900">Elfijr</span>
           </Link>
@@ -128,8 +131,17 @@ export function Header() {
             )}
           </nav>
 
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-gray-600 hover:text-primary p-2"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+          </button>
+
           {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             {!isAuthenticated ? (
               <>
                 <Link href="/login" className="text-gray-600 hover:text-primary transition">
@@ -181,6 +193,77 @@ export function Header() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-gray-100 bg-white overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              <Link href="/browse" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                Browse
+              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link href="/orders" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                    Orders
+                  </Link>
+                  {user?.role === 'RESTAURANT' && (
+                    <Link href="/chef" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                      Chef
+                    </Link>
+                  )}
+                  {user?.role === 'DELIVERY' && (
+                    <Link href="/rider" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                      Rider
+                    </Link>
+                  )}
+                  {(user?.role === 'STAFF' || user?.role === 'SUPER_ADMIN') && (
+                    <Link href="/staff" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                      Manager
+                    </Link>
+                  )}
+                  {user?.role === 'ADMIN' && (
+                    <>
+                      <Link href="/admin/dashboard" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                        Admin
+                      </Link>
+                      <div className="px-4 py-3">
+                        <NotificationsBell />
+                      </div>
+                    </>
+                  )}
+                  <Link href="/account" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                    Account
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      closeMobileMenu();
+                    }}
+                    className="block w-full text-left px-4 py-3 text-red-600 hover:bg-gray-50 rounded-lg transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col space-y-2 pt-2">
+                  <Link href="/login" className="btn-outline text-center py-3 rounded-lg" onClick={closeMobileMenu}>
+                    Sign In
+                  </Link>
+                  <Link href="/signup" className="btn-primary text-center py-3 rounded-lg" onClick={closeMobileMenu}>
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

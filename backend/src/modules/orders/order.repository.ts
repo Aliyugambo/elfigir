@@ -102,6 +102,18 @@ export class OrderRepository {
     });
   }
 
+  async updateStatus(orderId: string, status: OrderStatus) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { status },
+      include: {
+        items: { include: { menuItem: true } },
+        restaurant: true,
+        user: true,
+      },
+    });
+  }
+
   async findByUserId(userId: string, skip: number, take: number) {
     const [orders, total] = await Promise.all([
       this.prisma.order.findMany({
@@ -141,11 +153,17 @@ export class OrderRepository {
         select: { restaurantId: true },
       });
 
-      if (!staff?.restaurantId) {
+      if (!staff) {
         return { orders: [], total: 0, page: filters.page, limit: filters.limit };
       }
 
-      where.restaurantId = staff.restaurantId;
+      if (role === UserRole.RESTAURANT && !staff.restaurantId) {
+        return { orders: [], total: 0, page: filters.page, limit: filters.limit };
+      }
+
+      if (role === UserRole.RESTAURANT) {
+        where.restaurantId = staff.restaurantId;
+      }
     }
 
     const skip = (filters.page - 1) * filters.limit;
@@ -207,6 +225,22 @@ export class OrderRepository {
   }
 
   async notifyOnTransition(order: any, status: OrderStatus) {
+    if (status === OrderStatus.CONFIRMED) {
+      await this.notifyAdmins(
+        'Order approved',
+        `Order ${order.orderNumber} was approved by admin and sent to ${order.restaurant?.name}.`,
+        'order_approved',
+      );
+    }
+
+    if (status === OrderStatus.PREPARING) {
+      await this.notifyAdmins(
+        'Order preparation started',
+        `Chef at ${order.restaurant?.name} started preparing order ${order.orderNumber}.`,
+        'order_preparing',
+      );
+    }
+
     if (status === OrderStatus.READY_FOR_PICKUP) {
       await this.notifyAdmins(
         'Order ready for pickup',
@@ -215,17 +249,33 @@ export class OrderRepository {
       );
     }
 
+    if (status === OrderStatus.OUT_FOR_DELIVERY) {
+      await this.notifyAdmins(
+        'Out for delivery',
+        `Order ${order.orderNumber} is now out for delivery.`,
+        'order_out_for_delivery',
+      );
+    }
+
     if (status === OrderStatus.DELIVERED) {
       await this.createNotification(
         order.userId,
         'Order delivered',
-        `Your order ${order.orderNumber} has been delivered. Enjoy your meal!`,
+        `Your order ${order.orderNumber} has been delivered. Please confirm receipt in the app.`,
         'order_update',
       );
       await this.notifyAdmins(
         'Order delivered',
-        `Order ${order.orderNumber} was marked delivered.`,
+        `Order ${order.orderNumber} was marked delivered. Awaiting customer confirmation.`,
         'order_update',
+      );
+    }
+
+    if (status === OrderStatus.COMPLETED) {
+      await this.notifyAdmins(
+        'Order completed',
+        `Order ${order.orderNumber} has been confirmed received by the customer.`,
+        'order_completed',
       );
     }
   }

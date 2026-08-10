@@ -86,23 +86,23 @@ export default function StaffFinancesPage() {
         {stats && (
           <div className="grid gap-4 mb-8 md:grid-cols-3">
             <div className="card">
-              <p className="text-sm text-gray-600">Total Revenue</p>
-              <p className="text-3xl font-bold text-primary">₦{stats.totalRevenue.toFixed(0)}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">₦{stats.totalRevenue.toFixed(0)}</p>
             </div>
             <div className="card">
-              <p className="text-sm text-gray-600">Total Orders</p>
-              <p className="text-3xl font-bold text-primary">{stats.totalOrders}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Total Orders</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{stats.totalOrders}</p>
             </div>
             <div className="card">
-              <p className="text-sm text-gray-600">Pending Orders</p>
-              <p className="text-3xl font-bold text-yellow-600">{stats.pendingOrders}</p>
+              <p className="text-xs sm:text-sm text-gray-600">Pending Orders</p>
+              <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pendingOrders}</p>
             </div>
           </div>
         )}
 
         {stats && (
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Revenue Breakdown</h2>
+         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Revenue Breakdown</h2>
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>

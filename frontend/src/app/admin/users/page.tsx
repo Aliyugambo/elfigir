@@ -139,63 +139,63 @@ export default function AdminUsersPage() {
         </div>
 
         <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full text-left text-sm text-gray-600">
+          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Role</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Actions</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Role</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Status</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, idx) => (
                   <tr key={idx} className="animate-pulse border-t border-gray-100">
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
                   </tr>
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-gray-500">
                     No users available.
                   </td>
                 </tr>
               ) : (
                 users.map((userItem: AdminUser) => (
                   <tr key={userItem.id} className="border-t border-gray-100">
-                    <td className="px-6 py-4 font-medium text-gray-900">{userItem.firstName} {userItem.lastName}</td>
-                    <td className="px-6 py-4">{userItem.email}</td>
-                    <td className="px-6 py-4">{userItem.role}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${userItem.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900 text-sm">{userItem.firstName} {userItem.lastName}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{userItem.email}</td>
+                    <td className="px-3 py-4 sm:px-6 text-sm">{userItem.role}</td>
+                    <td className="px-3 py-4 sm:px-6">
+                      <span className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${userItem.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                         {userItem.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 space-x-2">
+                    <td className="px-3 py-4 sm:px-6 space-x-1 sm:space-x-2 text-right">
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(userItem.id, userItem.isActive ?? false)}
-                        className="btn-secondary px-3 py-1 rounded-lg text-xs"
+                        className="btn-secondary px-1 py-1 sm:px-3 rounded-lg text-xs"
                       >
                         {userItem.isActive ? 'Deactivate' : 'Activate'}
                       </button>
                       <button
                         type="button"
                         onClick={() => openEdit(userItem)}
-                        className="btn-primary px-3 py-1 rounded-lg text-xs"
+                        className="btn-primary px-1 py-1 sm:px-3 rounded-lg text-xs"
                       >
                         Edit
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDelete(userItem.id)}
-                        className="text-red-600 hover:text-red-800 px-3 py-1 rounded-lg text-xs border border-red-200"
+                        className="text-red-600 hover:text-red-800 px-1 py-1 sm:px-3 rounded-lg text-xs border border-red-200"
                       >
                         Delete
                       </button>

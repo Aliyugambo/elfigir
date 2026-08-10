@@ -16,7 +16,7 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
       className="bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition"
     >
       <Link href={`/restaurant/${restaurant.slug}`}>
-        <div className="relative h-48 bg-gray-200 overflow-hidden">
+        <div className="relative h-40 sm:h-48 bg-gray-200 overflow-hidden">
           <img
             src={restaurant.banner || 'https://via.placeholder.com/300x200'}
             alt={restaurant.name}
@@ -29,8 +29,8 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
           )}
         </div>
 
-        <div className="p-4">
-          <div className="flex items-start justify-between mb-2">
+        <div className="p-3 sm:p-4">
+          <div className="flex items-start justify-between mb-1 sm:mb-2">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 truncate">{restaurant.name}</h3>
               <p className="text-sm text-gray-500">
@@ -39,9 +39,9 @@ export function RestaurantCard({ restaurant }: RestaurantCardProps) {
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 line-clamp-2 mb-3">{restaurant.description}</p>
+          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2 sm:mb-3">{restaurant.description}</p>
 
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-xs sm:text-sm">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-1">
                 <FaStar className="text-yellow-400 w-4 h-4" />

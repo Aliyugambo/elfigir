@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
 import { PaymentStatus, UserRole } from '@prisma/client';
@@ -75,6 +75,35 @@ export class OrderUseCase {
       'Payment received',
       `Payment received for order ${order.orderNumber}. Please start preparation.`,
       'payment_received',
+    );
+
+    return updated;
+  }
+
+  async confirmReceived(userId: string, orderId: string) {
+    const order = await this.orderRepository.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.userId !== userId) {
+      throw new ForbiddenException('You can only confirm your own orders');
+    }
+
+    if (order.status !== 'DELIVERED') {
+      throw new BadRequestException('Order must be marked delivered before confirming receipt');
+    }
+
+    const updated = await this.orderRepository.updateStatus(
+      orderId,
+      'COMPLETED',
+    );
+
+    await this.orderRepository.notifyAdmins(
+      'Order completed',
+      `Order ${order.orderNumber} has been confirmed received by the customer.`,
+      'order_completed',
     );
 
     return updated;

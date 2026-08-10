@@ -63,13 +63,14 @@ export class AdminRepository {
     await this.assertEmailAvailable(dto.email);
 
     const passwordHash = await this.authService.hashPassword(dto.password);
+    const normalizedPhone = dto.phone?.trim() || null;
 
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         firstName: dto.firstName,
         lastName: dto.lastName,
-        phone: dto.phone,
+        phone: normalizedPhone,
         passwordHash,
         role: UserRole.ADMIN,
         isActive: true,
@@ -204,6 +205,31 @@ export class AdminRepository {
     return { orders };
   }
 
+  async confirmPayment(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: { restaurant: true, user: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.paymentStatus !== PaymentStatus.PROCESSING) {
+      throw new BadRequestException('Order is not pending payment confirmation');
+    }
+
+    return this.prisma.order.update({
+      where: { id },
+      data: { paymentStatus: PaymentStatus.COMPLETED },
+      include: {
+        items: { include: { menuItem: true } },
+        restaurant: true,
+        user: true,
+      },
+    });
+  }
+
   async getOrder(id: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
@@ -307,7 +333,7 @@ export class AdminRepository {
     if (dto.firstName !== undefined) data.firstName = dto.firstName;
     if (dto.lastName !== undefined) data.lastName = dto.lastName;
     if (dto.email !== undefined) data.email = dto.email;
-    if (dto.phone !== undefined) data.phone = dto.phone;
+    if (dto.phone !== undefined) data.phone = dto.phone?.trim() || null;
     if (dto.role !== undefined) data.role = dto.role;
     if (dto.isActive !== undefined) data.isActive = dto.isActive;
     if (dto.password) {
@@ -358,11 +384,14 @@ export class AdminRepository {
         await tx.order.deleteMany({ where: { id: { in: orderIds } } });
       }
 
-      await tx.emailVerification.deleteMany({ where: { userId: id } });
-      await tx.notification.deleteMany({ where: { userId: id } });
-      await tx.favorite.deleteMany({ where: { userId: id } });
-      await tx.review.deleteMany({ where: { userId: id } });
-      await tx.address.deleteMany({ where: { userId: id } });
+      await Promise.all([
+        tx.emailVerification.deleteMany({ where: { userId: id } }),
+        tx.notification.deleteMany({ where: { userId: id } }),
+        tx.favorite.deleteMany({ where: { userId: id } }),
+        tx.review.deleteMany({ where: { userId: id } }),
+        tx.address.deleteMany({ where: { userId: id } }),
+      ]);
+
       await tx.user.delete({ where: { id } });
     });
 
@@ -390,9 +419,10 @@ export class AdminRepository {
     if (dto.firstName !== undefined) data.firstName = dto.firstName;
     if (dto.lastName !== undefined) data.lastName = dto.lastName;
     if (dto.email !== undefined) data.email = dto.email;
-    if (dto.phone !== undefined) data.phone = dto.phone;
+    if (dto.phone !== undefined) data.phone = dto.phone?.trim() || null;
     if (dto.role !== undefined) data.role = dto.role;
     if (dto.restaurantId !== undefined) data.restaurantId = dto.restaurantId;
+    else if (dto.role === UserRole.DELIVERY) data.restaurantId = null;
     if (dto.password) {
       data.passwordHash = await this.authService.hashPassword(dto.password);
     }

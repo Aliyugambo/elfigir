@@ -51,7 +51,9 @@ function BrowseContent() {
   const searchParams = useSearchParams();
   const { isAuthenticated } = useAuthStore();
   const initialCategory = searchParams.get('category') || '';
+  const initialSearch = searchParams.get('search') || '';
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -61,13 +63,18 @@ function BrowseContent() {
   }, [isAuthenticated, router]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['menu-items', activeCategory],
-    queryFn: () =>
-      menuItemService.getMenuItemsByCategory({
-        category: activeCategory === 'All' ? undefined : activeCategory,
+    queryKey: ['menu-items', activeCategory, searchQuery],
+    queryFn: () => {
+      const isKitchen = activeCategory.startsWith('Elfijr Kitchen');
+      return menuItemService.getMenuItemsByCategory({
+        ...(isKitchen
+          ? { restaurantName: activeCategory }
+          : { category: activeCategory === 'All' ? undefined : activeCategory }),
+        ...(searchQuery ? { search: searchQuery } : {}),
         page: 1,
         limit: 24,
-      }),
+      });
+    },
     enabled: !!isAuthenticated,
     placeholderData: (prev) => prev,
   });
@@ -93,6 +100,27 @@ function BrowseContent() {
 
       <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <div className="flex max-w-xl bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden">
+              <input
+                type="text"
+                placeholder="Search dishes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') setSearchQuery(e.currentTarget.value);
+                }}
+                className="flex-1 px-4 sm:px-6 py-2.5 outline-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+              />
+              <button
+                onClick={() => setSearchQuery(searchQuery)}
+                className="bg-primary hover:bg-primary-dark px-4 sm:px-6 py-2.5 text-white font-semibold text-sm sm:text-base"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-3 mb-10">
             {CATEGORIES.map((cat, index) => (
               <motion.button
@@ -110,6 +138,12 @@ function BrowseContent() {
                 {cat}
               </motion.button>
             ))}
+
+            {activeCategory && !CATEGORIES.includes(activeCategory) && (
+              <span className="px-5 py-2 rounded-full font-semibold text-sm bg-primary text-white shadow-md whitespace-nowrap">
+                {activeCategory}
+              </span>
+            )}
           </div>
 
           {isLoading && (
@@ -129,7 +163,9 @@ function BrowseContent() {
           {!isLoading && !isError && items.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">
-                No menu items found for this category.
+                {searchQuery
+                  ? `No dishes found matching "${searchQuery}".`
+                  : 'No menu items found for this category.'}
               </p>
             </div>
           )}

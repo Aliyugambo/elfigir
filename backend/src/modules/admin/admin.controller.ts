@@ -173,6 +173,15 @@ export class AdminController {
     return this.adminUseCase.updateOrderStatus(id, dto);
   }
 
+  @Post('orders/:id/confirm-payment')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Confirm bank transfer payment for an order' })
+  async confirmPayment(@Param('id') id: string) {
+    return this.adminUseCase.confirmPayment(id);
+  }
+
   @Get('users')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)

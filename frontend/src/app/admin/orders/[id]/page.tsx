@@ -61,7 +61,7 @@ export default function AdminOrderDetailsPage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <p className="text-sm text-gray-500">Customer</p>
@@ -98,33 +98,33 @@ export default function AdminOrderDetailsPage() {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-2">Order Items</h2>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-left text-sm text-gray-600">
+              <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
                 <thead className="bg-gray-50 text-gray-700">
                   <tr>
-                    <th className="px-4 py-2">Item</th>
-                    <th className="px-4 py-2">Quantity</th>
-                    <th className="px-4 py-2">Price</th>
-                    <th className="px-4 py-2">Subtotal</th>
+                    <th className="px-2 py-2 sm:px-4 sm:py-3">Item</th>
+                    <th className="px-2 py-2 sm:px-4 sm:py-3">Quantity</th>
+                    <th className="px-2 py-2 sm:px-4 sm:py-3">Price</th>
+                    <th className="px-2 py-2 sm:px-4 sm:py-3">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   {order.items?.map((item: any) => (
                     <tr key={item.id} className="border-t border-gray-100">
-                      <td className="px-4 py-2">
-                        <div className="flex items-center gap-3">
+                      <td className="px-2 py-3 sm:px-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           {item.menuItem?.image && (
                             <img
                               src={item.menuItem.image}
                               alt={item.menuItem?.name}
-                              className="h-10 w-10 rounded object-cover border border-gray-200"
+                              className="h-8 w-8 sm:h-10 sm:w-10 rounded object-cover border border-gray-200"
                             />
                           )}
-                          <span>{item.menuItem?.name}</span>
+                          <span className="text-sm">{item.menuItem?.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-2">{item.quantity}</td>
-                      <td className="px-4 py-2">₦{item.price.toFixed(2)}</td>
-                      <td className="px-4 py-2">₦{(item.quantity * item.price).toFixed(2)}</td>
+                      <td className="px-2 py-3 sm:px-4 text-sm">{item.quantity}</td>
+                      <td className="px-2 py-3 sm:px-4 text-sm">₦{item.price.toFixed(2)}</td>
+                      <td className="px-2 py-3 sm:px-4 text-sm">₦{(item.quantity * item.price).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>

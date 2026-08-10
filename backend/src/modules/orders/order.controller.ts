@@ -64,6 +64,14 @@ export class OrderController {
     return this.orderUseCase.confirmPayment(req.user.sub, id);
   }
 
+  @Post(':id/confirm-received')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Customer confirms they have received their order' })
+  async confirmReceived(@Req() req: any, @Param('id') id: string) {
+    return this.orderUseCase.confirmReceived(req.user.sub, id);
+  }
+
   @Get('/:id')
   @UseGuards(JwtGuard)
   @ApiBearerAuth()

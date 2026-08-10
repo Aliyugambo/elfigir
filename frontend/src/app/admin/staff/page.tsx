@@ -163,50 +163,50 @@ export default function AdminStaffPage() {
           ))}
         </div>
 
-        <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full text-left text-sm text-gray-600">
+         <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Phone</th>
-                <th className="px-6 py-4">Restaurant</th>
-                <th className="px-6 py-4">Email Verified</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Actions</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Phone</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Restaurant</th>
+                <th className="hidden md:table-cell px-3 py-3 sm:px-6 sm:py-4">Email Verified</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Status</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 [...Array(3)].map((_, idx) => (
                   <tr key={idx} className="animate-pulse border-t border-gray-100">
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
-                    <td className="h-12 px-6 py-4 bg-gray-100" />
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="hidden md:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
                   </tr>
                 ))
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={7} className="px-3 py-6 sm:px-6 text-center text-gray-500">
                     No {tabLabel.toLowerCase()} yet.
                   </td>
                 </tr>
               ) : (
                 members.map((member) => (
                   <tr key={member.id} className="border-t border-gray-100">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900 text-sm">
                       {member.firstName} {member.lastName}
                     </td>
-                    <td className="px-6 py-4">{member.email}</td>
-                    <td className="px-6 py-4">{member.phone ?? '-'}</td>
-                    <td className="px-6 py-4">{member.restaurant?.name ?? '-'}</td>
-                    <td className="px-6 py-4">
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.email}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.phone ?? '-'}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.restaurant?.name ?? '-'}</td>
+                    <td className="hidden md:table-cell px-3 py-4 sm:px-6">
                       <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                        className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
                           member.emailVerified
                             ? 'bg-green-100 text-green-700'
                             : 'bg-gray-100 text-gray-700'
@@ -215,33 +215,33 @@ export default function AdminStaffPage() {
                         {member.emailVerified ? 'Verified' : 'Unverified'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-4 sm:px-6">
                       <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                        className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
                           member.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
                         {member.isActive ? 'Active' : 'Pending'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 space-x-2">
+                    <td className="px-3 py-4 sm:px-6 space-x-1 sm:space-x-2 text-right">
                       {!member.isActive && (
                         <button
                           onClick={() => handleApprove(member.id)}
-                          className="btn-primary px-3 py-1 rounded-lg text-xs"
+                          className="btn-primary px-1 py-1 sm:px-3 rounded-lg text-xs"
                         >
                           Approve
                         </button>
                       )}
                       <button
                         onClick={() => openEdit(member)}
-                        className="btn-secondary px-3 py-1 rounded-lg text-xs"
+                        className="btn-secondary px-1 py-1 sm:px-3 rounded-lg text-xs"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(member.id)}
-                        className="text-red-600 hover:text-red-800 px-3 py-1 rounded-lg text-xs border border-red-200"
+                        className="text-red-600 hover:text-red-800 px-1 py-1 sm:px-3 rounded-lg text-xs border border-red-200"
                       >
                         Delete
                       </button>
@@ -308,19 +308,21 @@ export default function AdminStaffPage() {
                 <option value="RESTAURANT">Chef</option>
                 <option value="DELIVERY">Rider</option>
               </select>
-              <select
-                className="input-field text-sm"
-                value={form.restaurantId}
-                onChange={(e) => setForm({ ...form, restaurantId: e.target.value })}
-                required
-              >
-                <option value="">Select a restaurant</option>
-                {restaurants?.map((restaurant) => (
-                  <option key={restaurant.id} value={restaurant.id}>
-                    {restaurant.name}
-                  </option>
-                ))}
-              </select>
+              {form.role === 'RESTAURANT' && (
+                <select
+                  className="input-field text-sm"
+                  value={form.restaurantId}
+                  onChange={(e) => setForm({ ...form, restaurantId: e.target.value })}
+                  required
+                >
+                  <option value="">Select a restaurant</option>
+                  {restaurants?.map((restaurant) => (
+                    <option key={restaurant.id} value={restaurant.id}>
+                      {restaurant.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={closeModal} className="btn-outline px-4 py-2 rounded-lg">
                   Cancel

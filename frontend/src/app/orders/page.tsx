@@ -15,7 +15,8 @@ const statusConfig: Record<OrderStatus, { color: string; icon: React.ComponentTy
   PREPARING: { color: 'bg-blue-100 text-blue-800', icon: FaClock, text: 'Preparing' },
   READY_FOR_PICKUP: { color: 'bg-purple-100 text-purple-800', icon: FaTruck, text: 'Ready' },
   OUT_FOR_DELIVERY: { color: 'bg-orange-100 text-orange-800', icon: FaTruck, text: 'On the way' },
-  DELIVERED: { color: 'bg-green-100 text-green-800', icon: FaCheckCircle, text: 'Delivered' },
+   DELIVERED: { color: 'bg-green-100 text-green-800', icon: FaCheckCircle, text: 'Delivered' },
+  COMPLETED: { color: 'bg-green-100 text-green-800', icon: FaCheckCircle, text: 'Completed' },
   CANCELLED: { color: 'bg-red-100 text-red-800', icon: FaClock, text: 'Cancelled' },
 };
 
@@ -61,11 +62,11 @@ export default function OrdersPage() {
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-12 bg-white rounded-lg border border-gray-100"
-        >
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-10 sm:py-12 bg-white rounded-lg border border-gray-100"
+          >
           <p className="text-gray-500 text-lg mb-4">You haven't placed any orders yet</p>
           <Link href="/" className="btn-primary">
             Start Ordering
@@ -90,7 +91,7 @@ export default function OrdersPage() {
                 className="bg-white rounded-lg border border-gray-100 overflow-hidden hover:shadow-md transition cursor-pointer"
                 onClick={() => router.push(`/orders/${order.id}`)}
               >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <div className="grid md:grid-cols-4 gap-4 items-start">
                     {/* Order Info */}
                     <div>

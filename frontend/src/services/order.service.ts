@@ -38,4 +38,9 @@ export const orderService = {
     const response = await apiClient.post(`/orders/${orderId}/confirm-payment`);
     return response.data;
   },
+
+  confirmReceived: async (orderId: string) => {
+    const response = await apiClient.post(`/orders/${orderId}/confirm-received`);
+    return response.data;
+  },
 };

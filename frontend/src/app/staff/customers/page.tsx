@@ -53,44 +53,44 @@ export default function StaffCustomersPage() {
   return (
     <div className="min-h-screen bg-secondary">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Customers</h1>
             <p className="text-gray-600 mt-1">Customers who ordered from your restaurant</p>
           </div>
-          <Link href="/staff" className="btn-outline px-4 py-2 rounded-lg">
+          <Link href="/staff" className="btn-outline px-3 py-2 sm:px-4 rounded-lg text-sm">
             Back to Dashboard
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <table className="min-w-full text-left text-sm text-gray-600">
+         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Phone</th>
-                <th className="px-6 py-4">Orders</th>
-                <th className="px-6 py-4">Joined</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Phone</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Orders</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Joined</th>
               </tr>
             </thead>
             <tbody>
               {customers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-gray-500">
                     No customers found.
                   </td>
                 </tr>
               ) : (
                 customers.map((customer: any) => (
                   <tr key={customer.id} className="border-t border-gray-100">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900">
                       {customer.firstName} {customer.lastName}
                     </td>
-                    <td className="px-6 py-4">{customer.email}</td>
-                    <td className="px-6 py-4">{customer.phone || '-'}</td>
-                    <td className="px-6 py-4">{customer._count?.orders || 0}</td>
-                    <td className="px-6 py-4">{new Date(customer.createdAt).toLocaleDateString()}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{customer.email}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{customer.phone || '-'}</td>
+                    <td className="px-3 py-4 sm:px-6 text-sm">{customer._count?.orders || 0}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{new Date(customer.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))
               )}

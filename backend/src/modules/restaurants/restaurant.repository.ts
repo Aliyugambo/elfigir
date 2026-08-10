@@ -77,6 +77,18 @@ export class RestaurantRepository {
       where.category = { equals: filters.category, mode: 'insensitive' };
     }
 
+    if (filters.restaurantName) {
+      where.menu = {
+        restaurant: {
+          name: { contains: filters.restaurantName, mode: 'insensitive' },
+        },
+      };
+    }
+
+    if (filters.search) {
+      where.name = { contains: filters.search, mode: 'insensitive' };
+    }
+
     const [items, total] = await Promise.all([
       this.prisma.menuItem.findMany({
         where,

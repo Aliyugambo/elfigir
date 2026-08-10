@@ -229,6 +229,7 @@ export class StaffUseCase {
       OrderStatus.READY_FOR_PICKUP,
       OrderStatus.OUT_FOR_DELIVERY,
       OrderStatus.DELIVERED,
+      OrderStatus.COMPLETED,
       OrderStatus.CANCELLED,
     ];
 
@@ -258,15 +259,28 @@ export class StaffUseCase {
       );
     }
 
+    if (dto.status === OrderStatus.OUT_FOR_DELIVERY) {
+      await this.notifyAdmins(
+        'Out for delivery',
+        `Order ${order.orderNumber} is now out for delivery.`,
+        'order_out_for_delivery',
+      );
+    }
+
     if (dto.status === OrderStatus.DELIVERED) {
       await this.prisma.notification.create({
         data: {
           userId: order.userId,
           title: 'Order delivered',
-          message: `Your order ${order.orderNumber} has been delivered. Enjoy your meal!`,
+          message: `Your order ${order.orderNumber} has been delivered. Please confirm receipt in the app.`,
           type: 'order_update',
         },
       });
+      await this.notifyAdmins(
+        'Order delivered',
+        `Order ${order.orderNumber} was marked delivered.`,
+        'order_update',
+      );
     }
 
     return updated;

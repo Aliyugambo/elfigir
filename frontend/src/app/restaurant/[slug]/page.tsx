@@ -53,25 +53,25 @@ export default function RestaurantPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-lg shadow-md p-6 mb-8"
-            >
-              <div className="flex items-start justify-between mb-4">
+            className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8"
+          >
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900">{restaurant.name}</h1>
-                  <p className="text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{restaurant.name}</h1>
+                  <p className="text-sm text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center space-x-2 text-lg">
-                    <FaStar className="text-yellow-400" />
+                  <div className="flex items-center space-x-1 sm:space-x-2 text-base sm:text-lg">
+                    <FaStar className="text-yellow-400 w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="font-bold">{restaurant.rating}</span>
                   </div>
-                  <span className="text-sm text-gray-600">({restaurant.reviewCount} reviews)</span>
+                  <span className="text-xs text-gray-600">({restaurant.reviewCount} reviews)</span>
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-6">{restaurant.description}</p>
+              <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base">{restaurant.description}</p>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div className="flex items-center space-x-2">
                   <FaClock className="text-primary" />
                   <div>

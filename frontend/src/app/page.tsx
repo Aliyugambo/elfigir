@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { restaurantService } from '@/services/restaurant.service';
 import { RestaurantCard } from '@/components/RestaurantCard';
@@ -9,7 +10,13 @@ import { FaSearch, FaFire, FaStar } from 'react-icons/fa';
 import { useState } from 'react';
 
 export default function HomePage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
+
+  const handleSearch = () => {
+    const trimmed = search.trim();
+    router.push(trimmed ? `/browse?search=${encodeURIComponent(trimmed)}` : '/browse');
+  };
 
   const { data: restaurants, isLoading } = useQuery({
     queryKey: ['restaurants', search],
@@ -32,15 +39,15 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-maroon via-maroon/90 to-maroon-dark text-white py-20">
+      <section className="bg-gradient-to-br from-maroon via-maroon/90 to-maroon-dark text-white py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Welcome to  Elfijr Kitchen</h1>
-            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">Welcome to  Elfijr Kitchen</h1>
+            <p className="text-base sm:text-xl text-white/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
               Order your favorite meals from the best restaurants and get them delivered to your door
             </p>
 
@@ -56,10 +63,16 @@ export default function HomePage() {
                 placeholder="Search restaurants, cuisines..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 px-6 py-3 outline-none text-gray-900 placeholder-gray-500"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleSearch();
+                }}
+                className="flex-1 px-4 sm:px-6 py-3 outline-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
               />
-              <button className="bg-maroon hover:bg-maroon-dark px-8 py-3 text-white font-semibold transition flex items-center space-x-2">
-                <FaSearch />
+              <button
+                onClick={handleSearch}
+                className="bg-maroon hover:bg-maroon-dark px-4 sm:px-8 py-3 text-white font-semibold transition flex items-center space-x-2 text-sm sm:text-base"
+              >
+                <FaSearch className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Search</span>
               </button>
             </motion.div>
@@ -70,8 +83,8 @@ export default function HomePage() {
       {/* Quick Categories */}
       <section className="bg-mustard py-12 border-b border-mustard-dark/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">Browse by Category</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {['Elfijr Kitchen Dine In', 'Elfijr Kitchen Fast Food Outlet'].map((category, index) => (
               <motion.div
                 key={category}
@@ -80,10 +93,10 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Link href={`/browse?category=${encodeURIComponent(category)}`}>
-                  <div className="p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center cursor-pointer">
-                    <span className="text-2xl mb-2 block">🍽️</span>
-                    <span className="font-semibold text-gray-900">{category}</span>
-                  </div>
+                   <div className="p-4 sm:p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center cursor-pointer">
+                     <span className="text-xl sm:text-2xl mb-2 block">🍽️</span>
+                     <span className="font-semibold text-gray-900 text-sm sm:text-base">{category}</span>
+                   </div>
                 </Link>
               </motion.div>
             ))}
@@ -94,10 +107,10 @@ export default function HomePage() {
       {/* Restaurants */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Popular Restaurants</h2>
-            <p className="text-gray-600">Discover great food and amazing dining experiences</p>
-          </div>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Popular Restaurants</h2>
+              <p className="text-gray-600 text-sm sm:text-base">Discover great food and amazing dining experiences</p>
+            </div>
 
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -118,6 +118,8 @@ export type AdminOrder = {
   paymentMethod: string;
   paymentStatus: string;
   deliveryAddress: string;
+  deliveryLat?: number;
+  deliveryLng?: number;
   specialInstructions?: string;
   estimatedDeliveryTime?: string;
   actualDeliveryTime?: string;
@@ -126,6 +128,9 @@ export type AdminOrder = {
   restaurant: {
     id: string;
     name: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
   };
   user: {
     id: string;

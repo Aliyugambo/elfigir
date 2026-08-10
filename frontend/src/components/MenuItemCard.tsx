@@ -27,7 +27,7 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
       whileHover={{ y: -2 }}
       className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition"
     >
-      <div className="relative h-48 bg-gray-200 overflow-hidden">
+      <div className="relative h-40 sm:h-48 bg-gray-200 overflow-hidden">
         <img
           src={item.image || 'https://via.placeholder.com/200x200'}
           alt={item.name}
@@ -40,16 +40,16 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
         )}
       </div>
 
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 truncate">{item.name}</h3>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{item.name}</h3>
         <p className="text-xs text-gray-500 mb-2">{item.category}</p>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-3">{item.description}</p>
+        <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2 sm:mb-3">{item.description}</p>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="font-bold text-primary text-lg">₦{item.price.toFixed(0)}</span>
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <span className="font-bold text-primary text-base sm:text-lg">₦{item.price.toFixed(0)}</span>
             {item.originalPrice && (
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-xs sm:text-sm text-gray-400 line-through">
                 ₦{item.originalPrice.toFixed(0)}
               </span>
             )}
@@ -57,7 +57,7 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowDetails(!showDetails)}
-            className="btn-primary text-sm py-1 px-3"
+            className="btn-primary text-xs sm:text-sm py-1 px-2 sm:px-3"
           >
             Add
           </motion.button>

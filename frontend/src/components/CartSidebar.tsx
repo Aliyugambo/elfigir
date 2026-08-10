@@ -17,9 +17,9 @@ export function CartSidebar() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-white rounded-lg border border-gray-100 p-6 text-center"
-      >
-        <FaShoppingCart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+       className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6 text-center"
+       >
+         <FaShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-4" />
         <h3 className="font-semibold text-gray-900 mb-2">Your cart is empty</h3>
         <p className="text-sm text-gray-500">Add items to get started!</p>
       </motion.div>
@@ -41,19 +41,19 @@ export function CartSidebar() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="p-4 border-b border-gray-100 last:border-b-0"
+              className="p-3 sm:p-4 border-b border-gray-100 last:border-b-0"
             >
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-2 sm:space-x-3">
                 <img
                   src={item.menuItem.image || 'https://via.placeholder.com/50'}
                   alt={item.menuItem.name}
-                  className="w-12 h-12 rounded object-cover"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover"
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-gray-900 truncate">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                     {item.menuItem.name}
                   </h4>
-                  <p className="text-sm font-semibold text-primary">
+                  <p className="text-xs sm:text-sm font-semibold text-primary">
                     ₦{(item.menuItem.price * item.quantity).toFixed(0)}
                   </p>
                 </div>
@@ -87,28 +87,28 @@ export function CartSidebar() {
       </div>
 
       {/* Summary */}
-      <div className="p-4 border-t border-gray-100 space-y-3 bg-gray-50">
-        <div className="flex justify-between text-sm">
+      <div className="p-3 sm:p-4 border-t border-gray-100 space-y-3 bg-gray-50">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-600">Subtotal</span>
           <span className="text-gray-900 font-semibold">₦{subtotal.toFixed(0)}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-600">Tax (10%)</span>
           <span className="text-gray-900 font-semibold">₦{tax.toFixed(0)}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-600">Delivery</span>
           <span className="text-gray-900 font-semibold">₦{deliveryFee.toFixed(0)}</span>
         </div>
 
         <div className="border-t border-gray-200 pt-3 flex justify-between">
           <span className="font-semibold text-gray-900">Total</span>
-          <span className="font-bold text-primary text-lg">₦{total.toFixed(0)}</span>
+          <span className="font-bold text-primary text-base sm:text-lg">₦{total.toFixed(0)}</span>
         </div>
 
         <Link
           href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/'}
-          className="block w-full btn-primary text-center py-3 rounded-lg font-semibold"
+          className="block w-full btn-primary text-center py-2 sm:py-3 rounded-lg font-semibold"
         >
           Checkout
         </Link>

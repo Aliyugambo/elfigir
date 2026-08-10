@@ -54,13 +54,14 @@ export class AuthRepository {
     await this.assertEmailAvailable(dto.email);
 
     const passwordHash = await this.authService.hashPassword(dto.password);
+    const normalizedPhone = dto.phone?.trim() || null;
 
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         firstName: dto.firstName,
         lastName: dto.lastName,
-        phone: dto.phone,
+        phone: normalizedPhone,
         passwordHash,
         role: UserRole.CUSTOMER,
       },
@@ -79,13 +80,14 @@ export class AuthRepository {
     await this.assertEmailAvailable(dto.email);
 
     const passwordHash = await this.authService.hashPassword(dto.password);
+    const normalizedPhone = dto.phone?.trim() || null;
 
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         firstName: dto.firstName,
         lastName: dto.lastName,
-        phone: dto.phone,
+        phone: normalizedPhone,
         passwordHash,
         role: dto.role,
         isActive: false,

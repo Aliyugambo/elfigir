@@ -130,6 +130,10 @@ export default function AdminDashboardPage() {
             <p className="text-sm text-gray-600">Create, update, and remove chefs and riders</p>
             <h2 className="text-lg font-semibold text-gray-900">Staff</h2>
           </Link>
+          <Link href="/admin/notifications" className="card hover:border-primary transition">
+            <p className="text-sm text-gray-600">View all system notifications</p>
+            <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
@@ -202,45 +206,45 @@ export default function AdminDashboardPage() {
             </button>
           </div>
 
-          <table className="w-full text-sm">
+          <table className="w-full text-xs sm:text-sm">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
-                <th className="text-left px-6 py-3">Name</th>
-                <th className="text-left px-6 py-3">Email</th>
-                <th className="text-left px-6 py-3">Restaurant</th>
-                <th className="text-left px-6 py-3">Email Verified</th>
-                <th className="text-left px-6 py-3">Status</th>
-                <th className="text-right px-6 py-3">Action</th>
+                <th className="text-left px-3 py-3 sm:px-6 sm:py-3">Name</th>
+                <th className="text-left hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-3">Email</th>
+                <th className="text-left px-3 py-3 sm:px-6 sm:py-3">Restaurant</th>
+                <th className="text-left hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-3">Email Verified</th>
+                <th className="text-left px-3 py-3 sm:px-6 sm:py-3">Status</th>
+                <th className="text-right px-3 py-3 sm:px-6 sm:py-3">Action</th>
               </tr>
             </thead>
             <tbody>
               {activeList.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={6} className="px-3 py-6 sm:px-6 text-center text-gray-400">
                     No {tab === 'CHEF' ? 'chefs' : 'riders'} yet.
                   </td>
                 </tr>
               )}
               {activeList.map((m) => (
                 <tr key={m.id} className="border-t border-gray-100">
-                  <td className="px-6 py-3">{m.firstName} {m.lastName}</td>
-                  <td className="px-6 py-3 text-gray-600">{m.email}</td>
-                  <td className="px-6 py-3">{m.restaurant?.name ?? '-'}</td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 py-3 sm:px-6 text-sm">{m.firstName} {m.lastName}</td>
+                  <td className="hidden sm:table-cell px-3 py-3 sm:px-6 text-sm text-gray-600">{m.email}</td>
+                  <td className="px-3 py-3 sm:px-6 text-sm">{m.restaurant?.name ?? '-'}</td>
+                  <td className="hidden sm:table-cell px-3 py-3 sm:px-6">
                     <span className={`px-2 py-1 rounded-full text-xs ${m.emailVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                       {m.emailVerified ? 'Verified' : 'Unverified'}
                     </span>
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 py-3 sm:px-6">
                     <span className={`px-2 py-1 rounded-full text-xs ${m.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                       {m.isActive ? 'Active' : 'Pending'}
                     </span>
                   </td>
-                  <td className="px-6 py-3 text-right">
+                  <td className="px-3 py-3 sm:px-6 text-right">
                     {!m.isActive && (
                       <button
                         onClick={() => handleApprove(m.id)}
-                        className="btn-primary px-3 py-1 rounded-lg text-xs"
+                        className="btn-primary px-1 py-1 sm:px-3 rounded-lg text-xs"
                       >
                         Approve
                       </button>

@@ -64,33 +64,33 @@ export default function StaffChefsPage() {
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <table className="min-w-full text-left text-sm text-gray-600">
+         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
             <thead className="bg-gray-50 text-gray-700">
               <tr>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">Phone</th>
-                <th className="px-6 py-4">Status</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
+                <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Phone</th>
+                <th className="px-3 py-3 sm:px-6 sm:py-4">Status</th>
               </tr>
             </thead>
             <tbody>
               {chefs.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-gray-500">
+                  <td colSpan={4} className="px-3 py-6 sm:px-6 text-center text-gray-500">
                     No chefs found.
                   </td>
                 </tr>
               ) : (
                 chefs.map((chef: any) => (
                   <tr key={chef.id} className="border-t border-gray-100">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900">
                       {chef.firstName} {chef.lastName}
                     </td>
-                    <td className="px-6 py-4">{chef.email}</td>
-                    <td className="px-6 py-4">{chef.phone || '-'}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${chef.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{chef.email}</td>
+                    <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{chef.phone || '-'}</td>
+                    <td className="px-3 py-4 sm:px-6">
+                      <span className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${chef.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                         {chef.isActive ? 'Active' : 'Pending'}
                       </span>
                     </td>

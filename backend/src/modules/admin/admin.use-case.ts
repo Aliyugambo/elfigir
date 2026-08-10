@@ -50,6 +50,10 @@ export class AdminUseCase {
     return this.adminRepository.listPendingTransfers();
   }
 
+  confirmPayment(id: string) {
+    return this.adminRepository.confirmPayment(id);
+  }
+
   getOrder(id: string) {
     return this.adminRepository.getOrder(id);
   }

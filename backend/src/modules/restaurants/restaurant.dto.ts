@@ -91,6 +91,14 @@ export class MenuItemFilterDto {
   @IsString()
   category?: string;
 
+  @IsOptional()
+  @IsString()
+  restaurantName?: string;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
