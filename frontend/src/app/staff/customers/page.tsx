@@ -9,14 +9,14 @@ import Link from 'next/link';
 
 export default function StaffCustomersPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, accessToken } = useAuthStore();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['staff-customers'],
     queryFn: async () => {
       const response = await fetch('/api/staff/customers', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch customers');

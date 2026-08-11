@@ -88,7 +88,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
             <Image src={logo} alt="Elfijr" width={32} height={32} className="w-8 h-8" />
-            <span className="text-lg font-bold text-gray-900">Elfijr</span>
+            <span className="text-lg font-bold text-gray-900">Elfijr Kitchen</span>
           </Link>
 
           {/* Navigation - Desktop */}

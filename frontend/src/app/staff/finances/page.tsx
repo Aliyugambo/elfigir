@@ -11,7 +11,7 @@ type Period = 'week' | 'month' | 'year';
 
 export default function StaffFinancesPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, accessToken } = useAuthStore();
   const [period, setPeriod] = useState<Period>('month');
 
   const { data, isLoading, error } = useQuery({
@@ -19,7 +19,7 @@ export default function StaffFinancesPage() {
     queryFn: async () => {
       const response = await fetch(`/api/staff/finances?period=${period}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch finances');

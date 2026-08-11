@@ -14,7 +14,7 @@ export function Footer() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center font-bold">
                 E
               </div>
-              <span className="text-lg font-bold">Elfijr</span>
+              <span className="text-lg font-bold">Elfijr Kitchen</span>
             </div>
             <p className="text-gray-400 text-sm">
             Delicious jollof ! Tantalising fried rice ! Best swallow 😋 The most appetising shawarma and burger 🍔 😋 in kaduna ! We welcome you with a big hug 🫂 to Elfijr Our kaduna people and guests"
@@ -90,7 +90,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-          <p>&copy; 2026 Elfijr. All rights reserved.</p>
+          <p>&copy; 2026 Elfijr Kitchen. All rights reserved.</p>
         </div>
       </div>
     </footer>

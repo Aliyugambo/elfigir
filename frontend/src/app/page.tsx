@@ -12,15 +12,29 @@ import { useState } from 'react';
 export default function HomePage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const handleSearch = () => {
     const trimmed = search.trim();
-    router.push(trimmed ? `/browse?search=${encodeURIComponent(trimmed)}` : '/browse');
+    const params = new URLSearchParams();
+    if (trimmed) params.set('search', trimmed);
+    if (selectedCategory) params.set('category', selectedCategory);
+    router.push(params.toString() ? `/?${params.toString()}` : '/');
+  };
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category === selectedCategory ? '' : category);
+    setSearch('');
   };
 
   const { data: restaurants, isLoading } = useQuery({
-    queryKey: ['restaurants', search],
-    queryFn: () => restaurantService.searchRestaurants({ search, page: 1, limit: 12 }),
+    queryKey: ['restaurants', search, selectedCategory],
+    queryFn: () =>
+      restaurantService.searchRestaurants({
+        search: selectedCategory || search,
+        page: 1,
+        limit: 12,
+      }),
   });
 
   const containerVariants = {
@@ -56,11 +70,40 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
+              className="flex max-w-2xl mx-auto"
+            >
+              <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                {['Elfijr Kitchen Dine In', 'Elfijr Kitchen Fast Food Outlet'].map(
+                  (category) => (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryClick(category)}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
+                        selectedCategory === category
+                          ? 'bg-white text-maroon shadow-md'
+                          : 'bg-maroon/30 text-white hover:bg-maroon/50'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ),
+                )}
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
               className="flex max-w-2xl mx-auto bg-white rounded-full shadow-lg overflow-hidden"
             >
               <input
                 type="text"
-                placeholder="Search restaurants, cuisines..."
+                placeholder={
+                  selectedCategory
+                    ? `${selectedCategory} — search within...`
+                    : 'Search Food, cuisines...'
+                }
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => {
@@ -70,7 +113,8 @@ export default function HomePage() {
               />
               <button
                 onClick={handleSearch}
-                className="bg-maroon hover:bg-maroon-dark px-4 sm:px-8 py-3 text-white font-semibold transition flex items-center space-x-2 text-sm sm:text-base"
+                disabled={!search.trim() && !selectedCategory}
+                className="bg-maroon hover:bg-maroon-dark disabled:opacity-50 disabled:cursor-not-allowed px-4 sm:px-8 py-3 text-white font-semibold transition flex items-center space-x-2 text-sm sm:text-base"
               >
                 <FaSearch className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span>Search</span>
@@ -80,35 +124,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quick Categories */}
-      <section className="bg-mustard py-12 border-b border-mustard-dark/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">Browse by Category</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {['Elfijr Kitchen Dine In', 'Elfijr Kitchen Fast Food Outlet'].map((category, index) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link href={`/browse?category=${encodeURIComponent(category)}`}>
-                   <div className="p-4 sm:p-6 rounded-lg border border-gray-100 hover:border-primary hover:shadow-md transition text-center cursor-pointer">
-                     <span className="text-xl sm:text-2xl mb-2 block">🍽️</span>
-                     <span className="font-semibold text-gray-900 text-sm sm:text-base">{category}</span>
-                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Restaurants */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Popular Restaurants</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Popular Kitchen</h2>
               <p className="text-gray-600 text-sm sm:text-base">Discover great food and amazing dining experiences</p>
             </div>
 
@@ -166,7 +186,7 @@ export default function HomePage() {
             >
               <FaStar className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">Best Quality</h3>
-              <p className="text-gray-600 text-sm">Fresh meals from verified restaurants</p>
+              <p className="text-gray-600 text-sm">Fresh meals from verified Kitchen</p>
             </motion.div>
             <motion.div
               whileHover={{ y: -4 }}

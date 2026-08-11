@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
-type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY_FOR_PICKUP' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'CANCELLED';
+type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY_FOR_PICKUP' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'COMPLETED' | 'CANCELLED';
 
 const statusOptions: OrderStatus[] = [
   'PENDING',
@@ -16,12 +16,13 @@ const statusOptions: OrderStatus[] = [
   'READY_FOR_PICKUP',
   'OUT_FOR_DELIVERY',
   'DELIVERED',
+  'COMPLETED',
   'CANCELLED',
 ];
 
 export default function StaffOrdersPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, accessToken } = useAuthStore();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');
 
@@ -32,7 +33,7 @@ export default function StaffOrdersPage() {
       if (statusFilter) url.searchParams.set('status', statusFilter);
       const response = await fetch(url.toString(), {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch orders');
@@ -54,7 +55,7 @@ export default function StaffOrdersPage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ status }),
       });

@@ -15,7 +15,7 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-    const response = await fetch(`${backendUrl}/api/staff/orders/${id}/status`, {
+    const response = await fetch(`${backendUrl}/staff/orders/${id}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

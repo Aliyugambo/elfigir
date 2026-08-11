@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export default function StaffChefsPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, accessToken } = useAuthStore();
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
@@ -17,7 +17,7 @@ export default function StaffChefsPage() {
     queryFn: async () => {
       const response = await fetch('/api/staff/chefs', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch chefs');

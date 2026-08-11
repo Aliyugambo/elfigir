@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get('page') || '1';
     const limit = searchParams.get('limit') || '50';
 
-    let url = `${backendUrl}/api/staff/orders?page=${page}&limit=${limit}`;
+    let url = `${backendUrl}/staff/orders?page=${page}&limit=${limit}`;
     if (status) url += `&status=${status}`;
 
     const response = await fetch(url, {

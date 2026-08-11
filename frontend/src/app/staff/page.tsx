@@ -20,7 +20,7 @@ type DashboardStats = {
 
 export default function StaffDashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, accessToken } = useAuthStore();
   const [stats, setStats] = useState<DashboardStats | null>(null);
 
   const { data, isLoading, error } = useQuery({
@@ -28,7 +28,7 @@ export default function StaffDashboardPage() {
     queryFn: async () => {
       const response = await fetch('/api/staff/dashboard', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) throw new Error('Failed to fetch dashboard');
