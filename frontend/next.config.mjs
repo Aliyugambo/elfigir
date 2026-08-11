@@ -8,7 +8,6 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: path.join(__dirname),
   images: {
-    domains: ['res.cloudinary.com', 'via.placeholder.com'],
     remotePatterns: [
       {
         protocol: 'https',

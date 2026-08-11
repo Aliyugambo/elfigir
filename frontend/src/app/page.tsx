@@ -5,14 +5,21 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { restaurantService } from '@/services/restaurant.service';
+import { menuItemService } from '@/services/menuItem.service';
 import { RestaurantCard } from '@/components/RestaurantCard';
+import { MenuItemCard } from '@/components/MenuItemCard';
+import { MenuGallery } from '@/components/MenuGallery';
 import { FaSearch, FaFire, FaStar } from 'react-icons/fa';
 import { useState } from 'react';
+
+const RESTAURANTS = ['Elfijr-Kitchen-dine-in', 'Elfijr-Kitchen-fast-food-outlet'];
 
 export default function HomePage() {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  const isFiltering = !!selectedCategory || !!search.trim();
 
   const handleSearch = () => {
     const trimmed = search.trim();
@@ -27,14 +34,26 @@ export default function HomePage() {
     setSearch('');
   };
 
-  const { data: restaurants, isLoading } = useQuery({
-    queryKey: ['restaurants', search, selectedCategory],
+  const { data: restaurants, isLoading: isLoadingRestaurants } = useQuery({
+    queryKey: ['restaurants'],
     queryFn: () =>
       restaurantService.searchRestaurants({
-        search: selectedCategory || search,
         page: 1,
         limit: 12,
       }),
+    enabled: !isFiltering,
+  });
+
+  const { data: items, isLoading: isLoadingItems } = useQuery({
+    queryKey: ['home-items', search, selectedCategory],
+    queryFn: () =>
+      menuItemService.getMenuItemsByCategory({
+        ...(selectedCategory ? { restaurantName: selectedCategory } : {}),
+        ...(search.trim() ? { search: search.trim() } : {}),
+        page: 1,
+        limit: 24,
+      }),
+    enabled: isFiltering,
   });
 
   const containerVariants = {
@@ -73,7 +92,7 @@ export default function HomePage() {
               className="flex max-w-2xl mx-auto"
             >
               <div className="flex flex-wrap gap-2 mb-4 justify-center">
-                {['Elfijr Kitchen Dine In', 'Elfijr Kitchen Fast Food Outlet'].map(
+                {RESTAURANTS.map(
                   (category) => (
                     <button
                       key={category}
@@ -124,42 +143,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Restaurants */}
-      <section className="py-16">
+      {/* Menu Gallery */}
+      <section className="py-12 bg-mustard-maroon text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Popular Kitchen</h2>
-              <p className="text-gray-600 text-sm sm:text-base">Discover great food and amazing dining experiences</p>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Gallery</h2>
+            {/* <p className="text-white/80 text-sm sm:text-base">Swipe through our delicious offerings</p> */}
+          </div>
+          <MenuGallery />
+        </div>
+      </section>
+
+      {/* Restaurants / Items */}
+      <section className="py-16 bg-mustard-maroon text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-6 sm:mb-8 text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                {isFiltering ? 'Results' : 'Our Menu'}
+              </h2>
+              <p className="text-white/80 text-sm sm:text-base">
+                {isFiltering
+                  ? 'Showing items from Elfijr Kitchen Dine In and Elfijr Kitchen Fast Food Outlet'
+                  : ''}
+              </p>
             </div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isFiltering ? (
+            isLoadingItems ? (
+              <div className="flex flex-wrap justify-center gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-80 w-full max-w-sm bg-white/10 rounded-lg animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-6">
+                {items?.data?.map((item: any) => (
+                  <div key={item.id} className="w-full max-w-sm">
+                    <MenuItemCard item={item} restaurantId={item.menu?.restaurant?.id} />
+                  </div>
+                ))}
+              </div>
+            )
+          ) : isLoadingRestaurants ? (
+            <div className="flex flex-wrap justify-center gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-96 bg-gray-100 rounded-lg animate-pulse" />
+                <div key={i} className="h-96 w-full max-w-sm bg-white/10 rounded-lg animate-pulse" />
               ))}
             </div>
           ) : (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
+            <div className="flex flex-wrap justify-center gap-6">
               {restaurants?.data?.map((restaurant: any) => (
-                <motion.div key={restaurant.id} variants={itemVariants}>
+                <motion.div key={restaurant.id} variants={itemVariants} className="w-full max-w-sm">
                   <RestaurantCard restaurant={restaurant} />
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
           )}
 
-          {restaurants?.data?.length === 0 && (
+          {isFiltering && !isLoadingItems && items?.data?.length === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <p className="text-gray-500 text-lg mb-4">No restaurants found matching your search</p>
+              <p className="text-white/90 text-lg mb-4">
+                {search.trim()
+                  ? `No dishes found matching "${search.trim()}" in the selected kitchen.`
+                  : 'No dishes found for this kitchen.'}
+              </p>
+              <Link href="/" className="btn-primary">
+                Browse All
+              </Link>
+            </motion.div>
+          )}
+
+          {!isFiltering && !isLoadingRestaurants && restaurants?.data?.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-12"
+            >
+              <p className="text-white/90 text-lg mb-4">No restaurants found matching your search</p>
               <Link href="/" className="btn-primary">
                 Browse All
               </Link>

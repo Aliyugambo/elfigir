@@ -15,6 +15,7 @@ module.exports = {
         'maroon-dark': '#5C0000',
         mustard: '#FFF8E7',
         'mustard-dark': '#F5E6C8',
+        'mustard-maroon': '#B3645C',
       },
       spacing: {
         sm: '0.5rem',

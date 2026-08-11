@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
               onChange={handleChange}
               required
               className="input-field"
-              placeholder="admin@elfigir.com"
+              placeholder="admin@elfijr.com"
             />
           </div>
           <div>
