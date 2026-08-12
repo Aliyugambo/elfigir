@@ -47,6 +47,7 @@ export type MenuItem = {
   originalPrice?: number;
   category: string;
   isAvailable: boolean;
+  prepTime?: number;
   addOns?: AddOn[];
 };
 

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MenuItem, AddOn } from '@/types';
 import { useCartStore } from '@/store/cart.store';
 import { useState } from 'react';
-import { FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -24,76 +24,89 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
 
   return (
     <motion.div
-      whileHover={{ y: -2 }}
-      className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition"
+      whileHover={{ y: -1 }}
+      className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition active:scale-[0.98]"
     >
-      <div className="relative h-40 sm:h-48 bg-gray-200 overflow-hidden">
+      <div className="relative h-36 sm:h-44 bg-gray-100 overflow-hidden">
         <img
-          src={item.image || 'https://via.placeholder.com/200x200'}
+          src={item.image || 'https://via.placeholder.com/400x300'}
           alt={item.name}
-          className="w-full h-full object-cover hover:scale-110 transition duration-300"
+          className="w-full h-full object-cover"
+          loading="lazy"
         />
         {!item.isAvailable && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <span className="text-white font-semibold">Unavailable</span>
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="text-white font-semibold text-sm">Unavailable</span>
           </div>
+        )}
+        {item.originalPrice && item.isAvailable && (
+          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full">
+            SALE
+          </span>
         )}
       </div>
 
       <div className="p-3 sm:p-4">
-        <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{item.name}</h3>
-        <p className="text-xs text-gray-500 mb-2">{item.category}</p>
-        <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2 sm:mb-3">{item.description}</p>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            <span className="font-bold text-primary text-base sm:text-lg">₦{item.price.toFixed(0)}</span>
-            {item.originalPrice && (
-              <span className="text-xs sm:text-sm text-gray-400 line-through">
-                ₦{item.originalPrice.toFixed(0)}
-              </span>
-            )}
-          </div>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowDetails(!showDetails)}
-            className="btn-primary text-xs sm:text-sm py-1 px-2 sm:px-3"
-          >
-            Add
-          </motion.button>
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 leading-tight line-clamp-1">{item.name}</h3>
+          {item.prepTime && (
+            <span className="text-[10px] sm:text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+              {item.prepTime}m
+            </span>
+          )}
         </div>
 
-        {showDetails && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mt-4 pt-4 border-t border-gray-200 space-y-3"
-          >
-            <div className="flex items-center space-x-4">
+        <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5">{item.category}</p>
+
+        {item.description && (
+          <p className="text-xs text-gray-600 line-clamp-2 mb-2 sm:mb-3 leading-relaxed">{item.description}</p>
+        )}
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-baseline space-x-1.5 flex-shrink-0">
+            <span className="font-bold text-primary text-sm sm:text-base">₦{item.price.toFixed(0)}</span>
+            {item.originalPrice && (
+              <span className="text-xs text-gray-400 line-through">₦{item.originalPrice.toFixed(0)}</span>
+            )}
+          </div>
+
+          {!showDetails ? (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowDetails(true)}
+              disabled={!item.isAvailable}
+              className="bg-primary text-white rounded-lg p-2 sm:p-2.5 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+            >
+              <FaShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </motion.button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0"
+            >
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-2 rounded-full border border-gray-200 hover:bg-gray-50"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
               >
-                <FaMinus className="w-4 h-4" />
+                <FaMinus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               </button>
-              <span className="font-semibold text-lg">{quantity}</span>
+              <span className="font-semibold text-sm w-6 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="p-2 rounded-full border border-gray-200 hover:bg-gray-50"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
               >
-                <FaPlus className="w-4 h-4" />
+                <FaPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               </button>
-            </div>
-            <button
-              onClick={handleAddToCart}
-              className="w-full btn-primary text-sm"
-              disabled={!item.isAvailable}
-            >
-              Add to Cart (₦{(item.price * quantity).toFixed(0)})
-            </button>
-          </motion.div>
-        )}
+              <button
+                onClick={handleAddToCart}
+                className="bg-primary text-white rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold whitespace-nowrap"
+              >
+                Add
+              </button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

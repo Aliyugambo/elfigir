@@ -17,11 +17,11 @@ export function CartSidebar() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-       className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6 text-center"
-       >
-         <FaShoppingCart className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="font-semibold text-gray-900 mb-2">Your cart is empty</h3>
-        <p className="text-sm text-gray-500">Add items to get started!</p>
+        className="bg-white rounded-lg border border-gray-100 p-4 sm:p-6 text-center"
+      >
+        <FaShoppingCart className="w-8 h-8 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-3" />
+        <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1">Your cart is empty</h3>
+        <p className="text-xs sm:text-sm text-gray-500">Add items to get started!</p>
       </motion.div>
     );
   }
@@ -41,13 +41,13 @@ export function CartSidebar() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="p-3 sm:p-4 border-b border-gray-100 last:border-b-0"
+              className="p-2.5 sm:p-3 border-b border-gray-100 last:border-b-0"
             >
               <div className="flex items-start space-x-2 sm:space-x-3">
                 <img
                   src={item.menuItem.image || 'https://via.placeholder.com/50'}
                   alt={item.menuItem.name}
-                  className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
@@ -59,27 +59,29 @@ export function CartSidebar() {
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-600 hover:text-red-700 transition"
+                  className="text-red-600 hover:text-red-700 transition p-1"
                 >
-                  <FaTrash className="w-4 h-4" />
+                  <FaTrash className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
 
               {/* Quantity */}
-              <div className="flex items-center space-x-3 mt-2 justify-end">
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  className="p-1 rounded border border-gray-200 hover:bg-gray-50"
-                >
-                  <FaMinus className="w-3 h-3" />
-                </button>
-                <span className="font-semibold text-sm">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  className="p-1 rounded border border-gray-200 hover:bg-gray-50"
-                >
-                  <FaPlus className="w-3 h-3" />
-                </button>
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="w-7 h-7 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
+                  >
+                    <FaMinus className="w-2.5 h-2.5" />
+                  </button>
+                  <span className="font-semibold text-sm w-6 text-center">{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="w-7 h-7 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
+                  >
+                    <FaPlus className="w-2.5 h-2.5" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -87,7 +89,7 @@ export function CartSidebar() {
       </div>
 
       {/* Summary */}
-      <div className="p-3 sm:p-4 border-t border-gray-100 space-y-3 bg-gray-50">
+      <div className="p-3 sm:p-4 border-t border-gray-100 space-y-2 bg-gray-50">
         <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-600">Subtotal</span>
           <span className="text-gray-900 font-semibold">₦{subtotal.toFixed(0)}</span>
@@ -101,21 +103,21 @@ export function CartSidebar() {
           <span className="text-gray-900 font-semibold">₦{deliveryFee.toFixed(0)}</span>
         </div>
 
-        <div className="border-t border-gray-200 pt-3 flex justify-between">
-          <span className="font-semibold text-gray-900">Total</span>
+        <div className="border-t border-gray-200 pt-2 flex justify-between">
+          <span className="font-semibold text-gray-900 text-sm">Total</span>
           <span className="font-bold text-primary text-base sm:text-lg">₦{total.toFixed(0)}</span>
         </div>
 
         <Link
           href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/'}
-          className="block w-full btn-primary text-center py-2 sm:py-3 rounded-lg font-semibold"
+          className="block w-full btn-primary text-center py-2.5 sm:py-3 rounded-lg font-semibold text-sm"
         >
           Checkout
         </Link>
 
         <button
           onClick={clear}
-          className="w-full btn-outline py-2 rounded-lg text-sm font-medium"
+          className="w-full btn-outline py-2 rounded-lg text-xs sm:text-sm font-medium"
         >
           Clear Cart
         </button>
