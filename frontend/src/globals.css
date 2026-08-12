@@ -61,4 +61,12 @@
   .text-lg-semibold {
     @apply text-lg font-semibold;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

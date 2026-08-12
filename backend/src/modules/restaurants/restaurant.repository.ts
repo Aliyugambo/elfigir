@@ -149,7 +149,11 @@ export class RestaurantRepository {
     return this.prisma.restaurant.findMany({
       where: { slug: { in: slugs } },
       include: {
-        menus: true,
+        menus: {
+          include: {
+            items: true,
+          },
+        },
       },
     });
   }

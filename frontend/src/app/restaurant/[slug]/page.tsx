@@ -33,10 +33,32 @@ export default function RestaurantPage() {
 
   const allItems = restaurant.menus?.flatMap((m: any) => m.items) || [];
 
+  if (!restaurant.menus || restaurant.menus.length === 0) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <div className="relative h-64 md:h-80 bg-gray-200">
+          <img
+            src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
+            alt={restaurant.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10">
+          <div className="bg-white rounded-lg shadow-md p-6 sm:p-8 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{restaurant.name}</h1>
+            <p className="text-gray-600 mb-4">No menus available yet.</p>
+            <p className="text-sm text-gray-500">Check back later for delicious offerings from this kitchen.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Kitchen Header */}
-      <div className="relative h-64 md:h-80 bg-gray-200">
+      <div className="relative h-48 sm:h-64 md:h-80 bg-gray-200">
         <img
           src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
           alt={restaurant.name}
@@ -45,8 +67,8 @@ export default function RestaurantPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-10">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 -mt-16 sm:-mt-24 relative z-10">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Kitchen Info */}
@@ -55,13 +77,13 @@ export default function RestaurantPage() {
               animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8"
           >
-            <div className="flex items-start justify-between mb-3 sm:mb-4">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{restaurant.name}</h1>
-                  <p className="text-sm text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 sm:mb-4 gap-2">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-gray-900 break-words">{restaurant.name}</h1>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center space-x-1 sm:space-x-2 text-base sm:text-lg">
+                <div className="text-left sm:text-right flex-shrink-0">
+                  <div className="flex items-center sm:space-x-2 text-base sm:text-lg">
                     <FaStar className="text-yellow-400 w-4 h-4 sm:w-5 sm:h-5" />
                     <span className="font-bold">{restaurant.rating}</span>
                   </div>
@@ -69,29 +91,29 @@ export default function RestaurantPage() {
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base">{restaurant.description}</p>
+              <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base line-clamp-3 sm:line-clamp-none">{restaurant.description}</p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div className="flex items-center space-x-2">
-                  <FaClock className="text-primary" />
-                  <div>
+                  <FaClock className="text-primary flex-shrink-0" />
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-600">Delivery Time</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-gray-900 text-xs sm:text-sm">
                       {restaurant.minDeliveryTime}-{restaurant.maxDeliveryTime} min
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <FaTruck className="text-primary" />
-                  <div>
+                  <FaTruck className="text-primary flex-shrink-0" />
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-600">Delivery Fee</p>
-                    <p className="font-semibold text-gray-900">₦{restaurant.deliveryFee}</p>
+                    <p className="font-semibold text-gray-900 text-xs sm:text-sm">₦{restaurant.deliveryFee}</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div>
+                <div className="flex items-center space-x-2 col-span-2 sm:col-span-1">
+                  <div className="min-w-0">
                     <p className="text-xs text-gray-600">Status</p>
-                    <p className={`font-semibold ${restaurant.isOpen ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className={`font-semibold text-xs sm:text-sm ${restaurant.isOpen ? 'text-green-600' : 'text-red-600'}`}>
                       {restaurant.isOpen ? 'Open' : 'Closed'}
                     </p>
                   </div>
@@ -100,14 +122,15 @@ export default function RestaurantPage() {
             </motion.div>
 
             {/* Menu Tabs */}
-            <div className="mb-8">
-              <div className="flex space-x-4 overflow-x-auto pb-2 mb-6">
+            <div className="mb-6 sm:mb-8">
+              <div className="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2 mb-4 sm:mb-6 scrollbar-hide">
                 {restaurant.menus?.map((menu: any) => (
                   <motion.button
                     key={menu.id}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setSelectedMenu(menu.id)}
-                    className={`px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition ${
+                    className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold whitespace-nowrap transition text-sm sm:text-base flex-shrink-0 ${
                       selectedMenu === menu.id || (!selectedMenu && menu.id === restaurant.menus?.[0]?.id)
                         ? 'bg-primary text-white'
                         : 'bg-white text-gray-900 border border-gray-200 hover:border-primary'
@@ -122,22 +145,31 @@ export default function RestaurantPage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
               >
-                {activeMenu?.items?.map((item: any) => (
-                  <MenuItemCard
-                    key={item.id}
-                    item={item}
-                    restaurantId={restaurant.id}
-                  />
-                ))}
+                {activeMenu?.items && activeMenu.items.length > 0 ? (
+                  activeMenu.items.map((item: any) => (
+                    <MenuItemCard
+                      key={item.id}
+                      item={item}
+                      restaurantId={restaurant.id}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-10 sm:py-12 text-gray-500">
+                    <p className="text-base sm:text-lg mb-2">No items in this menu yet.</p>
+                    <p className="text-xs sm:text-sm">Check back soon for new dishes.</p>
+                  </div>
+                )}
               </motion.div>
             </div>
           </div>
 
           {/* Sidebar - Cart */}
           <div className="lg:col-span-1">
-            <CartSidebar />
+            <div className="lg:sticky lg:top-24">
+              <CartSidebar />
+            </div>
           </div>
         </div>
       </div>
