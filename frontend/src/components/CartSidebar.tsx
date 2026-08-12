@@ -30,7 +30,7 @@ export function CartSidebar() {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm sticky top-24"
+      className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm"
     >
       {/* Items */}
       <div className="max-h-64 overflow-y-auto">

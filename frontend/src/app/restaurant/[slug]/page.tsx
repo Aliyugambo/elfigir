@@ -58,7 +58,7 @@ export default function RestaurantPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Kitchen Header */}
-      <div className="relative h-48 sm:h-64 md:h-80 bg-gray-200">
+      <div className="relative h-40 sm:h-56 md:h-72 bg-gray-200">
         <img
           src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
           alt={restaurant.name}
@@ -67,17 +67,17 @@ export default function RestaurantPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 -mt-16 sm:-mt-24 relative z-10">
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 -mt-12 sm:-mt-20 relative z-10">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Kitchen Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8"
+            className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6 lg:mb-8"
           >
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 sm:mb-4 gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 sm:mb-4 gap-2 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-gray-900 break-words">{restaurant.name}</h1>
                   <p className="text-xs sm:text-sm text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
@@ -91,9 +91,9 @@ export default function RestaurantPage() {
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base line-clamp-3 sm:line-clamp-none">{restaurant.description}</p>
+              <p className="text-gray-700 mb-3 sm:mb-4 lg:mb-6 text-xs sm:text-sm line-clamp-3 sm:line-clamp-none">{restaurant.description}</p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 <div className="flex items-center space-x-2">
                   <FaClock className="text-primary flex-shrink-0" />
                   <div className="min-w-0">
@@ -122,8 +122,8 @@ export default function RestaurantPage() {
             </motion.div>
 
             {/* Menu Tabs */}
-            <div className="mb-6 sm:mb-8">
-              <div className="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2 mb-4 sm:mb-6 scrollbar-hide">
+            <div className="mb-4 sm:mb-6 lg:mb-8">
+              <div className="flex space-x-2 sm:space-x-3 overflow-x-auto pb-2 mb-3 sm:mb-4 lg:mb-6 scrollbar-hide">
                 {restaurant.menus?.map((menu: any) => (
                   <motion.button
                     key={menu.id}
@@ -145,7 +145,7 @@ export default function RestaurantPage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 lg:gap-6"
               >
                 {activeMenu?.items && activeMenu.items.length > 0 ? (
                   activeMenu.items.map((item: any) => (
