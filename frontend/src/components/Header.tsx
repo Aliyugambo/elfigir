@@ -33,12 +33,12 @@ function NotificationsBell() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative text-gray-600 hover:text-primary transition"
+        className="relative text-white hover:text-mustard transition"
         aria-label="Notifications"
       >
         <FaBell />
         {unread > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+          <span className="absolute -top-2 -right-2 bg-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
             {unread}
           </span>
         )}
@@ -47,24 +47,24 @@ function NotificationsBell() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-100 py-2 max-h-96 overflow-y-auto z-50"
+          className="absolute right-0 mt-2 w-80 bg-maroon-dark rounded-lg shadow-lg border border-maroon py-2 max-h-96 overflow-y-auto z-50"
         >
-          <p className="px-4 py-2 text-sm font-semibold text-gray-900 border-b border-gray-100">
+          <p className="px-4 py-2 text-sm font-semibold text-white border-b border-maroon">
             Alerts
           </p>
           {notifications.length === 0 ? (
-            <p className="px-4 py-4 text-sm text-gray-500">No notifications.</p>
+            <p className="px-4 py-4 text-sm text-white/70">No notifications.</p>
           ) : (
             notifications.map((n) => (
               <button
                 key={n.id}
                 onClick={() => markRead(n.id)}
-                className={`block w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-gray-50 ${
-                  n.isRead ? '' : 'bg-primary/5'
+                className={`block w-full text-left px-4 py-3 border-b border-maroon hover:bg-maroon/50 ${
+                  n.isRead ? '' : 'bg-mustard/10'
                 }`}
               >
-                <p className="text-sm font-medium text-gray-900">{n.title}</p>
-                <p className="text-xs text-gray-600 mt-0.5">{n.message}</p>
+                <p className="text-sm font-medium text-white">{n.title}</p>
+                <p className="text-xs text-white/70 mt-0.5">{n.message}</p>
               </button>
             ))
           )}
@@ -82,49 +82,49 @@ export function Header() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-maroon border-b border-maroon-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
             <Image src={logo} alt="Elfijr" width={32} height={32} className="w-8 h-8" />
-            <span className="text-lg font-bold text-gray-900">Elfijr Kitchen</span>
+            <span className="text-lg font-bold text-white">Elfijr Kitchen</span>
           </Link>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/browse" className="text-gray-600 hover:text-primary transition">
+            <Link href="/browse" className="text-white/80 hover:text-mustard transition">
               Browse
             </Link>
             {isAuthenticated && (
               <>
-                <Link href="/orders" className="text-gray-600 hover:text-primary transition">
+                <Link href="/orders" className="text-white/80 hover:text-mustard transition">
                   Orders
                 </Link>
                 {user?.role === 'RESTAURANT' && (
-                  <Link href="/chef" className="text-gray-600 hover:text-primary transition">
+                  <Link href="/chef" className="text-white/80 hover:text-mustard transition">
                     Chef
                   </Link>
                 )}
                 {user?.role === 'DELIVERY' && (
-                  <Link href="/rider" className="text-gray-600 hover:text-primary transition">
+                  <Link href="/rider" className="text-white/80 hover:text-mustard transition">
                     Rider
                   </Link>
                 )}
                 {user?.role === 'STAFF' || user?.role === 'SUPER_ADMIN' ? (
-                  <Link href="/staff" className="text-gray-600 hover:text-primary transition">
+                  <Link href="/staff" className="text-white/80 hover:text-mustard transition">
                     Manager
                   </Link>
                 ) : null}
                 {user?.role === 'ADMIN' && (
                   <>
-                    <Link href="/admin/dashboard" className="text-gray-600 hover:text-primary transition">
+                    <Link href="/admin/dashboard" className="text-white/80 hover:text-mustard transition">
                       Admin
                     </Link>
                     <NotificationsBell />
                   </>
                 )}
-                <Link href="/account" className="text-gray-600 hover:text-primary transition">
+                <Link href="/account" className="text-white/80 hover:text-mustard transition">
                   Account
                 </Link>
               </>
@@ -134,7 +134,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-gray-600 hover:text-primary p-2"
+            className="md:hidden text-white hover:text-mustard p-2"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
@@ -144,7 +144,7 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {!isAuthenticated ? (
               <>
-                <Link href="/login" className="text-gray-600 hover:text-primary transition">
+                <Link href="/login" className="text-white/80 hover:text-mustard transition">
                   Sign In
                 </Link>
                 <Link href="/signup" className="btn-primary">
@@ -155,7 +155,7 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="text-sm font-medium text-gray-700 hover:text-primary"
+                  className="text-sm font-medium text-white hover:text-mustard"
                 >
                   {user?.firstName}
                 </button>
@@ -163,17 +163,17 @@ export function Header() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2"
+                    className="absolute right-0 mt-2 w-48 bg-maroon-dark rounded-lg shadow-lg border border-maroon py-2"
                   >
                     <Link
                       href="/account"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      className="block px-4 py-2 text-sm text-white hover:bg-maroon"
                     >
                       Account
                     </Link>
                     <Link
                       href="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      className="block px-4 py-2 text-sm text-white hover:bg-maroon"
                     >
                       My Orders
                     </Link>
@@ -182,7 +182,7 @@ export function Header() {
                         logout();
                         setIsMenuOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                       className="block w-full text-left px-4 py-2 text-sm text-primary/80 hover:bg-maroon"
                     >
                       Logout
                     </button>
@@ -201,35 +201,35 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-100 bg-white overflow-hidden"
+            className="md:hidden border-t border-maroon-dark bg-maroon overflow-hidden"
           >
             <div className="px-4 py-4 space-y-1">
-              <Link href="/browse" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+              <Link href="/browse" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                 Browse
               </Link>
               {isAuthenticated ? (
                 <>
-                  <Link href="/orders" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                  <Link href="/orders" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                     Orders
                   </Link>
                   {user?.role === 'RESTAURANT' && (
-                    <Link href="/chef" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                    <Link href="/chef" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                       Chef
                     </Link>
                   )}
                   {user?.role === 'DELIVERY' && (
-                    <Link href="/rider" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                    <Link href="/rider" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                       Rider
                     </Link>
                   )}
                   {(user?.role === 'STAFF' || user?.role === 'SUPER_ADMIN') && (
-                    <Link href="/staff" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                    <Link href="/staff" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                       Manager
                     </Link>
                   )}
                   {user?.role === 'ADMIN' && (
                     <>
-                      <Link href="/admin/dashboard" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                      <Link href="/admin/dashboard" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                         Admin
                       </Link>
                       <div className="px-4 py-3">
@@ -237,7 +237,7 @@ export function Header() {
                       </div>
                     </>
                   )}
-                  <Link href="/account" className="block px-4 py-3 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition" onClick={closeMobileMenu}>
+                  <Link href="/account" className="block px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition" onClick={closeMobileMenu}>
                     Account
                   </Link>
                   <button
@@ -245,7 +245,7 @@ export function Header() {
                       logout();
                       closeMobileMenu();
                     }}
-                    className="block w-full text-left px-4 py-3 text-red-600 hover:bg-gray-50 rounded-lg transition"
+                     className="block w-full text-left px-4 py-3 text-primary/80 hover:text-primary hover:bg-maroon-dark rounded-lg transition"
                   >
                     Logout
                   </button>

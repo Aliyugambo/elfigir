@@ -36,7 +36,7 @@ export default function StaffCustomersPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Loading customers...
       </div>
     );
@@ -44,7 +44,7 @@ export default function StaffCustomersPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Failed to load customers.
       </div>
     );
@@ -55,17 +55,17 @@ export default function StaffCustomersPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
          <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Customers</h1>
-            <p className="text-gray-600 mt-1">Customers who ordered from your restaurant</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-charcoal">Customers</h1>
+            <p className="text-charcoal-light mt-1">Customers who ordered from your restaurant</p>
           </div>
           <Link href="/staff" className="btn-outline px-3 py-2 sm:px-4 rounded-lg text-sm">
             Back to Dashboard
           </Link>
         </div>
 
-         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-700">
+         <div className="bg-white rounded-lg border border-cream shadow-sm overflow-hidden">
+          <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+            <thead className="bg-cream text-charcoal">
               <tr>
                 <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
                 <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
@@ -77,14 +77,14 @@ export default function StaffCustomersPage() {
             <tbody>
               {customers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-gray-500">
+                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-charcoal-light">
                     No customers found.
                   </td>
                 </tr>
               ) : (
                 customers.map((customer: any) => (
-                  <tr key={customer.id} className="border-t border-gray-100">
-                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900">
+                  <tr key={customer.id} className="border-t border-cream">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-charcoal">
                       {customer.firstName} {customer.lastName}
                     </td>
                     <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{customer.email}</td>

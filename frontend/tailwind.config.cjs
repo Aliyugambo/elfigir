@@ -7,15 +7,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#D84A51',
-        'primary-dark': '#B83A41',
-        secondary: '#F5F5F5',
-        accent: '#FFF5F7',
-        maroon: '#800000',
-        'maroon-dark': '#5C0000',
-        mustard: '#FFF8E7',
-        'mustard-dark': '#F5E6C8',
-        'mustard-maroon': '#B3645C',
+        primary: '#6B1F2B',
+        'primary-dark': '#4A151E',
+        secondary: '#FFF9ED',
+        accent: '#FFF9ED',
+        cream: '#FFF9ED',
+        maroon: '#6B1F2B',
+        'maroon-dark': '#4A151E',
+        mustard: '#D4A72C',
+        'mustard-dark': '#B8922A',
+        'mustard-maroon': '#5C3A2E',
+        charcoal: '#292929',
+        'charcoal-light': '#5c5c5c',
+        'hero-gold': '#F2D477',
       },
       spacing: {
         sm: '0.5rem',

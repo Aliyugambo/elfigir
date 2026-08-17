@@ -117,8 +117,8 @@ export default function AdminUsersPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-            <p className="text-gray-600 mt-1">Manage platform users, riders, chefs and customers.</p>
+            <h1 className="text-3xl font-bold text-charcoal">User Management</h1>
+            <p className="text-charcoal-light mt-1">Manage platform users, riders, chefs and customers.</p>
           </div>
           <div className="flex space-x-3">
             <button
@@ -138,9 +138,9 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-700">
+        <div className="overflow-x-auto bg-white rounded-lg border border-cream shadow-sm">
+          <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+            <thead className="bg-cream text-charcoal">
               <tr>
                 <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
                 <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
@@ -152,28 +152,28 @@ export default function AdminUsersPage() {
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, idx) => (
-                  <tr key={idx} className="animate-pulse border-t border-gray-100">
-                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                  <tr key={idx} className="animate-pulse border-t border-cream">
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
                   </tr>
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-gray-500">
+                  <td colSpan={5} className="px-3 py-6 sm:px-6 text-center text-charcoal-light">
                     No users available.
                   </td>
                 </tr>
               ) : (
                 users.map((userItem: AdminUser) => (
-                  <tr key={userItem.id} className="border-t border-gray-100">
-                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900 text-sm">{userItem.firstName} {userItem.lastName}</td>
+                  <tr key={userItem.id} className="border-t border-cream">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-charcoal text-sm">{userItem.firstName} {userItem.lastName}</td>
                     <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{userItem.email}</td>
                     <td className="px-3 py-4 sm:px-6 text-sm">{userItem.role}</td>
                     <td className="px-3 py-4 sm:px-6">
-                      <span className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${userItem.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${userItem.isActive ? 'bg-mustard/10 text-maroon' : 'bg-primary/10 text-primary'}`}>
                         {userItem.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
@@ -195,7 +195,7 @@ export default function AdminUsersPage() {
                       <button
                         type="button"
                         onClick={() => handleDelete(userItem.id)}
-                        className="text-red-600 hover:text-red-800 px-1 py-1 sm:px-3 rounded-lg text-xs border border-red-200"
+                         className="text-primary hover:text-primary-dark px-1 py-1 sm:px-3 rounded-lg text-xs border border-primary/20"
                       >
                         Delete
                       </button>
@@ -211,7 +211,7 @@ export default function AdminUsersPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-charcoal mb-4">
               {editingId ? 'Edit User' : 'Add User'}
             </h2>
             <form className="space-y-3" onSubmit={handleSubmit}>

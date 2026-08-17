@@ -25,9 +25,9 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
   return (
     <motion.div
       whileHover={{ y: -1 }}
-      className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition active:scale-[0.98]"
+      className="bg-white rounded-xl border border-cream overflow-hidden shadow-sm hover:shadow-md transition active:scale-[0.98]"
     >
-      <div className="relative h-36 sm:h-44 bg-gray-100 overflow-hidden">
+      <div className="relative h-36 sm:h-44 bg-cream overflow-hidden">
         <img
           src={item.image || 'https://via.placeholder.com/400x300'}
           alt={item.name}
@@ -40,7 +40,7 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
           </div>
         )}
         {item.originalPrice && item.isAvailable && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full">
+          <span className="absolute top-2 left-2 bg-primary text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full">
             SALE
           </span>
         )}
@@ -48,25 +48,25 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
 
       <div className="p-3 sm:p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-semibold text-sm sm:text-base text-gray-900 leading-tight line-clamp-1">{item.name}</h3>
+          <h3 className="font-semibold text-sm sm:text-base text-charcoal leading-tight line-clamp-1">{item.name}</h3>
           {item.prepTime && (
-            <span className="text-[10px] sm:text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+            <span className="text-[10px] sm:text-xs text-charcoal-light bg-cream px-1.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
               {item.prepTime}m
             </span>
           )}
         </div>
 
-        <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5">{item.category}</p>
+        <p className="text-[10px] sm:text-xs text-charcoal-light mb-1.5">{item.category}</p>
 
         {item.description && (
-          <p className="text-xs text-gray-600 line-clamp-2 mb-2 sm:mb-3 leading-relaxed">{item.description}</p>
+          <p className="text-xs text-charcoal-light line-clamp-2 mb-2 sm:mb-3 leading-relaxed">{item.description}</p>
         )}
 
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-baseline space-x-1.5 flex-shrink-0">
             <span className="font-bold text-primary text-sm sm:text-base">₦{item.price.toFixed(0)}</span>
             {item.originalPrice && (
-              <span className="text-xs text-gray-400 line-through">₦{item.originalPrice.toFixed(0)}</span>
+              <span className="text-xs text-charcoal-light line-through">₦{item.originalPrice.toFixed(0)}</span>
             )}
           </div>
 
@@ -87,14 +87,14 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
             >
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-cream flex items-center justify-center hover:bg-cream active:bg-cream"
               >
                 <FaMinus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               </button>
               <span className="font-semibold text-sm w-6 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 active:bg-gray-100"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg border border-cream flex items-center justify-center hover:bg-cream active:bg-cream"
               >
                 <FaPlus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               </button>

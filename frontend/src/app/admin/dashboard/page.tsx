@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-gray-500">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-charcoal-light">Loading...</div>;
   }
 
   const statCards = [
@@ -89,8 +89,8 @@ export default function AdminDashboardPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-600">Welcome, {user?.firstName}</p>
+            <h1 className="text-3xl font-bold text-charcoal">Admin Dashboard</h1>
+            <p className="text-charcoal-light">Welcome, {user?.firstName}</p>
           </div>
           <div className="flex space-x-3">
             <Link href="/admin/register" className="btn-primary px-4 py-2 rounded-lg">
@@ -107,32 +107,32 @@ export default function AdminDashboardPage() {
 
         <div className="grid gap-3 mb-8 md:grid-cols-3">
           <Link href="/admin/restaurants" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Create, update, and remove restaurants</p>
-            <h2 className="text-lg font-semibold text-gray-900">Restaurants</h2>
+            <p className="text-sm text-charcoal-light">Create, update, and remove restaurants</p>
+            <h2 className="text-lg font-semibold text-charcoal">Restaurants</h2>
           </Link>
           <Link href="/admin/menus" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Create, update, and remove menus</p>
-            <h2 className="text-lg font-semibold text-gray-900">Menus</h2>
+            <p className="text-sm text-charcoal-light">Create, update, and remove menus</p>
+            <h2 className="text-lg font-semibold text-charcoal">Menus</h2>
           </Link>
           <Link href="/admin/menu-items" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Create, update, and remove dishes</p>
-            <h2 className="text-lg font-semibold text-gray-900">Menu Items</h2>
+            <p className="text-sm text-charcoal-light">Create, update, and remove dishes</p>
+            <h2 className="text-lg font-semibold text-charcoal">Menu Items</h2>
           </Link>
           <Link href="/admin/orders" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Manage orders</p>
-            <h2 className="text-lg font-semibold text-gray-900">Orders</h2>
+            <p className="text-sm text-charcoal-light">Manage orders</p>
+            <h2 className="text-lg font-semibold text-charcoal">Orders</h2>
           </Link>
           <Link href="/admin/users" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Manage customers, riders & chefs</p>
-            <h2 className="text-lg font-semibold text-gray-900">Users</h2>
+            <p className="text-sm text-charcoal-light">Manage customers, riders & chefs</p>
+            <h2 className="text-lg font-semibold text-charcoal">Users</h2>
           </Link>
           <Link href="/admin/staff" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Create, update, and remove chefs and riders</p>
-            <h2 className="text-lg font-semibold text-gray-900">Staff</h2>
+            <p className="text-sm text-charcoal-light">Create, update, and remove chefs and riders</p>
+            <h2 className="text-lg font-semibold text-charcoal">Staff</h2>
           </Link>
           <Link href="/admin/notifications" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">View all system notifications</p>
-            <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+            <p className="text-sm text-charcoal-light">View all system notifications</p>
+            <h2 className="text-lg font-semibold text-charcoal">Notifications</h2>
           </Link>
         </div>
 
@@ -140,26 +140,26 @@ export default function AdminDashboardPage() {
           {statCards.map((c) => (
             <div key={c.label} className="card">
               <p className="text-3xl font-bold text-primary">{c.value}</p>
-              <p className="text-sm text-gray-600">{c.label}</p>
+              <p className="text-sm text-charcoal-light">{c.label}</p>
             </div>
           ))}
         </div>
 
         {stats && stats.pendingRiderApprovals > 0 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-yellow-800">
+          <div className="bg-mustard/10 border border-mustard/30 rounded-lg p-4 mb-6 text-maroon">
             {stats.pendingRiderApprovals} rider(s) awaiting approval.
           </div>
         )}
 
         {pendingTransfers.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-cream border border-cream rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-blue-900">
+              <h2 className="text-lg font-semibold text-charcoal">
                 Pending Bank Transfer Confirmations ({pendingTransfers.length})
               </h2>
               <button
                 onClick={() => setShowTransfers(!showTransfers)}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                className="text-primary hover:text-primary-dark text-sm font-medium"
               >
                 {showTransfers ? 'Hide' : 'Show'}
               </button>
@@ -170,11 +170,11 @@ export default function AdminDashboardPage() {
                   <div key={order.id} className="bg-white rounded-lg p-4 border border-blue-100">
                     <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                       <div>
-                        <p className="font-semibold text-gray-900">{order.orderNumber}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="font-semibold text-charcoal">{order.orderNumber}</p>
+                        <p className="text-sm text-charcoal-light">
                           {order.user?.firstName} {order.user?.lastName} - {order.restaurant?.name}
                         </p>
-                        <p className="text-sm text-gray-500">Total: ₦{order.totalAmount.toFixed(0)}</p>
+                        <p className="text-sm text-charcoal-light">Total: ₦{order.totalAmount.toFixed(0)}</p>
                       </div>
                       <button
                         onClick={() => handleConfirmPayment(order.id)}
@@ -190,24 +190,24 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm border border-cream overflow-hidden">
+          <div className="flex border-b border-cream">
             <button
               onClick={() => setTab('CHEF')}
-              className={`px-6 py-3 font-medium ${tab === 'CHEF' ? 'text-primary border-b-2 border-primary' : 'text-gray-600'}`}
+              className={`px-6 py-3 font-medium ${tab === 'CHEF' ? 'text-primary border-b-2 border-primary' : 'text-charcoal-light'}`}
             >
               Chefs ({chefs.length})
             </button>
             <button
               onClick={() => setTab('DELIVERY')}
-              className={`px-6 py-3 font-medium ${tab === 'DELIVERY' ? 'text-primary border-b-2 border-primary' : 'text-gray-600'}`}
+              className={`px-6 py-3 font-medium ${tab === 'DELIVERY' ? 'text-primary border-b-2 border-primary' : 'text-charcoal-light'}`}
             >
               Riders ({riders.length})
             </button>
           </div>
 
           <table className="w-full text-xs sm:text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-cream text-charcoal-light">
               <tr>
                 <th className="text-left px-3 py-3 sm:px-6 sm:py-3">Name</th>
                 <th className="text-left hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-3">Email</th>
@@ -220,23 +220,23 @@ export default function AdminDashboardPage() {
             <tbody>
               {activeList.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 sm:px-6 text-center text-gray-400">
+                  <td colSpan={6} className="px-3 py-6 sm:px-6 text-center text-charcoal-light">
                     No {tab === 'CHEF' ? 'chefs' : 'riders'} yet.
                   </td>
                 </tr>
               )}
               {activeList.map((m) => (
-                <tr key={m.id} className="border-t border-gray-100">
+                <tr key={m.id} className="border-t border-cream">
                   <td className="px-3 py-3 sm:px-6 text-sm">{m.firstName} {m.lastName}</td>
-                  <td className="hidden sm:table-cell px-3 py-3 sm:px-6 text-sm text-gray-600">{m.email}</td>
+                  <td className="hidden sm:table-cell px-3 py-3 sm:px-6 text-sm text-charcoal-light">{m.email}</td>
                   <td className="px-3 py-3 sm:px-6 text-sm">{m.restaurant?.name ?? '-'}</td>
                   <td className="hidden sm:table-cell px-3 py-3 sm:px-6">
-                    <span className={`px-2 py-1 rounded-full text-xs ${m.emailVerified ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                     <span className={`px-2 py-1 rounded-full text-xs ${m.emailVerified ? 'bg-mustard/10 text-maroon' : 'bg-cream text-charcoal'}`}>
                       {m.emailVerified ? 'Verified' : 'Unverified'}
                     </span>
                   </td>
                   <td className="px-3 py-3 sm:px-6">
-                    <span className={`px-2 py-1 rounded-full text-xs ${m.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                     <span className={`px-2 py-1 rounded-full text-xs ${m.isActive ? 'bg-mustard/10 text-maroon' : 'bg-mustard/20 text-mustard-dark'}`}>
                       {m.isActive ? 'Active' : 'Pending'}
                     </span>
                   </td>

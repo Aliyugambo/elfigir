@@ -198,8 +198,8 @@ export default function AdminMenuItemsPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Menu Item Management</h1>
-            <p className="text-gray-600 mt-1">Create, update, or remove dishes from restaurant menus.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Menu Item Management</h1>
+            <p className="text-charcoal-light mt-1">Create, update, or remove dishes from restaurant menus.</p>
           </div>
           <button
             type="button"
@@ -211,11 +211,11 @@ export default function AdminMenuItemsPage() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Create Menu Item</h2>
+          <div className="bg-white rounded-lg border border-cream p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-charcoal mb-4">Create Menu Item</h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Menu</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Menu</label>
                 <select
                   name="menuId"
                   value={formState.menuId}
@@ -232,7 +232,7 @@ export default function AdminMenuItemsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Name</label>
                 <input
                   name="name"
                   value={formState.name}
@@ -242,7 +242,7 @@ export default function AdminMenuItemsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Description</label>
                 <input
                   name="description"
                   value={formState.description}
@@ -252,7 +252,7 @@ export default function AdminMenuItemsPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Price</label>
                   <input
                     type="number"
                     name="price"
@@ -263,7 +263,7 @@ export default function AdminMenuItemsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Category</label>
                   <select
                     name="category"
                     value={formState.category}
@@ -282,7 +282,7 @@ export default function AdminMenuItemsPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Image</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -299,13 +299,13 @@ export default function AdminMenuItemsPage() {
                     <img
                       src={imagePreview || formState.image}
                       alt="Preview"
-                      className="mt-2 h-32 w-32 object-cover rounded-lg border border-gray-200"
+                      className="mt-2 h-32 w-32 object-cover rounded-lg border border-cream"
                     />
                   )}
-                  {uploadingImage && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
+                  {uploadingImage && <p className="text-xs text-charcoal-light mt-1">Uploading...</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Image URL</label>
                   <input
                     name="image"
                     value={formState.image}
@@ -317,7 +317,7 @@ export default function AdminMenuItemsPage() {
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Prep Time (mins)</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Prep Time (mins)</label>
                   <input
                     type="number"
                     name="prepTime"
@@ -334,9 +334,9 @@ export default function AdminMenuItemsPage() {
                   name="isAvailable"
                   checked={formState.isAvailable}
                   onChange={handleChange}
-                  className="h-4 w-4 text-primary border-gray-300 rounded"
+                  className="h-4 w-4 text-primary border-cream rounded"
                 />
-                <label htmlFor="isAvailable" className="text-sm text-gray-700">
+                <label htmlFor="isAvailable" className="text-sm text-charcoal">
                   Available for order
                 </label>
               </div>
@@ -355,11 +355,11 @@ export default function AdminMenuItemsPage() {
             </form>
           </div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <div className="bg-white rounded-lg border border-cream p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Menu Items</h2>
-                <p className="text-sm text-gray-500">Currently available items across the platform.</p>
+                <h2 className="text-xl font-semibold text-charcoal">Menu Items</h2>
+                <p className="text-sm text-charcoal-light">Currently available items across the platform.</p>
               </div>
               <select
                 value={selectedMenuId}
@@ -377,27 +377,27 @@ export default function AdminMenuItemsPage() {
             <div className="space-y-4">
               {isLoading ? (
                 [...Array(3)].map((_, idx) => (
-                  <div key={idx} className="h-24 rounded-lg bg-gray-100 animate-pulse" />
+                  <div key={idx} className="h-24 rounded-lg bg-cream animate-pulse" />
                 ))
               ) : !hasMenuItems ? (
-                <div className="rounded-lg border border-dashed border-gray-200 p-10 text-center text-gray-500">
+                <div className="rounded-lg border border-dashed border-cream p-10 text-center text-charcoal-light">
                   No menu items found.
                 </div>
               ) : (
                 menuItems.map((item) => (
-                  <div key={item.id} className="rounded-lg border border-gray-100 p-4">
+                  <div key={item.id} className="rounded-lg border border-cream p-4">
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
-                        <p className="font-semibold text-gray-900">{item.name}</p>
-                        <p className="text-sm text-gray-500">{item.category}</p>
+                        <p className="font-semibold text-charcoal">{item.name}</p>
+                        <p className="text-sm text-charcoal-light">{item.category}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">₦{item.price.toFixed(0)}</p>
-                        <p className="text-xs text-gray-400">{item.isAvailable ? 'Available' : 'Unavailable'}</p>
+                        <p className="text-sm text-charcoal-light">₦{item.price.toFixed(0)}</p>
+                        <p className="text-xs text-charcoal-light">{item.isAvailable ? 'Available' : 'Unavailable'}</p>
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2 items-center justify-between">
-                      <p className="text-sm text-gray-600">Menu: {getMenuLabel(item.menuId)}</p>
+                      <p className="text-sm text-charcoal-light">Menu: {getMenuLabel(item.menuId)}</p>
                       <div className="flex gap-2">
                         <button
                           type="button"

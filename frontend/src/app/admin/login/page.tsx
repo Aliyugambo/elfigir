@@ -47,13 +47,13 @@ export default function AdminLoginPage() {
               A
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Sign In</h1>
-          <p className="text-gray-600 mt-1">Elfijr Control Panel</p>
+          <h1 className="text-2xl font-bold text-charcoal">Admin Sign In</h1>
+          <p className="text-charcoal-light mt-1">Elfijr Control Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Password</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Password</label>
             <input
               type="password"
               name="password"
@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
           </motion.button>
         </form>
 
-        <p className="text-xs text-gray-500 text-center mt-6">
+        <p className="text-xs text-charcoal-light text-center mt-6">
           <Link href="/login" className="text-primary hover:underline">
             Customer login
           </Link>

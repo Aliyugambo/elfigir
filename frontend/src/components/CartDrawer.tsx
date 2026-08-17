@@ -2,10 +2,11 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cart.store';
-import { FaTrash, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaMinus, FaShoppingCart, FaChevronDown } from 'react-icons/fa';
 import Link from 'next/link';
+import { useState } from 'react';
 
-export function CartSidebar() {
+function CartContent() {
   const { items, removeItem, updateQuantity, clear, getSubtotal, restaurantId } = useCartStore();
   const subtotal = getSubtotal();
   const tax = subtotal * 0.1;
@@ -14,26 +15,17 @@ export function CartSidebar() {
 
   if (items.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="bg-white rounded-lg border border-cream p-4 sm:p-6 text-center"
-      >
+      <div className="bg-white rounded-lg border border-cream p-4 sm:p-6 text-center h-full flex flex-col items-center justify-center">
         <FaShoppingCart className="w-8 h-8 sm:w-12 sm:h-12 text-charcoal-light mx-auto mb-3" />
         <h3 className="font-semibold text-charcoal text-sm sm:text-base mb-1">Your cart is empty</h3>
         <p className="text-xs sm:text-sm text-charcoal-light">Add items to get started!</p>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="bg-white rounded-lg border border-cream overflow-hidden shadow-sm"
-    >
-      {/* Items */}
-      <div className="max-h-64 overflow-y-auto">
+    <div className="bg-white rounded-lg border border-cream overflow-hidden shadow-sm h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto">
         <AnimatePresence>
           {items.map((item) => (
             <motion.div
@@ -65,7 +57,6 @@ export function CartSidebar() {
                 </button>
               </div>
 
-              {/* Quantity */}
               <div className="flex items-center justify-between mt-2">
                 <div className="flex items-center space-x-2">
                   <button
@@ -88,7 +79,6 @@ export function CartSidebar() {
         </AnimatePresence>
       </div>
 
-      {/* Summary */}
       <div className="p-3 sm:p-4 border-t border-cream space-y-2 bg-cream">
         <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-charcoal-light">Subtotal</span>
@@ -110,18 +100,64 @@ export function CartSidebar() {
 
         <Link
           href={restaurantId ? `/checkout?restaurantId=${restaurantId}` : '/'}
-          className="block w-full btn-primary text-center py-2.5 sm:py-3 rounded-lg font-semibold text-sm"
+          className="block w-full bg-maroon text-white text-center py-2.5 sm:py-3 rounded-lg font-semibold text-sm hover:bg-maroon/90 transition"
         >
           Checkout
         </Link>
 
         <button
           onClick={clear}
-          className="w-full btn-outline py-2 rounded-lg text-xs sm:text-sm font-medium"
+          className="w-full border border-cream text-charcoal py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-cream transition"
         >
           Clear Cart
         </button>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+export function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  return (
+    <>
+      <div className="hidden lg:block fixed right-0 top-16 h-[calc(100vh-4rem)] w-80 xl:w-96 bg-cream border-l border-cream z-40 overflow-y-auto">
+        <div className="p-3 sm:p-4 h-full">
+          <CartContent />
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 z-50 bg-black/40"
+            onClick={onClose}
+          >
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[75vh] overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4 border-b border-cream flex items-center justify-between">
+                <h3 className="font-bold text-base sm:text-lg">Your Cart</h3>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-cream rounded-full"
+                >
+                  <FaChevronDown className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4">
+                <CartContent />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

@@ -194,8 +194,8 @@ export default function AdminRestaurantsPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Restaurants</h1>
-            <p className="text-gray-600 mt-1">Manage restaurants across the platform.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Restaurants</h1>
+            <p className="text-charcoal-light mt-1">Manage restaurants across the platform.</p>
           </div>
           <div className="flex gap-3">
             <button onClick={openCreate} className="btn-primary px-4 py-2 rounded-lg">
@@ -211,10 +211,10 @@ export default function AdminRestaurantsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg border border-cream shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-              <thead className="bg-gray-50 text-gray-700">
+            <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+              <thead className="bg-cream text-charcoal">
                 <tr>
                   <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
                   <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">City</th>
@@ -227,30 +227,30 @@ export default function AdminRestaurantsPage() {
               <tbody>
                 {isLoading ? (
                   [...Array(3)].map((_, idx) => (
-                    <tr key={idx} className="animate-pulse border-t border-gray-100">
-                      <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="hidden md:table-cell h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="h-12 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <tr key={idx} className="animate-pulse border-t border-cream">
+                      <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="hidden md:table-cell h-12 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="hidden sm:table-cell h-12 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="h-12 px-3 py-4 sm:px-6 bg-cream" />
                     </tr>
                   ))
                 ) : restaurantList.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-3 py-4 sm:px-6 text-center text-gray-500">
+                    <td colSpan={6} className="px-3 py-4 sm:px-6 text-center text-charcoal-light">
                       No restaurants found.
                     </td>
                   </tr>
                 ) : (
                   restaurantList.map((r) => (
-                    <tr key={r.id} className="border-t border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-4 sm:px-6 font-medium text-gray-900">{r.name}</td>
+                    <tr key={r.id} className="border-t border-cream hover:bg-cream">
+                      <td className="px-3 py-4 sm:px-6 font-medium text-charcoal">{r.name}</td>
                       <td className="hidden sm:table-cell px-3 py-4 sm:px-6">{r.city}</td>
                       <td className="hidden md:table-cell px-3 py-4 sm:px-6">{r.cuisineType.slice(0, 2).join(', ')}</td>
                       <td className="hidden sm:table-cell px-3 py-4 sm:px-6 font-semibold text-primary">₦{r.deliveryFee.toFixed(0)}</td>
                       <td className="px-3 py-4 sm:px-6">
-                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${r.isOpen ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${r.isOpen ? 'bg-mustard/10 text-maroon' : 'bg-cream text-charcoal-light'}`}>
                           {r.isOpen ? 'Open' : 'Closed'}
                         </span>
                       </td>
@@ -261,7 +261,7 @@ export default function AdminRestaurantsPage() {
                         >
                           Edit
                         </button>
-                        <button onClick={() => handleDelete(r.id)} className="text-red-600 hover:text-red-800 px-2 py-1 sm:px-3 rounded-lg text-xs border border-red-200">
+                        <button onClick={() => handleDelete(r.id)} className="text-primary hover:text-primary-dark px-2 py-1 sm:px-3 rounded-lg text-xs border border-primary/20">
                           Delete
                         </button>
                       </td>
@@ -277,71 +277,71 @@ export default function AdminRestaurantsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-charcoal mb-4">
               {editingId ? 'Edit Restaurant' : 'Add Restaurant'}
             </h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Name</label>
                   <input className="input-field w-full" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Slug</label>
                   <input className="input-field w-full" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="e.g. elfijr-kitchen-dine-in" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">City</label>
                   <input className="input-field w-full" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Description</label>
                 <textarea className="input-field w-full" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Cuisine Types (comma separated)</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Cuisine Types (comma separated)</label>
                   <input className="input-field w-full" value={form.cuisineType} onChange={(e) => setForm({ ...form, cuisineType: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Phone</label>
                   <input className="input-field w-full" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Address</label>
                 <input className="input-field w-full" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} required />
-                <p className="text-xs text-gray-500 mt-1">Location coordinates will be generated automatically from this address.</p>
+                <p className="text-xs text-charcoal-light mt-1">Location coordinates will be generated automatically from this address.</p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">State</label>
                   <input className="input-field w-full" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Fee (₦)</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Delivery Fee (₦)</label>
                   <input type="number" className="input-field w-full" value={form.deliveryFee} onChange={(e) => setForm({ ...form, deliveryFee: e.target.value })} required />
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Min Delivery Time (min)</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Min Delivery Time (min)</label>
                   <input type="number" className="input-field w-full" value={form.minDeliveryTime} onChange={(e) => setForm({ ...form, minDeliveryTime: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Max Delivery Time (min)</label>
+                  <label className="block text-sm font-medium text-charcoal mb-2">Max Delivery Time (min)</label>
                   <input type="number" className="input-field w-full" value={form.maxDeliveryTime} onChange={(e) => setForm({ ...form, maxDeliveryTime: e.target.value })} required />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Restaurant Image</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Restaurant Image</label>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -351,17 +351,17 @@ export default function AdminRestaurantsPage() {
                 />
                 {imagePreview && (
                   <div className="mt-2">
-                    <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover rounded-lg border border-gray-200" />
+                    <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover rounded-lg border border-cream" />
                   </div>
                 )}
               </div>
 
               <div className="flex items-center gap-6">
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-charcoal">
                   <input type="checkbox" checked={form.isOpen} onChange={(e) => setForm({ ...form, isOpen: e.target.checked })} />
                   Open for orders
                 </label>
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-sm text-charcoal">
                   <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} />
                   Active
                 </label>

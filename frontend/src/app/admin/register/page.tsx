@@ -42,8 +42,8 @@ export default function AdminRegisterPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-secondary">
         <div className="bg-white rounded-lg shadow p-8 max-w-md text-center">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">Restricted</h1>
-          <p className="text-gray-600 mb-4">Only an existing admin can register new admins.</p>
+          <h1 className="text-xl font-bold text-charcoal mb-2">Restricted</h1>
+          <p className="text-charcoal-light mb-4">Only an existing admin can register new admins.</p>
           <Link href="/admin/login" className="btn-primary px-4 py-2 rounded-lg">
             Admin Login
           </Link>
@@ -60,27 +60,27 @@ export default function AdminRegisterPage() {
         className="max-w-md w-full bg-white rounded-lg shadow-lg p-8"
       >
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Register New Admin</h1>
-          <p className="text-gray-600 mt-1">Create an additional admin account</p>
+          <h1 className="text-2xl font-bold text-charcoal">Register New Admin</h1>
+          <p className="text-charcoal-light mt-1">Create an additional admin account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-1">First Name</label>
+              <label className="block text-sm font-semibold text-charcoal mb-1">First Name</label>
               <input name="firstName" value={formData.firstName} onChange={handleChange} required className="input-field text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-1">Last Name</label>
+              <label className="block text-sm font-semibold text-charcoal mb-1">Last Name</label>
               <input name="lastName" value={formData.lastName} onChange={handleChange} required className="input-field text-sm" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleChange} required className="input-field text-sm" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Password</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Password</label>
             <input type="password" name="password" value={formData.password} onChange={handleChange} required className="input-field text-sm" />
           </div>
           <motion.button

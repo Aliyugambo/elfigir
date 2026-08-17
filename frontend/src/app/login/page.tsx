@@ -53,14 +53,14 @@ export default function LoginPage() {
               E
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
-          <p className="text-gray-600 mt-1">Welcome back to Elfigir</p>
+          <h1 className="text-2xl font-bold text-charcoal">Sign In</h1>
+          <p className="text-charcoal-light mt-1">Welcome back to Elfigir</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -73,7 +73,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Password</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Password</label>
             <input
               type="password"
               name="password"
@@ -98,10 +98,10 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-cream"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-600">Don't have an account?</span>
+            <span className="px-2 bg-white text-charcoal-light">Don't have an account?</span>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
         </Link>
 
         {/* Footer */}
-        <p className="text-xs text-gray-500 text-center mt-6">
+        <p className="text-xs text-charcoal-light text-center mt-6">
           By signing in, you agree to our{' '}
           <Link href="/terms" className="text-primary hover:underline">
             Terms of Service

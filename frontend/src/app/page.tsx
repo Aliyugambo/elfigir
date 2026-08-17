@@ -72,15 +72,15 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-maroon via-maroon/90 to-maroon-dark text-white py-12 sm:py-20">
+      <section className="bg-hero-gold text-charcoal py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">Welcome to  Elfijr Kitchen</h1>
-            <p className="text-base sm:text-xl text-white/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-maroon">Welcome to Elfijr Kitchen</h1>
+            <p className="text-base sm:text-xl text-charcoal/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
               Order your favorite meals from the best restaurants and get them delivered to your door
             </p>
 
@@ -99,8 +99,8 @@ export default function HomePage() {
                       onClick={() => handleCategoryClick(category)}
                       className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
                         selectedCategory === category
-                          ? 'bg-white text-maroon shadow-md'
-                          : 'bg-maroon/30 text-white hover:bg-maroon/50'
+                          ? 'bg-maroon text-white shadow-md'
+                          : 'bg-maroon/20 text-maroon hover:bg-maroon/40'
                       }`}
                     >
                       {category}
@@ -128,7 +128,7 @@ export default function HomePage() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSearch();
                 }}
-                className="flex-1 px-4 sm:px-6 py-3 outline-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                className="flex-1 px-4 sm:px-6 py-3 outline-none text-charcoal placeholder-charcoal-light text-sm sm:text-base"
               />
               <button
                 onClick={handleSearch}
@@ -144,7 +144,7 @@ export default function HomePage() {
       </section>
 
       {/* Menu Gallery */}
-      <section className="py-12 bg-mustard-maroon text-white">
+      <section className="py-12 bg-maroon text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Gallery</h2>
@@ -155,7 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* Restaurants / Items */}
-      <section className="py-16 bg-mustard-maroon text-white">
+      <section className="py-16 bg-maroon text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-6 sm:mb-8 text-center">
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -233,7 +233,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gray-50 py-16 border-t border-gray-100">
+      <section className="bg-cream py-16 border-t border-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <motion.div
@@ -241,24 +241,24 @@ export default function HomePage() {
               className="text-center p-6"
             >
               <FaFire className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Fast Delivery</h3>
-              <p className="text-gray-600 text-sm">Get your food delivered in 30-45 minutes</p>
+              <h3 className="font-semibold text-charcoal mb-2">Fast Delivery</h3>
+              <p className="text-charcoal-light text-sm">Get your food delivered in 30-45 minutes</p>
             </motion.div>
             <motion.div
               whileHover={{ y: -4 }}
               className="text-center p-6"
             >
               <FaStar className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Best Quality</h3>
-              <p className="text-gray-600 text-sm">Fresh meals from verified Kitchen</p>
+              <h3 className="font-semibold text-charcoal mb-2">Best Quality</h3>
+              <p className="text-charcoal-light text-sm">Fresh meals from verified Kitchen</p>
             </motion.div>
             <motion.div
               whileHover={{ y: -4 }}
               className="text-center p-6"
             >
               <FaSearch className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Easy Ordering</h3>
-              <p className="text-gray-600 text-sm">Simple and intuitive ordering process</p>
+              <h3 className="font-semibold text-charcoal mb-2">Easy Ordering</h3>
+              <p className="text-charcoal-light text-sm">Simple and intuitive ordering process</p>
             </motion.div>
           </div>
         </div>

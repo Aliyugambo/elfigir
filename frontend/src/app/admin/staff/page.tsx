@@ -133,8 +133,8 @@ export default function AdminStaffPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Staff Management</h1>
-            <p className="text-gray-600 mt-1">Manage chefs and delivery riders.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Staff Management</h1>
+            <p className="text-charcoal-light mt-1">Manage chefs and delivery riders.</p>
           </div>
           <div className="flex space-x-3">
             <button onClick={openCreate} className="btn-primary px-4 py-2 rounded-lg">
@@ -149,13 +149,13 @@ export default function AdminStaffPage() {
           </div>
         </div>
 
-        <div className="flex border-b border-gray-200 mb-6">
+        <div className="flex border-b border-cream mb-6">
           {(['RESTAURANT', 'DELIVERY'] as StaffRole[]).map((role) => (
             <button
               key={role}
               onClick={() => setTab(role)}
               className={`px-6 py-3 font-medium ${
-                tab === role ? 'text-primary border-b-2 border-primary' : 'text-gray-600'
+                tab === role ? 'text-primary border-b-2 border-primary' : 'text-charcoal-light'
               }`}
             >
               {role === 'RESTAURANT' ? 'Chefs' : 'Riders'}
@@ -163,9 +163,9 @@ export default function AdminStaffPage() {
           ))}
         </div>
 
-         <div className="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-          <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-700">
+         <div className="overflow-x-auto bg-white rounded-lg border border-cream shadow-sm">
+          <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+            <thead className="bg-cream text-charcoal">
               <tr>
                 <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
                 <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Email</th>
@@ -179,48 +179,48 @@ export default function AdminStaffPage() {
             <tbody>
               {isLoading ? (
                 [...Array(3)].map((_, idx) => (
-                  <tr key={idx} className="animate-pulse border-t border-gray-100">
-                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="hidden md:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                    <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                  <tr key={idx} className="animate-pulse border-t border-cream">
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="hidden md:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-cream" />
+                    <td className="h-10 px-3 py-4 sm:px-6 bg-cream" />
                   </tr>
                 ))
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-3 py-6 sm:px-6 text-center text-gray-500">
+                  <td colSpan={7} className="px-3 py-6 sm:px-6 text-center text-charcoal-light">
                     No {tabLabel.toLowerCase()} yet.
                   </td>
                 </tr>
               ) : (
                 members.map((member) => (
-                  <tr key={member.id} className="border-t border-gray-100">
-                    <td className="px-3 py-4 sm:px-6 font-medium text-gray-900 text-sm">
+                  <tr key={member.id} className="border-t border-cream">
+                    <td className="px-3 py-4 sm:px-6 font-medium text-charcoal text-sm">
                       {member.firstName} {member.lastName}
                     </td>
                     <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.email}</td>
                     <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.phone ?? '-'}</td>
                     <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{member.restaurant?.name ?? '-'}</td>
                     <td className="hidden md:table-cell px-3 py-4 sm:px-6">
-                      <span
-                        className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
-                          member.emailVerified
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-700'
-                        }`}
-                      >
+                       <span
+                         className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
+                           member.emailVerified
+                             ? 'bg-mustard/10 text-maroon'
+                             : 'bg-cream text-charcoal'
+                         }`}
+                       >
                         {member.emailVerified ? 'Verified' : 'Unverified'}
                       </span>
                     </td>
                     <td className="px-3 py-4 sm:px-6">
-                      <span
-                        className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
-                          member.isActive ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}
-                      >
+                       <span
+                         className={`inline-flex rounded-full px-2 sm:px-3 py-1 text-xs font-semibold ${
+                           member.isActive ? 'bg-mustard/10 text-maroon' : 'bg-mustard/20 text-mustard-dark'
+                         }`}
+                       >
                         {member.isActive ? 'Active' : 'Pending'}
                       </span>
                     </td>
@@ -241,7 +241,7 @@ export default function AdminStaffPage() {
                       </button>
                       <button
                         onClick={() => handleDelete(member.id)}
-                        className="text-red-600 hover:text-red-800 px-1 py-1 sm:px-3 rounded-lg text-xs border border-red-200"
+                         className="text-primary hover:text-primary-dark px-1 py-1 sm:px-3 rounded-lg text-xs border border-primary/20"
                       >
                         Delete
                       </button>
@@ -257,7 +257,7 @@ export default function AdminStaffPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-charcoal mb-4">
               {editingId ? 'Edit' : 'Add'} {tabLabel.slice(0, -1)}
             </h2>
             <form className="space-y-3" onSubmit={handleSubmit}>

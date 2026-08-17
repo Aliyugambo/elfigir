@@ -113,8 +113,8 @@ export default function AdminOrdersPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Order Management</h1>
-            <p className="text-gray-600 mt-1">View and control orders across the platform.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Order Management</h1>
+            <p className="text-charcoal-light mt-1">View and control orders across the platform.</p>
           </div>
           <button
             type="button"
@@ -133,43 +133,43 @@ export default function AdminOrdersPage() {
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="rounded-lg bg-white border border-gray-200 p-8 text-center">
-              <p className="text-gray-500">No orders found yet.</p>
+            <div className="rounded-lg bg-white border border-cream p-8 text-center">
+              <p className="text-charcoal-light">No orders found yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
                {orders.map((order: any) => (
-                <div key={order.id} className="bg-white rounded-lg border border-gray-200 p-4 sm:p-6 shadow-sm">
+                <div key={order.id} className="bg-white rounded-lg border border-cream p-4 sm:p-6 shadow-sm">
                   <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <p className="text-xs sm:text-sm text-gray-500">Order</p>
-                      <p className="font-semibold text-sm sm:text-base text-gray-900">{order.orderNumber}</p>
-                      <p className="text-xs sm:text-sm text-gray-500 mt-1">{new Date(order.createdAt).toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-charcoal-light">Order</p>
+                      <p className="font-semibold text-sm sm:text-base text-charcoal">{order.orderNumber}</p>
+                      <p className="text-xs sm:text-sm text-charcoal-light mt-1">{new Date(order.createdAt).toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-xs sm:text-sm text-gray-500">Restaurant</p>
-                      <p className="font-medium text-sm sm:text-base text-gray-900">{order.restaurant?.name}</p>
+                      <p className="text-xs sm:text-sm text-charcoal-light">Restaurant</p>
+                      <p className="font-medium text-sm sm:text-base text-charcoal">{order.restaurant?.name}</p>
                     </div>
                     <div>
-                      <p className="text-xs sm:text-sm text-gray-500">Customer</p>
-                      <p className="font-medium text-sm sm:text-base text-gray-900">{order.user?.firstName} {order.user?.lastName}</p>
+                      <p className="text-xs sm:text-sm text-charcoal-light">Customer</p>
+                      <p className="font-medium text-sm sm:text-base text-charcoal">{order.user?.firstName} {order.user?.lastName}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs sm:text-sm text-gray-500">Total</p>
+                      <p className="text-xs sm:text-sm text-charcoal-light">Total</p>
                       <p className="font-semibold text-primary">₦{order.totalAmount.toFixed(0)}</p>
                     </div>
                   </div>
 
                   <div className="mt-6 grid gap-4 md:grid-cols-3 items-end">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Current Status</label>
-                      <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
+                      <label className="block text-sm font-medium text-charcoal mb-2">Current Status</label>
+                      <span className="inline-flex items-center rounded-full bg-cream px-3 py-1 text-sm font-semibold text-charcoal">
                         {order.status}
                       </span>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
+                      <label className="block text-sm font-medium text-charcoal mb-2">Update Status</label>
                       <select
                         value={selectedStatus[order.id] || order.status}
                         onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
@@ -197,7 +197,7 @@ export default function AdminOrdersPage() {
                         <button
                           type="button"
                           onClick={() => handleDeny(order.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                          className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg"
                         >
                           Deny
                         </button>
@@ -206,7 +206,7 @@ export default function AdminOrdersPage() {
                         <button
                           type="button"
                           onClick={() => handleConfirmPayment(order.id)}
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                          className="bg-maroon hover:bg-maroon-dark text-white px-4 py-2 rounded-lg"
                         >
                           Confirm Transfer Received
                         </button>
@@ -228,7 +228,7 @@ export default function AdminOrdersPage() {
                       <button
                         type="button"
                         onClick={() => handleDelete(order.id)}
-                        className="text-red-600 hover:text-red-800 px-4 py-2 rounded-lg border border-red-200"
+                         className="text-primary hover:text-primary-dark px-4 py-2 rounded-lg border border-primary/20"
                       >
                         Delete
                       </button>

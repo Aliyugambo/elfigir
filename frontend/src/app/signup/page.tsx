@@ -67,15 +67,15 @@ export default function SignupPage() {
               E
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-600 mt-1">Join Elfigir today</p>
+          <h1 className="text-2xl font-bold text-charcoal">Create Account</h1>
+          <p className="text-charcoal-light mt-1">Join Elfigir today</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-1">First Name</label>
+              <label className="block text-sm font-semibold text-charcoal mb-1">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -87,7 +87,7 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-1">Last Name</label>
+              <label className="block text-sm font-semibold text-charcoal mb-1">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -101,7 +101,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Email</label>
             <input
               type="email"
               name="email"
@@ -114,7 +114,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Password</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Password</label>
             <input
               type="password"
               name="password"
@@ -127,7 +127,7 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-1">Confirm Password</label>
+            <label className="block text-sm font-semibold text-charcoal mb-1">Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
@@ -152,10 +152,10 @@ export default function SignupPage() {
         {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-cream"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-600">Already have an account?</span>
+            <span className="px-2 bg-white text-charcoal-light">Already have an account?</span>
           </div>
         </div>
 
@@ -168,7 +168,7 @@ export default function SignupPage() {
         </Link>
 
         {/* Footer */}
-        <p className="text-xs text-gray-500 text-center mt-6">
+        <p className="text-xs text-charcoal-light text-center mt-6">
           By creating an account, you agree to our{' '}
           <Link href="/terms" className="text-primary hover:underline">
             Terms of Service

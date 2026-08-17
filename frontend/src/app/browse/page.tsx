@@ -101,7 +101,7 @@ function BrowseContent() {
       <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
-            <div className="flex max-w-xl bg-white rounded-full shadow-sm border border-gray-200 overflow-hidden">
+            <div className="flex max-w-xl bg-white rounded-full shadow-sm border border-cream overflow-hidden">
               <input
                 type="text"
                 placeholder="Search dishes..."
@@ -110,7 +110,7 @@ function BrowseContent() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') setSearchQuery(e.currentTarget.value);
                 }}
-                className="flex-1 px-4 sm:px-6 py-2.5 outline-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                className="flex-1 px-4 sm:px-6 py-2.5 outline-none text-charcoal placeholder-charcoal-light text-sm sm:text-base"
               />
               <button
                 onClick={() => setSearchQuery(searchQuery)}
@@ -132,7 +132,7 @@ function BrowseContent() {
                 className={`px-5 py-2 rounded-full font-semibold text-sm transition whitespace-nowrap ${
                   activeCategory === cat
                     ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:border-primary hover:text-primary'
+                    : 'bg-white text-charcoal border border-cream hover:border-primary hover:text-primary'
                 }`}
               >
                 {cat}
@@ -156,13 +156,13 @@ function BrowseContent() {
 
           {isError && (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">Failed to load menu items.</p>
+              <p className="text-charcoal-light text-lg">Failed to load menu items.</p>
             </div>
           )}
 
           {!isLoading && !isError && items.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
+              <p className="text-charcoal-light text-lg">
                 {searchQuery
                   ? `No dishes found matching "${searchQuery}".`
                   : 'No menu items found for this category.'}

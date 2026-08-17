@@ -125,8 +125,8 @@ function CheckoutContent() {
   if (!isAuthenticated) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Sign in to checkout</h1>
-        <p className="text-gray-600 mb-8">You need to be logged in to place an order</p>
+        <h1 className="text-3xl font-bold text-charcoal mb-4">Sign in to checkout</h1>
+        <p className="text-charcoal-light mb-8">You need to be logged in to place an order</p>
         <Link href="/login" className="btn-primary">
           Sign In
         </Link>
@@ -137,7 +137,7 @@ function CheckoutContent() {
   if (items.length === 0 && !orderId) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h1>
+        <h1 className="text-3xl font-bold text-charcoal mb-4">Your cart is empty</h1>
         <Link href="/" className="btn-primary">
           Continue Shopping
         </Link>
@@ -146,7 +146,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-8 sm:py-12">
+    <div className="bg-cream min-h-screen py-8 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -158,7 +158,7 @@ function CheckoutContent() {
             <FaArrowLeft />
             <span>Back</span>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">{orderId ? 'Order Details' : 'Checkout'}</h1>
+          <h1 className="text-3xl font-bold text-charcoal">{orderId ? 'Order Details' : 'Checkout'}</h1>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -171,8 +171,8 @@ function CheckoutContent() {
             {!orderId && (
               <>
                 {/* Delivery Address */}
-                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Delivery Address</h2>
+                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
+                  <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Delivery Address</h2>
                   <textarea
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
@@ -183,8 +183,8 @@ function CheckoutContent() {
                 </div>
 
                 {/* Special Instructions */}
-                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Special Instructions</h2>
+                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
+                  <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Special Instructions</h2>
                   <textarea
                     value={specialInstructions}
                     onChange={(e) => setSpecialInstructions(e.target.value)}
@@ -195,8 +195,8 @@ function CheckoutContent() {
                 </div>
 
                 {/* Payment Method */}
-                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Payment Method</h2>
+                <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
+                  <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Payment Method</h2>
                   <div className="space-y-3">
                     {[
                       { value: 'CASH_ON_DELIVERY', label: 'Cash on Delivery', icon: FaMoneyBillWave },
@@ -208,7 +208,7 @@ function CheckoutContent() {
                         className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition ${
                           paymentMethod === value
                             ? 'border-primary bg-primary/5'
-                            : 'border-gray-200 hover:border-gray-300'
+                            : 'border-cream hover:border-cream'
                         }`}
                       >
                         <input
@@ -220,18 +220,18 @@ function CheckoutContent() {
                           className="w-4 h-4"
                         />
                         <Icon className="w-5 h-5 ml-3 text-primary" />
-                        <span className="ml-3 font-semibold text-gray-900">{label}</span>
+                        <span className="ml-3 font-semibold text-charcoal">{label}</span>
                       </motion.label>
                     ))}
                   </div>
 
                   {paymentMethod === 'BANK_TRANSFER' && bankDetails && (
                     <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-                      <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'GT BANK'}</p>
-                      <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
-                      <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
-                      <p className="text-sm text-gray-500 mt-2">Total Amount: ₦{total.toFixed(0)}</p>
+                      <h3 className="font-semibold text-charcoal mb-2">Bank Transfer Details</h3>
+                      <p className="text-sm text-charcoal-light">Bank: {bankDetails.bankName || 'GT BANK'}</p>
+                      <p className="text-sm text-charcoal-light">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+                      <p className="text-sm text-charcoal-light">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
+                      <p className="text-sm text-charcoal-light mt-2">Total Amount: ₦{total.toFixed(0)}</p>
                     </div>
                   )}
                 </div>
@@ -239,17 +239,17 @@ function CheckoutContent() {
             )}
 
             {orderId && paymentMethod === 'BANK_TRANSFER' && !transferConfirmed && (
-              <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Confirm Bank Transfer</h2>
+              <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
+                <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Confirm Bank Transfer</h2>
                 {bankDetails && (
                   <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-                    <p className="text-sm text-gray-600">Bank: {bankDetails.bankName || 'GT BANK'}</p>
-                    <p className="text-sm text-gray-600">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
-                    <p className="text-sm text-gray-600">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
+                    <h3 className="font-semibold text-charcoal mb-2">Bank Transfer Details</h3>
+                    <p className="text-sm text-charcoal-light">Bank: {bankDetails.bankName || 'GT BANK'}</p>
+                    <p className="text-sm text-charcoal-light">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+                    <p className="text-sm text-charcoal-light">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
                   </div>
                 )}
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-charcoal-light mb-4">
                   Please transfer the exact amount to the account above. Once you have made the transfer, click the button below to notify the admin.
                 </p>
                 <button
@@ -263,12 +263,12 @@ function CheckoutContent() {
             )}
 
             {orderId && transferConfirmed && (
-              <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-green-200">
+                   <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-primary/20">
                 <div className="flex items-center gap-3">
-                  <FaCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                   <FaCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-maroon" />
                   <div>
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">Transfer Confirmed</h2>
-                    <p className="text-sm text-gray-600">Admin will verify your payment shortly.</p>
+                    <h2 className="text-lg sm:text-xl font-bold text-charcoal">Transfer Confirmed</h2>
+                    <p className="text-sm text-charcoal-light">Admin will verify your payment shortly.</p>
                   </div>
                 </div>
               </div>
@@ -276,16 +276,16 @@ function CheckoutContent() {
 
             {/* Order Items */}
             {items.length > 0 && (
-               <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100">
-                 <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Order Summary</h2>
+               <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
+                 <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-100">
+                    <div key={item.id} className="flex justify-between items-center py-2 border-b border-cream">
                       <div>
-                        <p className="font-semibold text-gray-900">{item.menuItem.name}</p>
-                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                        <p className="font-semibold text-charcoal">{item.menuItem.name}</p>
+                        <p className="text-sm text-charcoal-light">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-charcoal">
                         ₦{(item.menuItem.price * item.quantity).toFixed(0)}
                       </p>
                     </div>
@@ -302,25 +302,25 @@ function CheckoutContent() {
               animate={{ opacity: 1, y: 0 }}
               className="lg:col-span-1"
             >
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 sticky top-24">
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">Order Total</h3>
+              <div className="bg-white rounded-lg shadow-sm border border-cream p-4 sm:p-6 sticky top-24">
+                <h3 className="text-base sm:text-lg font-bold text-charcoal mb-4 sm:mb-6">Order Total</h3>
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="text-gray-900 font-semibold">₦{subtotal.toFixed(0)}</span>
+                    <span className="text-charcoal-light">Subtotal</span>
+                    <span className="text-charcoal font-semibold">₦{subtotal.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (10%)</span>
-                    <span className="text-gray-900 font-semibold">₦{tax.toFixed(0)}</span>
+                    <span className="text-charcoal-light">Tax (10%)</span>
+                    <span className="text-charcoal font-semibold">₦{tax.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Delivery Fee</span>
-                    <span className="text-gray-900 font-semibold">₦{deliveryFee.toFixed(0)}</span>
+                    <span className="text-charcoal-light">Delivery Fee</span>
+                    <span className="text-charcoal font-semibold">₦{deliveryFee.toFixed(0)}</span>
                   </div>
 
-                  <div className="border-t border-gray-200 pt-4 flex justify-between">
-                    <span className="font-bold text-gray-900">Total</span>
+                  <div className="border-t border-cream pt-4 flex justify-between">
+                    <span className="font-bold text-charcoal">Total</span>
                     <span className="font-bold text-primary text-xl">₦{total.toFixed(0)}</span>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ function CheckoutContent() {
                   {isLoading ? 'Processing...' : 'Place Order'}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center mt-4">
+                <p className="text-xs text-charcoal-light text-center mt-4">
                   By placing this order, you agree to our terms and conditions
                 </p>
               </div>

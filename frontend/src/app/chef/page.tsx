@@ -56,8 +56,8 @@ export default function ChefPortalPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Chef Portal</h1>
-            <p className="text-gray-600 mt-1">Prepare orders approved by the admin.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Chef Portal</h1>
+            <p className="text-charcoal-light mt-1">Prepare orders approved by the admin.</p>
           </div>
           <Link href="/" className="btn-outline px-4 py-2 rounded-lg">
             Back to Home
@@ -71,24 +71,24 @@ export default function ChefPortalPage() {
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <div className="rounded-lg bg-white border border-gray-200 p-10 text-center text-gray-500">
+          <div className="rounded-lg bg-white border border-cream p-10 text-center text-charcoal-light">
             No approved orders to prepare right now.
           </div>
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+              <div key={order.id} className="bg-white rounded-lg border border-cream p-6 shadow-sm">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                   <div>
-                    <p className="text-sm text-gray-500">Order {order.orderNumber}</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="text-sm text-charcoal-light">Order {order.orderNumber}</p>
+                    <p className="font-semibold text-charcoal">
                       {order.user.firstName} {order.user.lastName} · {order.user.email}
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">{order.restaurant.name}</p>
+                    <p className="text-sm text-charcoal-light mt-1">{order.restaurant.name}</p>
                   </div>
                   <span
                     className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-semibold ${
-                      statusStyles[order.status] ?? 'bg-gray-100 text-gray-700'
+                      statusStyles[order.status] ?? 'bg-cream text-charcoal'
                     }`}
                   >
                     {order.status === 'READY_FOR_PICKUP' ? (
@@ -100,14 +100,14 @@ export default function ChefPortalPage() {
                   </span>
                 </div>
 
-                <div className="mt-4 border-t border-gray-100 pt-4">
-                  <ul className="space-y-1 text-sm text-gray-700">
+                <div className="mt-4 border-t border-cream pt-4">
+                  <ul className="space-y-1 text-sm text-charcoal">
                     {order.items.map((item) => (
                       <li key={item.id} className="flex justify-between">
                         <span>
                           {item.menuItem.name} x{item.quantity}
                         </span>
-                        <span className="text-gray-500">₦{item.price * item.quantity}</span>
+                        <span className="text-charcoal-light">₦{item.price * item.quantity}</span>
                       </li>
                     ))}
                   </ul>

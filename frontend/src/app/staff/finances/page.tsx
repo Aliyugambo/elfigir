@@ -37,7 +37,7 @@ export default function StaffFinancesPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Loading finances...
       </div>
     );
@@ -45,7 +45,7 @@ export default function StaffFinancesPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Failed to load finances.
       </div>
     );
@@ -58,8 +58,8 @@ export default function StaffFinancesPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Finances</h1>
-            <p className="text-gray-600 mt-1">Financial overview for your restaurant</p>
+            <h1 className="text-3xl font-bold text-charcoal">Finances</h1>
+            <p className="text-charcoal-light mt-1">Financial overview for your restaurant</p>
           </div>
           <Link href="/staff" className="btn-outline px-4 py-2 rounded-lg">
             Back to Dashboard
@@ -67,14 +67,14 @@ export default function StaffFinancesPage() {
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Period</label>
+          <label className="block text-sm font-medium text-charcoal mb-2">Period</label>
           <div className="flex gap-2">
             {(['week', 'month', 'year'] as Period[]).map((p) => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
                 className={`px-4 py-2 rounded-lg font-medium ${
-                  period === p ? 'bg-primary text-white' : 'bg-white text-gray-700 border border-gray-200'
+                  period === p ? 'bg-primary text-white' : 'bg-white text-charcoal border border-cream'
                 }`}
               >
                 {p === 'week' ? 'This Week' : p === 'month' ? 'This Month' : 'This Year'}
@@ -86,38 +86,38 @@ export default function StaffFinancesPage() {
         {stats && (
           <div className="grid gap-4 mb-8 md:grid-cols-3">
             <div className="card">
-              <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
+              <p className="text-xs sm:text-sm text-charcoal-light">Total Revenue</p>
               <p className="text-2xl sm:text-3xl font-bold text-primary">₦{stats.totalRevenue.toFixed(0)}</p>
             </div>
             <div className="card">
-              <p className="text-xs sm:text-sm text-gray-600">Total Orders</p>
+              <p className="text-xs sm:text-sm text-charcoal-light">Total Orders</p>
               <p className="text-2xl sm:text-3xl font-bold text-primary">{stats.totalOrders}</p>
             </div>
             <div className="card">
-              <p className="text-xs sm:text-sm text-gray-600">Pending Orders</p>
-              <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pendingOrders}</p>
+              <p className="text-xs sm:text-sm text-charcoal-light">Pending Orders</p>
+              <p className="text-2xl sm:text-3xl font-bold text-mustard-dark">{stats.pendingOrders}</p>
             </div>
           </div>
         )}
 
         {stats && (
-         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Revenue Breakdown</h2>
+         <div className="bg-white rounded-lg border border-cream shadow-sm p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Revenue Breakdown</h2>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-semibold text-gray-900">₦{stats.breakdown.subtotal.toFixed(2)}</span>
+                <span className="text-charcoal-light">Subtotal</span>
+                <span className="font-semibold text-charcoal">₦{stats.breakdown.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Tax</span>
-                <span className="font-semibold text-gray-900">₦{stats.breakdown.tax.toFixed(2)}</span>
+                <span className="text-charcoal-light">Tax</span>
+                <span className="font-semibold text-charcoal">₦{stats.breakdown.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Delivery Fee</span>
-                <span className="font-semibold text-gray-900">₦{stats.breakdown.deliveryFee.toFixed(2)}</span>
+                <span className="text-charcoal-light">Delivery Fee</span>
+                <span className="font-semibold text-charcoal">₦{stats.breakdown.deliveryFee.toFixed(2)}</span>
               </div>
-              <div className="border-t border-gray-200 pt-4 flex justify-between">
-                <span className="font-bold text-gray-900">Total</span>
+              <div className="border-t border-cream pt-4 flex justify-between">
+                <span className="font-bold text-charcoal">Total</span>
                 <span className="font-bold text-primary text-xl">₦{stats.totalRevenue.toFixed(2)}</span>
               </div>
             </div>

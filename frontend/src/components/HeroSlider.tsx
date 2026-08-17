@@ -37,9 +37,9 @@ export function HeroSlider() {
   return (
     <div className="mt-10">
       <div className="flex items-center justify-center gap-2 mb-4">
-        <FaFire className="text-yellow-400 text-xl" />
+        <FaFire className="text-mustard text-xl" />
         <h2 className="text-xl font-bold text-white">Featured Dishes</h2>
-        <FaUtensils className="text-yellow-400 text-xl" />
+        <FaUtensils className="text-mustard text-xl" />
       </div>
 
       <Swiper
@@ -63,7 +63,7 @@ export function HeroSlider() {
               href={`/restaurant/${item.menu?.restaurant?.slug}`}
               className="block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition h-full"
             >
-              <div className="relative h-44 bg-gray-100">
+              <div className="relative h-44 bg-cream">
                 <img
                   src={item.image || 'https://via.placeholder.com/400x300'}
                   alt={item.name}
@@ -74,8 +74,8 @@ export function HeroSlider() {
                 </span>
               </div>
               <div className="p-3">
-                <h3 className="font-semibold text-gray-900 text-sm line-clamp-1">{item.name}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2 mt-1">{item.description}</p>
+                <h3 className="font-semibold text-charcoal text-sm line-clamp-1">{item.name}</h3>
+                <p className="text-xs text-charcoal-light line-clamp-2 mt-1">{item.description}</p>
                 <p className="text-sm font-bold text-maroon mt-2">₦{item.price.toFixed(0)}</p>
               </div>
             </Link>

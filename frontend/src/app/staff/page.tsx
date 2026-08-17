@@ -48,7 +48,7 @@ export default function StaffDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Loading dashboard...
       </div>
     );
@@ -56,7 +56,7 @@ export default function StaffDashboardPage() {
 
   if (error || !stats) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-charcoal-light">
         Failed to load dashboard.
       </div>
     );
@@ -75,8 +75,8 @@ export default function StaffDashboardPage() {
     <div className="min-h-screen bg-secondary">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Restaurant Manager Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome, {user?.firstName}</p>
+          <h1 className="text-3xl font-bold text-charcoal">Restaurant Manager Dashboard</h1>
+          <p className="text-charcoal-light mt-1">Welcome, {user?.firstName}</p>
         </div>
 
         <div className="grid gap-4 mb-8 md:grid-cols-3">
@@ -84,31 +84,31 @@ export default function StaffDashboardPage() {
             <Link key={card.label} href={card.href} className="card hover:border-primary transition">
               <card.icon className="w-8 h-8 text-primary mb-2" />
               <p className="text-3xl font-bold text-primary">{card.value}</p>
-              <p className="text-sm text-gray-600">{card.label}</p>
+              <p className="text-sm text-charcoal-light">{card.label}</p>
             </Link>
           ))}
         </div>
 
         <div className="grid gap-3 mb-8 md:grid-cols-2">
           <Link href="/staff/orders" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">View and manage orders</p>
-            <h2 className="text-lg font-semibold text-gray-900">Orders</h2>
+            <p className="text-sm text-charcoal-light">View and manage orders</p>
+            <h2 className="text-lg font-semibold text-charcoal">Orders</h2>
           </Link>
           <Link href="/staff/finances" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Revenue and financial reports</p>
-            <h2 className="text-lg font-semibold text-gray-900">Finances</h2>
+            <p className="text-sm text-charcoal-light">Revenue and financial reports</p>
+            <h2 className="text-lg font-semibold text-charcoal">Finances</h2>
           </Link>
           <Link href="/staff/chefs" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Manage chefs</p>
-            <h2 className="text-lg font-semibold text-gray-900">Chefs</h2>
+            <p className="text-sm text-charcoal-light">Manage chefs</p>
+            <h2 className="text-lg font-semibold text-charcoal">Chefs</h2>
           </Link>
           <Link href="/staff/riders" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">Manage riders</p>
-            <h2 className="text-lg font-semibold text-gray-900">Riders</h2>
+            <p className="text-sm text-charcoal-light">Manage riders</p>
+            <h2 className="text-lg font-semibold text-charcoal">Riders</h2>
           </Link>
           <Link href="/staff/customers" className="card hover:border-primary transition">
-            <p className="text-sm text-gray-600">View customer orders</p>
-            <h2 className="text-lg font-semibold text-gray-900">Customers</h2>
+            <p className="text-sm text-charcoal-light">View customer orders</p>
+            <h2 className="text-lg font-semibold text-charcoal">Customers</h2>
           </Link>
         </div>
       </div>

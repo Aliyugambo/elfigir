@@ -29,8 +29,8 @@ export default function OrderDetailsPage() {
   if (!isAuthenticated) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Sign in to view order</h1>
-        <p className="text-gray-600 mb-8">You need to be logged in to view your order</p>
+        <h1 className="text-3xl font-bold text-charcoal mb-4">Sign in to view order</h1>
+        <p className="text-charcoal-light mb-8">You need to be logged in to view your order</p>
         <a href="/login" className="btn-primary">Sign In</a>
       </div>
     );
@@ -38,7 +38,7 @@ export default function OrderDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center text-gray-500">
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center text-charcoal-light">
         Loading order details...
       </div>
     );
@@ -46,7 +46,7 @@ export default function OrderDetailsPage() {
 
   if (error || !order) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center text-gray-500">
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center text-charcoal-light">
         Order not found.
       </div>
     );
@@ -81,12 +81,12 @@ export default function OrderDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-cream py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
-            <p className="text-gray-600 mt-1">{order.orderNumber}</p>
+            <h1 className="text-3xl font-bold text-charcoal">Order Details</h1>
+            <p className="text-charcoal-light mt-1">{order.orderNumber}</p>
           </div>
           <button
             type="button"
@@ -97,38 +97,38 @@ export default function OrderDetailsPage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="bg-white rounded-lg border border-cream shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm text-gray-500">Restaurant</p>
-              <p className="font-medium text-gray-900">{order.restaurant?.name}</p>
+              <p className="text-sm text-charcoal-light">Restaurant</p>
+              <p className="font-medium text-charcoal">{order.restaurant?.name}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Status</p>
-              <span className="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
+              <p className="text-sm text-charcoal-light">Status</p>
+              <span className="inline-flex rounded-full bg-cream px-3 py-1 text-sm font-semibold text-charcoal">
                 {order.status}
               </span>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Payment Method</p>
-              <p className="font-medium text-gray-900">{order.paymentMethod}</p>
-              <p className="text-sm text-gray-600">{order.paymentStatus}</p>
+              <p className="text-sm text-charcoal-light">Payment Method</p>
+              <p className="font-medium text-charcoal">{order.paymentMethod}</p>
+              <p className="text-sm text-charcoal-light">{order.paymentStatus}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Delivery Address</p>
-              <p className="font-medium text-gray-900">{order.deliveryAddress}</p>
+              <p className="text-sm text-charcoal-light">Delivery Address</p>
+              <p className="font-medium text-charcoal">{order.deliveryAddress}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Created At</p>
-              <p className="font-medium text-gray-900">{new Date(order.createdAt).toLocaleString()}</p>
+              <p className="text-sm text-charcoal-light">Created At</p>
+              <p className="font-medium text-charcoal">{new Date(order.createdAt).toLocaleString()}</p>
             </div>
           </div>
 
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Order Items</h2>
+            <h2 className="text-lg font-semibold text-charcoal mb-2">Order Items</h2>
             <div className="overflow-x-auto">
-              <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-                <thead className="bg-gray-50 text-gray-700">
+              <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+                <thead className="bg-cream text-charcoal">
                   <tr>
                     <th className="px-2 py-2 sm:px-4 sm:py-3">Item</th>
                     <th className="px-2 py-2 sm:px-4 sm:py-3">Quantity</th>
@@ -138,14 +138,14 @@ export default function OrderDetailsPage() {
                 </thead>
                 <tbody>
                   {order.items?.map((item: any) => (
-                    <tr key={item.id} className="border-t border-gray-100">
+                    <tr key={item.id} className="border-t border-cream">
                       <td className="px-2 py-3 sm:px-4">
                         <div className="flex items-center gap-2 sm:gap-3">
                           {item.menuItem?.image && (
                             <img
                               src={item.menuItem.image}
                               alt={item.menuItem?.name}
-                              className="h-8 w-8 sm:h-10 sm:w-10 rounded object-cover border border-gray-200"
+                              className="h-8 w-8 sm:h-10 sm:w-10 rounded object-cover border border-cream"
                             />
                           )}
                           <span className="text-sm">{item.menuItem?.name}</span>
@@ -163,37 +163,37 @@ export default function OrderDetailsPage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm text-gray-500">Subtotal</p>
-              <p className="font-medium text-gray-900">₦{order.subtotal.toFixed(2)}</p>
+              <p className="text-sm text-charcoal-light">Subtotal</p>
+              <p className="font-medium text-charcoal">₦{order.subtotal.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Delivery Fee</p>
-              <p className="font-medium text-gray-900">₦{order.deliveryFee.toFixed(2)}</p>
+              <p className="text-sm text-charcoal-light">Delivery Fee</p>
+              <p className="font-medium text-charcoal">₦{order.deliveryFee.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Tax</p>
-              <p className="font-medium text-gray-900">₦{order.tax.toFixed(2)}</p>
+              <p className="text-sm text-charcoal-light">Tax</p>
+              <p className="font-medium text-charcoal">₦{order.tax.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total</p>
+              <p className="text-sm text-charcoal-light">Total</p>
               <p className="font-semibold text-primary text-lg">₦{order.totalAmount.toFixed(2)}</p>
             </div>
           </div>
 
           {order.specialInstructions && (
             <div>
-              <p className="text-sm text-gray-500">Special Instructions</p>
-              <p className="font-medium text-gray-900">{order.specialInstructions}</p>
+              <p className="text-sm text-charcoal-light">Special Instructions</p>
+              <p className="font-medium text-charcoal">{order.specialInstructions}</p>
             </div>
           )}
 
           {order.paymentMethod === 'BANK_TRANSFER' && order.paymentStatus === 'PENDING' && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">Bank Transfer Details</h3>
-              <p className="text-sm text-gray-600">Bank: {order.restaurant?.bankName || 'GT BANK'}</p>
-              <p className="text-sm text-gray-600">Account Name: {order.restaurant?.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
-              <p className="text-sm text-gray-600">Account Number: {order.restaurant?.accountNumber || '5000530466'}</p>
-              <p className="text-sm text-gray-500 mt-2">Please transfer the exact amount to the account above.</p>
+              <h3 className="font-semibold text-charcoal mb-2">Bank Transfer Details</h3>
+              <p className="text-sm text-charcoal-light">Bank: {order.restaurant?.bankName || 'GT BANK'}</p>
+              <p className="text-sm text-charcoal-light">Account Name: {order.restaurant?.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
+              <p className="text-sm text-charcoal-light">Account Number: {order.restaurant?.accountNumber || '5000530466'}</p>
+              <p className="text-sm text-charcoal-light mt-2">Please transfer the exact amount to the account above.</p>
               <button
                 type="button"
                 onClick={handleConfirmTransfer}
@@ -206,12 +206,12 @@ export default function OrderDetailsPage() {
           )}
 
           {order.paymentMethod === 'BANK_TRANSFER' && (order.paymentStatus === 'PROCESSING' || order.paymentStatus === 'COMPLETED') && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-mustard/10 border border-mustard/30 rounded-lg p-4">
               <div className="flex items-center gap-3">
-                <FaCheckCircle className="w-6 h-6 text-green-600" />
+                <FaCheckCircle className="w-6 h-6 text-maroon" />
                 <div>
-                  <h3 className="font-semibold text-gray-900">Transfer Confirmed</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-charcoal">Transfer Confirmed</h3>
+                  <p className="text-sm text-charcoal-light">
                     {order.paymentStatus === 'COMPLETED'
                       ? 'Your payment has been confirmed. Your order is being processed.'
                       : 'Admin will verify your payment shortly.'}
@@ -226,10 +226,10 @@ export default function OrderDetailsPage() {
               <div className="flex items-center gap-3">
                 <FaMotorcycle className="w-6 h-6 text-orange-600" />
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-charcoal">
                     Order Delivered
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-charcoal-light mt-1">
                     The rider marked your order as delivered. Please confirm
                     receipt to complete this order.
                   </p>
@@ -248,14 +248,14 @@ export default function OrderDetailsPage() {
           )}
 
           {order.status === 'COMPLETED' && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-mustard/10 border border-mustard/30 rounded-lg p-4">
               <div className="flex items-center gap-3">
-                <FaCheckCircle className="w-6 h-6 text-green-600" />
+                <FaCheckCircle className="w-6 h-6 text-maroon" />
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-charcoal">
                     Order Completed
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-charcoal-light">
                     Thank you! This order is now fully complete.
                   </p>
                 </div>

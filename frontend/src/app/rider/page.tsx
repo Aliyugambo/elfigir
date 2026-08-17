@@ -14,17 +14,17 @@ import { FaMotorcycle, FaCheckCircle, FaMapMarkerAlt, FaEye } from 'react-icons/
 const MapEmbed = dynamic(() => import('@/components/MapEmbed'), {
   ssr: false,
   loading: () => (
-    <div className="h-80 w-full bg-gray-100 rounded-lg border border-gray-200 animate-pulse flex items-center justify-center">
-      <span className="text-gray-500 text-sm">Loading map...</span>
+    <div className="h-80 w-full bg-cream rounded-lg border border-cream animate-pulse flex items-center justify-center">
+      <span className="text-charcoal-light text-sm">Loading map...</span>
     </div>
   ),
 });
 
 const statusStyles: Record<string, string> = {
-  READY_FOR_PICKUP: 'bg-purple-100 text-purple-800',
-  OUT_FOR_DELIVERY: 'bg-orange-100 text-orange-800',
-  DELIVERED: 'bg-green-100 text-green-800',
-  COMPLETED: 'bg-green-100 text-green-800',
+  READY_FOR_PICKUP: 'bg-mustard/10 text-maroon',
+  OUT_FOR_DELIVERY: 'bg-mustard/20 text-maroon',
+  DELIVERED: 'bg-mustard/10 text-maroon',
+  COMPLETED: 'bg-mustard/10 text-maroon',
 };
 
 export default function RiderPortalPage() {
@@ -82,8 +82,8 @@ export default function RiderPortalPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Rider Portal</h1>
-            <p className="text-gray-600 mt-1">Dispatch orders that are ready for delivery.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Rider Portal</h1>
+            <p className="text-charcoal-light mt-1">Dispatch orders that are ready for delivery.</p>
           </div>
           <Link href="/" className="btn-outline px-4 py-2 rounded-lg">
             Back to Home
@@ -97,7 +97,7 @@ export default function RiderPortalPage() {
             ))}
           </div>
         ) : orders.length === 0 ? (
-          <div className="rounded-lg bg-white border border-gray-200 p-10 text-center text-gray-500">
+          <div className="rounded-lg bg-white border border-cream p-10 text-center text-charcoal-light">
             No orders to dispatch today.
           </div>
         ) : (
@@ -113,29 +113,29 @@ export default function RiderPortalPage() {
               return (
                 <div
                   key={order.id}
-                  className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm"
+                  className="bg-white rounded-lg border border-cream p-6 shadow-sm"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div>
-                      <p className="text-sm text-gray-500">Order {order.orderNumber}</p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-sm text-charcoal-light">Order {order.orderNumber}</p>
+                      <p className="font-semibold text-charcoal">
                         {order.user.firstName} {order.user.lastName}
                       </p>
-                      <p className="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                      <p className="text-sm text-charcoal-light mt-1 flex items-center gap-1">
                         <FaMapMarkerAlt /> {order.restaurant.name}
                       </p>
                     </div>
                     <span
                       className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-semibold ${
-                        statusStyles[order.status] ?? 'bg-gray-100 text-gray-700'
+                        statusStyles[order.status] ?? 'bg-cream text-charcoal'
                       }`}
                     >
                       <span>{order.status.replace(/_/g, ' ')}</span>
                     </span>
                   </div>
 
-                  <div className="mt-4 border-t border-gray-100 pt-4">
-                    <ul className="space-y-1 text-sm text-gray-700">
+                  <div className="mt-4 border-t border-cream pt-4">
+                    <ul className="space-y-1 text-sm text-charcoal">
                       {order.items.map((item) => (
                         <li key={item.id} className="flex justify-between">
                           <span>
@@ -151,7 +151,7 @@ export default function RiderPortalPage() {
                   </div>
 
                   {order.deliveryAddress && (
-                    <div className="mt-3 text-sm text-gray-600">
+                    <div className="mt-3 text-sm text-charcoal-light">
                       <span className="font-medium">Delivery:</span> {order.deliveryAddress}
                     </div>
                   )}
@@ -176,7 +176,7 @@ export default function RiderPortalPage() {
                       </button>
                     )}
                     {order.status === 'DELIVERED' && (
-                      <span className="text-sm text-green-700 font-semibold">
+                      <span className="text-sm text-maroon font-semibold">
                         Delivered.
                       </span>
                     )}
@@ -207,7 +207,7 @@ export default function RiderPortalPage() {
                         />
                       )}
                       {!showDirections && (
-                        <div className="text-sm text-gray-600 mb-2">
+                        <div className="text-sm text-charcoal-light mb-2">
                           Navigate to: <strong>{pickup.label}</strong>
                           <MapEmbed
                             pickupLat={pickup.lat}

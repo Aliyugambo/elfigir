@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { restaurantService } from '@/services/restaurant.service';
 import { MenuItemCard } from '@/components/MenuItemCard';
-import { CartSidebar } from '@/components/CartSidebar';
+import { CartDrawer } from '@/components/CartDrawer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaStar, FaClock, FaTruck, FaPhone, FaMapMarkerAlt, FaShoppingCart, FaChevronDown, FaChevronUp, FaUtensils } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
@@ -60,8 +60,8 @@ export default function RestaurantPage() {
 
   if (!restaurant.menus || restaurant.menus.length === 0) {
     return (
-      <div className="bg-gray-50 min-h-screen">
-        <div className="relative h-48 sm:h-64 md:h-72 bg-gray-200">
+      <div className="bg-cream min-h-screen">
+        <div className="relative h-48 sm:h-64 md:h-72 bg-cream">
           <img
             src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
             alt={restaurant.name}
@@ -71,9 +71,9 @@ export default function RestaurantPage() {
         </div>
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 -mt-12 sm:-mt-20 relative z-10">
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{restaurant.name}</h1>
-            <p className="text-gray-600 text-sm mb-2">No menus available yet.</p>
-            <p className="text-xs sm:text-sm text-gray-500">Check back later for delicious offerings from this kitchen.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-charcoal mb-2">{restaurant.name}</h1>
+            <p className="text-charcoal-light text-sm mb-2">No menus available yet.</p>
+            <p className="text-xs sm:text-sm text-charcoal-light">Check back later for delicious offerings from this kitchen.</p>
           </div>
         </div>
       </div>
@@ -81,9 +81,9 @@ export default function RestaurantPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24">
+    <div className="bg-cream min-h-screen lg:mr-80 xl:mr-96">
       {/* Kitchen Header */}
-      <div className="relative h-44 sm:h-56 md:h-72 bg-gray-200">
+      <div className="relative h-44 sm:h-56 md:h-72 bg-cream">
         <img
           src={restaurant.banner || 'https://via.placeholder.com/1200x400'}
           alt={restaurant.name}
@@ -101,18 +101,18 @@ export default function RestaurantPage() {
         >
           <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl md:text-3xl font-bold text-gray-900 break-words leading-tight">{restaurant.name}</h1>
-              <p className="text-xs sm:text-sm text-gray-600 mt-1">{restaurant.cuisineType.join(', ')}</p>
+              <h1 className="text-lg sm:text-xl md:text-3xl font-bold text-charcoal break-words leading-tight">{restaurant.name}</h1>
+              <p className="text-xs sm:text-sm text-charcoal-light mt-1">{restaurant.cuisineType.join(', ')}</p>
             </div>
-            <div className="flex items-center space-x-1 bg-yellow-50 px-2 py-1 rounded-lg flex-shrink-0">
-              <FaStar className="text-yellow-500 w-3 h-3 sm:w-4 sm:h-4" />
+            <div className="flex items-center space-x-1 bg-mustard/10 px-2 py-1 rounded-lg flex-shrink-0">
+              <FaStar className="text-mustard w-3 h-3 sm:w-4 sm:h-4" />
               <span className="font-bold text-xs sm:text-sm">{restaurant.rating}</span>
             </div>
           </div>
 
           {restaurant.description && (
             <div className="mb-3 sm:mb-4">
-              <p className={`text-xs sm:text-sm text-gray-700 ${!showAllDescription ? 'line-clamp-2' : ''}`}>
+              <p className={`text-xs sm:text-sm text-charcoal ${!showAllDescription ? 'line-clamp-2' : ''}`}>
                 {restaurant.description}
               </p>
               {restaurant.description.length > 100 && (
@@ -131,25 +131,25 @@ export default function RestaurantPage() {
           )}
 
           <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <div className="flex items-center space-x-1.5 bg-gray-50 rounded-lg p-2">
+            <div className="flex items-center space-x-1.5 bg-cream rounded-lg p-2">
               <FaClock className="text-primary w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs text-gray-600">Delivery</p>
-                <p className="font-semibold text-gray-900 text-xs sm:text-sm truncate">
+                <p className="text-[10px] sm:text-xs text-charcoal-light">Delivery</p>
+                <p className="font-semibold text-charcoal text-xs sm:text-sm truncate">
                   {restaurant.minDeliveryTime}-{restaurant.maxDeliveryTime}m
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-1.5 bg-gray-50 rounded-lg p-2">
+            <div className="flex items-center space-x-1.5 bg-cream rounded-lg p-2">
               <FaTruck className="text-primary w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs text-gray-600">Fee</p>
-                <p className="font-semibold text-gray-900 text-xs sm:text-sm truncate">₦{restaurant.deliveryFee}</p>
+                <p className="text-[10px] sm:text-xs text-charcoal-light">Fee</p>
+                <p className="font-semibold text-charcoal text-xs sm:text-sm truncate">₦{restaurant.deliveryFee}</p>
               </div>
             </div>
-            <div className={`flex items-center space-x-1.5 rounded-lg p-2 ${restaurant.isOpen ? 'bg-green-50' : 'bg-red-50'}`}>
-              <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${restaurant.isOpen ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <p className={`font-semibold text-xs sm:text-sm ${restaurant.isOpen ? 'text-green-700' : 'text-red-700'}`}>
+            <div className={`flex items-center space-x-1.5 rounded-lg p-2 ${restaurant.isOpen ? 'bg-mustard/10' : 'bg-cream'}`}>
+              <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${restaurant.isOpen ? 'bg-maroon' : 'bg-charcoal-light'}`}></div>
+              <p className={`font-semibold text-xs sm:text-sm ${restaurant.isOpen ? 'text-maroon' : 'text-charcoal-light'}`}>
                 {restaurant.isOpen ? 'Open' : 'Closed'}
               </p>
             </div>
@@ -170,7 +170,7 @@ export default function RestaurantPage() {
                 className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold whitespace-nowrap transition-all text-xs sm:text-sm flex-shrink-0 ${
                   selectedMenu === menu.id || (!selectedMenu && menu.id === restaurant.menus?.[0]?.id)
                     ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-200 active:border-primary'
+                    : 'bg-white text-charcoal border border-cream active:border-primary'
                 }`}
               >
                 {menu.name}
@@ -178,7 +178,7 @@ export default function RestaurantPage() {
                   <span className={`ml-1.5 text-[10px] sm:text-xs px-1.5 py-0.5 rounded-full ${
                     selectedMenu === menu.id || (!selectedMenu && menu.id === restaurant.menus?.[0]?.id)
                       ? 'bg-white/20 text-white'
-                      : 'bg-gray-100 text-gray-600'
+                      : 'bg-cream text-charcoal-light'
                   }`}>
                     {menu.items.length}
                   </span>
@@ -203,10 +203,10 @@ export default function RestaurantPage() {
               />
             ))
           ) : (
-            <div className="col-span-full text-center py-10 sm:py-12 text-gray-500">
-              <FaUtensils className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <div className="col-span-full text-center py-10 sm:py-12 text-charcoal-light">
+              <FaUtensils className="w-12 h-12 mx-auto mb-3 text-charcoal-light" />
               <p className="text-sm sm:text-base font-medium mb-1">No items in this menu yet.</p>
-              <p className="text-xs text-gray-400">Check back soon for new dishes.</p>
+              <p className="text-xs text-charcoal-light">Check back soon for new dishes.</p>
             </div>
           )}
         </motion.div>
@@ -228,39 +228,7 @@ export default function RestaurantPage() {
       </div>
 
       {/* Mobile Cart Overlay */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 z-50 bg-black/40"
-            onClick={() => setIsCartOpen(false)}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[75vh] overflow-hidden flex flex-col"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-bold text-base sm:text-lg">Your Cart</h3>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                >
-                  <FaChevronDown className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4">
-                <CartSidebar />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 }

@@ -130,7 +130,7 @@ export default function MapEmbed({
     return (
       <div
         style={{ height }}
-        className="w-full bg-gray-100 rounded-lg border border-gray-200 animate-pulse"
+        className="w-full bg-cream rounded-lg border border-cream animate-pulse"
       />
     );
   }
@@ -139,9 +139,9 @@ export default function MapEmbed({
     return (
       <div
         style={{ height }}
-        className="w-full bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center"
+        className="w-full bg-cream rounded-lg border border-cream flex items-center justify-center"
       >
-        <p className="text-gray-500 text-sm">No location data available for this order.</p>
+        <p className="text-charcoal-light text-sm">No location data available for this order.</p>
       </div>
     );
   }
@@ -149,7 +149,7 @@ export default function MapEmbed({
   return (
     <div
       style={{ height }}
-      className="w-full rounded-lg overflow-hidden border border-gray-200"
+      className="w-full rounded-lg overflow-hidden border border-cream"
     >
       <MapContainer
         center={center}

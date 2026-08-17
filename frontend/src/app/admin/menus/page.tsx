@@ -124,8 +124,8 @@ export default function AdminMenusPage() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Menus</h1>
-            <p className="text-gray-600 mt-1">Manage menus for each restaurant.</p>
+            <h1 className="text-3xl font-bold text-charcoal">Menus</h1>
+            <p className="text-charcoal-light mt-1">Manage menus for each restaurant.</p>
           </div>
           <div className="flex gap-3">
             <button onClick={openCreate} className="btn-primary px-4 py-2 rounded-lg">
@@ -141,10 +141,10 @@ export default function AdminMenusPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg border border-cream shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-xs sm:text-sm text-gray-600">
-              <thead className="bg-gray-50 text-gray-700">
+            <table className="min-w-full text-left text-xs sm:text-sm text-charcoal-light">
+              <thead className="bg-cream text-charcoal">
                 <tr>
                   <th className="px-3 py-3 sm:px-6 sm:py-4">Name</th>
                   <th className="hidden sm:table-cell px-3 py-3 sm:px-6 sm:py-4">Restaurant</th>
@@ -155,23 +155,23 @@ export default function AdminMenusPage() {
               <tbody>
                 {menusLoading ? (
                   [...Array(3)].map((_, idx) => (
-                    <tr key={idx} className="animate-pulse border-t border-gray-100">
-                      <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="hidden md:table-cell h-10 px-3 py-4 sm:px-6 bg-gray-100" />
-                      <td className="h-10 px-3 py-4 sm:px-6 bg-gray-100" />
+                    <tr key={idx} className="animate-pulse border-t border-cream">
+                      <td className="h-10 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="hidden sm:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="hidden md:table-cell h-10 px-3 py-4 sm:px-6 bg-cream" />
+                      <td className="h-10 px-3 py-4 sm:px-6 bg-cream" />
                     </tr>
                   ))
                 ) : menuList.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-3 py-6 sm:px-6 text-center text-gray-500">
+                    <td colSpan={4} className="px-3 py-6 sm:px-6 text-center text-charcoal-light">
                       No menus found.
                     </td>
                   </tr>
                 ) : (
                   menuList.map((m) => (
-                    <tr key={m.id} className="border-t border-gray-100 hover:bg-gray-50">
-                      <td className="px-3 py-4 sm:px-6 font-medium text-gray-900 text-sm">{m.name}</td>
+                    <tr key={m.id} className="border-t border-cream hover:bg-cream">
+                      <td className="px-3 py-4 sm:px-6 font-medium text-charcoal text-sm">{m.name}</td>
                       <td className="hidden sm:table-cell px-3 py-4 sm:px-6 text-sm">{m.restaurant.name}</td>
                       <td className="hidden md:table-cell px-3 py-4 sm:px-6 text-sm">{m.description || '-'}</td>
                       <td className="px-3 py-4 sm:px-6 space-x-1 sm:space-x-2 text-right">
@@ -181,7 +181,7 @@ export default function AdminMenusPage() {
                         >
                           Edit
                         </button>
-                        <button onClick={() => handleDelete(m.id)} className="text-red-600 hover:text-red-800 px-1 py-1 sm:px-3 rounded-lg text-xs border border-red-200">
+                        <button onClick={() => handleDelete(m.id)} className="text-primary hover:text-primary-dark px-1 py-1 sm:px-3 rounded-lg text-xs border border-primary/20">
                           Delete
                         </button>
                       </td>
@@ -197,12 +197,12 @@ export default function AdminMenusPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-charcoal mb-4">
               {editingId ? 'Edit Menu' : 'Add Menu'}
             </h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Restaurant</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Restaurant</label>
                 <select
                   className="input-field w-full"
                   value={form.restaurantId}
@@ -219,11 +219,11 @@ export default function AdminMenusPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Name</label>
                 <input className="input-field w-full" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-charcoal mb-2">Description</label>
                 <textarea className="input-field w-full" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
               </div>
               <div className="flex justify-end gap-2 pt-4">
