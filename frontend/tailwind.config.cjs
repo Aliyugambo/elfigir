@@ -19,7 +19,7 @@ module.exports = {
         'mustard-maroon': '#5C3A2E',
         charcoal: '#292929',
         'charcoal-light': '#5c5c5c',
-        'hero-gold': '#F2D477',
+        'hero-gold': '#F9E79F',
       },
       spacing: {
         sm: '0.5rem',

@@ -80,7 +80,7 @@ export default function HomePage() {
             className="text-center"
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-maroon">Welcome to Elfijr Kitchen</h1>
-            <p className="text-base sm:text-xl text-charcoal/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
+            <p className="text-base sm:text-xl text-black/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
               Order your favorite meals from the best restaurants and get them delivered to your door
             </p>
 

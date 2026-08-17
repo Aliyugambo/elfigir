@@ -54,7 +54,7 @@ export default function LoginPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-charcoal">Sign In</h1>
-          <p className="text-charcoal-light mt-1">Welcome back to Elfigir</p>
+          <p className="text-charcoal-light mt-1">Welcome back to Elfijr Kitchen</p>
         </div>
 
         {/* Form */}

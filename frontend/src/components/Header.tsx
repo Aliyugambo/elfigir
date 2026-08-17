@@ -182,7 +182,7 @@ export function Header() {
                         logout();
                         setIsMenuOpen(false);
                       }}
-                       className="block w-full text-left px-4 py-2 text-sm text-primary/80 hover:bg-maroon"
+                       className="block w-full text-left px-4 py-2 text-sm text-white/80 hover:bg-maroon"
                     >
                       Logout
                     </button>
@@ -245,7 +245,7 @@ export function Header() {
                       logout();
                       closeMobileMenu();
                     }}
-                     className="block w-full text-left px-4 py-3 text-primary/80 hover:text-primary hover:bg-maroon-dark rounded-lg transition"
+                     className="block w-full text-left px-4 py-3 text-white/80 hover:text-white hover:bg-maroon-dark rounded-lg transition"
                   >
                     Logout
                   </button>
