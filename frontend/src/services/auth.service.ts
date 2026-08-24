@@ -20,6 +20,16 @@ export type VerifyEmailResponse = {
   emailVerified: boolean;
 };
 
+export type GoogleAuthResponse = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'CUSTOMER' | 'RESTAURANT' | 'ADMIN' | 'DELIVERY';
+  accessToken: string;
+  refreshToken: string;
+};
+
 export const authService = {
   signUp: async (data: {
     email: string;
@@ -34,6 +44,11 @@ export const authService = {
 
   signIn: async (data: { email: string; password: string }) => {
     const response = await apiClient.post('/auth/sign-in', data);
+    return response.data;
+  },
+
+  googleAuth: async (idToken: string): Promise<GoogleAuthResponse> => {
+    const response = await apiClient.post('/auth/google', { idToken });
     return response.data;
   },
 

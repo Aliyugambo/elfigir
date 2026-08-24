@@ -2,8 +2,9 @@ import { Injectable, BadRequestException, UnauthorizedException, NotFoundExcepti
 import { PrismaService } from '@/common/prisma.service';
 import { AuthService } from '@/common/auth.service';
 import { EmailService } from '@/common/email.service';
-import { SignUpDto, SignInDto, CreateStaffDto } from './auth.dto';
+import { SignUpDto, SignInDto, CreateStaffDto, GoogleAuthDto } from './auth.dto';
 import { UserRole } from '@prisma/client';
+import axios from 'axios';
 
 @Injectable()
 export class AuthRepository {
@@ -240,5 +241,52 @@ export class AuthRepository {
     await this.emailService.sendVerificationEmail(user.email, token, user.firstName);
 
     return { message: 'Verification email sent successfully' };
+  }
+
+  async googleAuth(dto: GoogleAuthDto) {
+    const googleResponse = await axios.get(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${dto.idToken}`,
+    );
+
+    const googleData = googleResponse.data;
+
+    if (!googleData.email) {
+      throw new UnauthorizedException('Invalid Google token');
+    }
+
+    const email = googleData.email.toLowerCase();
+    const firstName = googleData.given_name || 'Google';
+    const lastName = googleData.family_name || 'User';
+    const googleId = googleData.sub;
+
+    let user = await this.prisma.user.findFirst({
+      where: { OR: [{ googleId }, { email }] },
+    });
+
+    if (!user) {
+      const placeholderHash = await this.authService.hashPassword(
+        `google-oauth-${Date.now()}`,
+      );
+
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          passwordHash: placeholderHash,
+          googleId,
+          role: UserRole.CUSTOMER,
+          isActive: true,
+          emailVerified: true,
+        },
+      });
+    } else if (!user.googleId) {
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { googleId },
+      });
+    }
+
+    return this.toResponse(user, this.buildTokens(user));
   }
 }

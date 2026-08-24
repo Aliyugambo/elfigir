@@ -73,3 +73,9 @@ export class AuthResponseDto {
   accessToken!: string;
   refreshToken!: string;
 }
+
+export class GoogleAuthDto {
+  @IsString()
+  @IsNotEmpty()
+  idToken!: string;
+}

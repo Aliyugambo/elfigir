@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Body, UseGuards, Req, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthUseCase } from './auth.use-case';
-import { SignUpDto, SignInDto, AuthResponseDto, CreateStaffDto } from './auth.dto';
+import { SignUpDto, SignInDto, AuthResponseDto, CreateStaffDto, GoogleAuthDto } from './auth.dto';
 import { JwtGuard } from './jwt.guard';
 import { RolesGuard } from '@/common/roles.guard';
 import { Roles } from '@/common/roles.decorator';
@@ -41,6 +41,12 @@ export class AuthController {
   @ApiOperation({ summary: 'Login user' })
   async signIn(@Body() dto: SignInDto): Promise<AuthResponseDto> {
     return this.authUseCase.signIn(dto);
+  }
+
+  @Post('google')
+  @ApiOperation({ summary: 'Login or signup with Google' })
+  async googleAuth(@Body() dto: GoogleAuthDto): Promise<AuthResponseDto> {
+    return this.authUseCase.googleAuth(dto);
   }
 
   @Get('verify-email')

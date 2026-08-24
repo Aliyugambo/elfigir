@@ -72,15 +72,15 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-mustard text-charcoal py-12 sm:py-20">
+      <section className="bg-maroon text-white py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-maroon">Welcome to Elfijr Kitchen</h1>
-            <p className="text-base sm:text-xl text-black/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-white">Welcome to Elfijr Kitchen</h1>
+            <p className="text-base sm:text-xl text-white/90 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
               Order your favorite meals from the best restaurants and get them delivered to your door
             </p>
 
@@ -99,8 +99,8 @@ export default function HomePage() {
                       onClick={() => handleCategoryClick(category)}
                       className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
                         selectedCategory === category
-                          ? 'bg-maroon text-white shadow-md'
-                          : 'bg-maroon/20 text-maroon hover:bg-maroon/40'
+                          ? 'bg-white text-maroon shadow-md'
+                          : 'bg-white/20 text-white hover:bg-white/40'
                       }`}
                     >
                       {category}
@@ -144,24 +144,24 @@ export default function HomePage() {
       </section>
 
       {/* Menu Gallery */}
-      <section className="py-12 bg-maroon text-white">
+      <section className="py-12 bg-hero-gold text-charcoal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Gallery</h2>
-            {/* <p className="text-white/80 text-sm sm:text-base">Swipe through our delicious offerings</p> */}
+            <h2 className="text-2xl sm:text-3xl font-bold text-maroon mb-2">Gallery</h2>
+            {/* <p className="text-charcoal/80 text-sm sm:text-base">Swipe through our delicious offerings</p> */}
           </div>
           <MenuGallery />
         </div>
       </section>
 
       {/* Restaurants / Items */}
-      <section className="py-16 bg-maroon text-white">
+      <section className="py-16 bg-hero-gold text-charcoal">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-6 sm:mb-8 text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+              <h2 className="text-2xl sm:text-3xl font-bold text-maroon mb-2">
                 {isFiltering ? 'Results' : 'Our Menu'}
               </h2>
-              <p className="text-white/80 text-sm sm:text-base">
+              <p className="text-charcoal/80 text-sm sm:text-base">
                 {isFiltering
                   ? 'Showing items from Elfijr Kitchen Dine In and Elfijr Kitchen Fast Food Outlet'
                   : ''}
@@ -172,7 +172,7 @@ export default function HomePage() {
             isLoadingItems ? (
               <div className="flex flex-wrap justify-center gap-6">
                 {[...Array(6)].map((_, i) => (
-                  <div key={i} className="h-80 w-full max-w-sm bg-white/10 rounded-lg animate-pulse" />
+                  <div key={i} className="h-80 w-full max-w-sm bg-white/60 rounded-lg animate-pulse" />
                 ))}
               </div>
             ) : (
@@ -187,7 +187,7 @@ export default function HomePage() {
           ) : isLoadingRestaurants ? (
             <div className="flex flex-wrap justify-center gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-96 w-full max-w-sm bg-white/10 rounded-lg animate-pulse" />
+                <div key={i} className="h-96 w-full max-w-sm bg-white/60 rounded-lg animate-pulse" />
               ))}
             </div>
           ) : (
@@ -206,7 +206,7 @@ export default function HomePage() {
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <p className="text-white/90 text-lg mb-4">
+              <p className="text-charcoal/90 text-lg mb-4">
                 {search.trim()
                   ? `No dishes found matching "${search.trim()}" in the selected kitchen.`
                   : 'No dishes found for this kitchen.'}
@@ -223,7 +223,7 @@ export default function HomePage() {
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <p className="text-white/90 text-lg mb-4">No restaurants found matching your search</p>
+              <p className="text-charcoal/90 text-lg mb-4">No restaurants found matching your search</p>
               <Link href="/" className="btn-primary">
                 Browse All
               </Link>

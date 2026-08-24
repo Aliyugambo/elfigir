@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
-import { SignUpDto, SignInDto, CreateStaffDto } from './auth.dto';
+import { SignUpDto, SignInDto, CreateStaffDto, GoogleAuthDto } from './auth.dto';
 
 @Injectable()
 export class AuthUseCase {
@@ -16,6 +16,10 @@ export class AuthUseCase {
 
   async signIn(dto: SignInDto) {
     return this.authRepository.signIn(dto);
+  }
+
+  async googleAuth(dto: GoogleAuthDto) {
+    return this.authRepository.googleAuth(dto);
   }
 
   async getProfile(userId: string) {
