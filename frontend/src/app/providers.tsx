@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import '@/globals.css';
 import { ReactNode, useEffect } from 'react';
 import { useAuthStore } from '@/store/auth.store';
+import { GoogleAuthBridge } from '@/components/GoogleAuthBridge';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,7 @@ export function RootLayoutClient({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthHydrator />
+      <GoogleAuthBridge />
       {children}
       <Toaster position="bottom-right" richColors />
     </QueryClientProvider>

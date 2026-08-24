@@ -55,39 +55,22 @@ export default function LoginPage() {
     }
   };
 
-  useEffect(() => {
-    const initializeGoogle = () => {
-      if (typeof window !== 'undefined' && (window as any).google && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-        (window as any).google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-          callback: (response: any) => {
-            if (response.credential) {
-              handleGoogleLogin(response.credential);
-            }
-          },
-        });
-      }
-    };
-
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = initializeGoogle;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [handleGoogleLogin]);
-
   const handleGoogleButtonClick = () => {
-    if ((window as any).google?.accounts?.id && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-      (window as any).google.accounts.id.prompt();
+    if (window.__promptGoogle) {
+      window.__promptGoogle();
     } else {
       toast.error('Google login is not configured. Please set NEXT_PUBLIC_GOOGLE_CLIENT_ID.');
     }
   };
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const credential = (e as CustomEvent).detail as string;
+      handleGoogleLogin(credential);
+    };
+    window.addEventListener('google-credential', handler);
+    return () => window.removeEventListener('google-credential', handler);
+  }, [handleGoogleLogin]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
