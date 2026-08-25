@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import { orderService } from '@/services/order.service';
 import { restaurantService } from '@/services/restaurant.service';
 import Link from 'next/link';
-import { FaArrowLeft, FaCreditCard, FaMoneyBillWave, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCreditCard, FaCheckCircle } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 export default function CheckoutPage() {
@@ -29,30 +29,32 @@ function CheckoutContent() {
 
   const { items, getSubtotal } = useCartStore();
   const { isAuthenticated, user } = useAuthStore();
-  const [paymentMethod, setPaymentMethod] = useState('CASH_ON_DELIVERY');
+  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifyingPayment, setIsVerifyingPayment] = useState(false);
+  const [restaurant, setRestaurant] = useState<any>(null);
   const [bankDetails, setBankDetails] = useState<any>(null);
   const [transferConfirmed, setTransferConfirmed] = useState(false);
 
   const subtotal = getSubtotal();
-  const tax = subtotal * 0.1;
-  const deliveryFee = 2.5;
-  const total = subtotal + tax + deliveryFee;
+  const tax = subtotal * 0.005;
+  const total = subtotal + tax;
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       if (!restaurantId) return;
       try {
-        const restaurant = await restaurantService.getRestaurantById(restaurantId);
+        const data = await restaurantService.getRestaurantById(restaurantId);
+        setRestaurant(data);
         setBankDetails({
-          bankName: restaurant.bankName,
-          accountNumber: restaurant.accountNumber,
-          accountName: restaurant.accountName,
+          bankName: data.bankName,
+          accountNumber: data.accountNumber,
+          accountName: data.accountName,
         });
       } catch (error) {
-        console.error('Failed to fetch restaurant bank details', error);
+        console.error('Failed to fetch restaurant details', error);
       }
     };
 
@@ -73,6 +75,58 @@ function CheckoutContent() {
 
     checkTransferStatus();
   }, [orderId]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const scriptId = 'paystack-inline';
+    const script = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!script) {
+      const s = document.createElement('script');
+      s.id = scriptId;
+      s.src = 'https://js.paystack.co/v1/inline.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  }, []);
+
+  const openPaystackModal = (orderId: string, amount: number) => {
+    const paystack = (window as any).PaystackPop;
+    const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+
+    if (!paystack || !publicKey) {
+      toast.error('Paystack is not configured');
+      return;
+    }
+
+    const handler = paystack.setup({
+      key: publicKey,
+      email: user?.email || '',
+      amount: amount * 100,
+      ref: `ELFIJR-${orderId}-${Date.now()}`,
+      currency: 'NGN',
+      callback: (response: any) => {
+        setIsVerifyingPayment(true);
+        orderService
+          .verifyPaystackPayment(orderId, response.reference)
+          .then(() => {
+            toast.success('Payment successful!');
+            router.push(`/orders/${orderId}`);
+          })
+          .catch((error) => {
+            toast.error('Payment verification failed');
+            console.error(error);
+          })
+          .finally(() => {
+            setIsVerifyingPayment(false);
+          });
+      },
+      onClose: () => {
+        toast.error('Payment cancelled');
+      },
+    });
+
+    handler.openIframe();
+  };
 
   const handleCheckout = async () => {
     if (!deliveryAddress.trim()) {
@@ -96,6 +150,12 @@ function CheckoutContent() {
       };
 
       const response = await orderService.createOrder(orderData);
+
+      if (paymentMethod === 'PAYSTACK') {
+        openPaystackModal(response.id, total);
+        return;
+      }
+
       toast.success('Order placed successfully!');
       router.push(`/orders/${response.id}`);
     } catch (error) {
@@ -198,31 +258,30 @@ function CheckoutContent() {
                 <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-cream">
                   <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Payment Method</h2>
                   <div className="space-y-3">
-                    {[
-                      { value: 'CASH_ON_DELIVERY', label: 'Cash on Delivery', icon: FaMoneyBillWave },
-                      { value: 'BANK_TRANSFER', label: 'Bank Transfer', icon: FaCreditCard },
-                    ].map(({ value, label, icon: Icon }) => (
-                      <motion.label
-                        key={value}
-                        whileHover={{ scale: 1.02 }}
-                        className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition ${
-                          paymentMethod === value
-                            ? 'border-primary bg-primary/5'
-                            : 'border-cream hover:border-cream'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="payment"
-                          value={value}
-                          checked={paymentMethod === value}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="w-4 h-4"
-                        />
-                        <Icon className="w-5 h-5 ml-3 text-primary" />
-                        <span className="ml-3 font-semibold text-charcoal">{label}</span>
-                      </motion.label>
-                    ))}
+                    <label className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition ${paymentMethod === 'BANK_TRANSFER' ? 'border-primary bg-primary/5' : 'border-cream hover:border-cream'}`}>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="BANK_TRANSFER"
+                        checked={paymentMethod === 'BANK_TRANSFER'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="w-4 h-4"
+                      />
+                      <FaCreditCard className="w-5 h-5 ml-3 text-primary" />
+                      <span className="ml-3 font-semibold text-charcoal">Bank Transfer</span>
+                    </label>
+                    <label className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition ${paymentMethod === 'PAYSTACK' ? 'border-primary bg-primary/5' : 'border-cream hover:border-cream'}`}>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="PAYSTACK"
+                        checked={paymentMethod === 'PAYSTACK'}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="w-4 h-4"
+                      />
+                      <FaCreditCard className="w-5 h-5 ml-3 text-primary" />
+                      <span className="ml-3 font-semibold text-charcoal">Paystack</span>
+                    </label>
                   </div>
 
                   {paymentMethod === 'BANK_TRANSFER' && bankDetails && (
@@ -231,7 +290,12 @@ function CheckoutContent() {
                       <p className="text-sm text-charcoal-light">Bank: {bankDetails.bankName || 'GT BANK'}</p>
                       <p className="text-sm text-charcoal-light">Account Name: {bankDetails.accountName || 'SQUAD ELFIJR KITCHEN LTD'}</p>
                       <p className="text-sm text-charcoal-light">Account Number: {bankDetails.accountNumber || '5000530466'}</p>
-                      <p className="text-sm text-charcoal-light mt-2">Total Amount: ₦{total.toFixed(0)}</p>
+                    </div>
+                  )}
+
+                  {paymentMethod === 'PAYSTACK' && (
+                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm text-charcoal-light">You will be redirected to Paystack to complete your payment securely using card, bank transfer, or mobile money.</p>
                     </div>
                   )}
                 </div>
@@ -305,18 +369,14 @@ function CheckoutContent() {
               <div className="bg-white rounded-lg shadow-sm border border-cream p-4 sm:p-6 sticky top-24">
                 <h3 className="text-base sm:text-lg font-bold text-charcoal mb-4 sm:mb-6">Order Total</h3>
 
-                <div className="space-y-4 mb-6">
+                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-charcoal-light">Subtotal</span>
                     <span className="text-charcoal font-semibold">₦{subtotal.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-charcoal-light">Tax (10%)</span>
+                    <span className="text-charcoal-light">Tax (0.5%)</span>
                     <span className="text-charcoal font-semibold">₦{tax.toFixed(0)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-charcoal-light">Delivery Fee</span>
-                    <span className="text-charcoal font-semibold">₦{deliveryFee.toFixed(0)}</span>
                   </div>
 
                   <div className="border-t border-cream pt-4 flex justify-between">
@@ -327,10 +387,10 @@ function CheckoutContent() {
 
                 <button
                   onClick={handleCheckout}
-                  disabled={isLoading}
+                  disabled={isLoading || isVerifyingPayment}
                   className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isLoading ? 'Processing...' : 'Place Order'}
+                  {isLoading ? 'Processing...' : isVerifyingPayment ? 'Verifying Payment...' : 'Place Order'}
                 </button>
 
                 <p className="text-xs text-charcoal-light text-center mt-4">

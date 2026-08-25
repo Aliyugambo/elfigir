@@ -9,9 +9,8 @@ import { useState } from 'react';
 function CartContent() {
   const { items, removeItem, updateQuantity, clear, getSubtotal, restaurantId } = useCartStore();
   const subtotal = getSubtotal();
-  const tax = subtotal * 0.1;
-  const deliveryFee = 2.5;
-  const total = subtotal + tax + deliveryFee;
+  const tax = subtotal * 0.005;
+  const total = subtotal + tax;
 
   if (items.length === 0) {
     return (
@@ -87,10 +86,6 @@ function CartContent() {
         <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-charcoal-light">Tax (10%)</span>
           <span className="text-charcoal font-semibold">₦{tax.toFixed(0)}</span>
-        </div>
-        <div className="flex justify-between text-xs sm:text-sm">
-          <span className="text-charcoal-light">Delivery</span>
-          <span className="text-charcoal font-semibold">₦{deliveryFee.toFixed(0)}</span>
         </div>
 
         <div className="border-t border-cream pt-2 flex justify-between">

@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
+import { CreateOrderDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
 import { PaymentStatus, UserRole } from '@prisma/client';
+import axios from 'axios';
 
 @Injectable()
 export class OrderUseCase {
@@ -104,6 +105,62 @@ export class OrderUseCase {
       'Order completed',
       `Order ${order.orderNumber} has been confirmed received by the customer.`,
       'order_completed',
+    );
+
+    return updated;
+  }
+
+  async verifyPaystackPayment(userId: string, orderId: string, reference: string) {
+    const order = await this.orderRepository.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.userId !== userId) {
+      throw new ForbiddenException('You can only verify your own orders');
+    }
+
+    if (order.paymentMethod !== 'PAYSTACK') {
+      throw new BadRequestException('This endpoint is only for Paystack payments');
+    }
+
+    const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecretKey) {
+      throw new BadRequestException('Paystack is not configured');
+    }
+
+    const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${paystackSecretKey}`,
+      },
+    });
+
+    const paystackData = response.data;
+
+    if (paystackData.status !== true || paystackData.data.status !== 'success') {
+      throw new BadRequestException('Payment verification failed');
+    }
+
+    const paystackAmount = paystackData.data.amount / 100;
+    if (Math.abs(paystackAmount - order.totalAmount) > 100) {
+      throw new BadRequestException('Payment amount does not match order total');
+    }
+
+    const updated = await this.orderRepository.updatePaymentStatus(orderId, PaymentStatus.COMPLETED);
+
+    await this.orderRepository.createNotification(
+      order.userId,
+      'Payment confirmed',
+      `Your Paystack payment for order ${order.orderNumber} has been confirmed. Your order is now being processed.`,
+      'payment_confirmed',
+    );
+
+    await this.orderRepository.createNotification(
+      order.restaurantId,
+      'Payment received',
+      `Payment received for order ${order.orderNumber} via Paystack. Please start preparation.`,
+      'payment_received',
     );
 
     return updated;

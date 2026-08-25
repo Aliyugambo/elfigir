@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { MenuItem, AddOn } from '@/types';
 import { useCartStore } from '@/store/cart.store';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
 
 interface MenuItemCardProps {
@@ -13,6 +14,7 @@ interface MenuItemCardProps {
 
 export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
   const { addItem } = useCartStore();
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -20,6 +22,7 @@ export function MenuItemCard({ item, restaurantId }: MenuItemCardProps) {
     addItem(item, restaurantId, quantity, [], '');
     setShowDetails(false);
     setQuantity(1);
+    router.push(`/checkout?restaurantId=${restaurantId}`);
   };
 
   return (

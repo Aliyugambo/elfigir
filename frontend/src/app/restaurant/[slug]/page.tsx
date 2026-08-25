@@ -140,13 +140,13 @@ export default function RestaurantPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-1.5 bg-cream rounded-lg p-2">
+            {/* <div className="flex items-center space-x-1.5 bg-cream rounded-lg p-2">
               <FaTruck className="text-primary w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs text-charcoal-light">Fee</p>
                 <p className="font-semibold text-charcoal text-xs sm:text-sm truncate">₦{restaurant.deliveryFee}</p>
               </div>
-            </div>
+            </div> */}
             <div className={`flex items-center space-x-1.5 rounded-lg p-2 ${restaurant.isOpen ? 'bg-mustard/10' : 'bg-cream'}`}>
               <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${restaurant.isOpen ? 'bg-maroon' : 'bg-charcoal-light'}`}></div>
               <p className={`font-semibold text-xs sm:text-sm ${restaurant.isOpen ? 'text-maroon' : 'text-charcoal-light'}`}>

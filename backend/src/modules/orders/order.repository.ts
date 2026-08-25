@@ -43,9 +43,9 @@ export class OrderRepository {
       });
     }
 
-    const tax = subtotal * 0.1; // 10% tax
-    const deliveryFee = restaurant.deliveryFee;
-    const totalAmount = subtotal + tax + deliveryFee;
+    const tax = subtotal * 0.005; // 0.5% tax
+    const deliveryFee = 0;
+    const totalAmount = subtotal + tax;
 
     return this.prisma.order.create({
       data: {

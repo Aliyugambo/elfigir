@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsArray, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNumber, IsArray, IsOptional, IsEnum, IsNotEmpty } from 'class-validator';
 import { OrderStatus, PaymentMethod } from '@prisma/client';
 
 export class CreateOrderItemDto {
@@ -50,4 +50,10 @@ export class UpdateOrderStatusDto {
   @IsString()
   @IsOptional()
   cancelReason?: string;
+}
+
+export class VerifyPaystackDto {
+  @IsString()
+  @IsNotEmpty()
+  reference!: string;
 }

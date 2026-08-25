@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, UseGuards, Req, Query, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { OrderUseCase } from './order.use-case';
-import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
+import { CreateOrderDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
 import { JwtGuard } from '@/modules/auth/jwt.guard';
 import { RolesGuard } from '@/common/roles.guard';
 import { Roles } from '@/common/roles.decorator';
@@ -70,6 +70,14 @@ export class OrderController {
   @ApiOperation({ summary: 'Customer confirms they have received their order' })
   async confirmReceived(@Req() req: any, @Param('id') id: string) {
     return this.orderUseCase.confirmReceived(req.user.sub, id);
+  }
+
+  @Post(':id/paystack-verify')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Verify Paystack payment and confirm order' })
+  async verifyPaystackPayment(@Req() req: any, @Param('id') id: string, @Body() dto: VerifyPaystackDto) {
+    return this.orderUseCase.verifyPaystackPayment(req.user.sub, id, dto.reference);
   }
 
   @Get('/:id')

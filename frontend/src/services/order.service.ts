@@ -43,4 +43,9 @@ export const orderService = {
     const response = await apiClient.post(`/orders/${orderId}/confirm-received`);
     return response.data;
   },
+
+  verifyPaystackPayment: async (orderId: string, reference: string) => {
+    const response = await apiClient.post(`/orders/${orderId}/paystack-verify`, { reference });
+    return response.data;
+  },
 };
