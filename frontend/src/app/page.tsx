@@ -241,6 +241,14 @@ export default function HomePage() {
               className="text-center p-6"
             >
               <FaFire className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-charcoal mb-2">Catering Services</h3>
+              <p className="text-charcoal-light text-sm">Prepared meals and refreshments for events</p>
+            </motion.div>
+            <motion.div
+              whileHover={{ y: -4 }}
+              className="text-center p-6"
+            >
+              <FaStar className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="font-semibold text-charcoal mb-2">Fast Delivery</h3>
               <p className="text-charcoal-light text-sm">Get your food delivered in 30-45 minutes</p>
             </motion.div>
@@ -248,17 +256,9 @@ export default function HomePage() {
               whileHover={{ y: -4 }}
               className="text-center p-6"
             >
-              <FaStar className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-charcoal mb-2">Best Quality</h3>
-              <p className="text-charcoal-light text-sm">Fresh meals from verified Kitchen</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ y: -4 }}
-              className="text-center p-6"
-            >
               <FaSearch className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-charcoal mb-2">Easy Ordering</h3>
-              <p className="text-charcoal-light text-sm">Simple and intuitive ordering process</p>
+              <h3 className="font-semibold text-charcoal mb-2">Fast Food and Dine-in Experiance</h3>
+              <p className="text-charcoal-light text-sm">Fresh meals from verified Kitchen</p>
             </motion.div>
           </div>
         </div>
