@@ -129,7 +129,6 @@ model MenuItem {
   prepTime      Int? // minutes
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  
 
   // Relations
   orderItems OrderItem[]
