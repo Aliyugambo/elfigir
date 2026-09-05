@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -69,7 +69,7 @@ model Restaurant {
   logo            String?
   banner          String?
   image           String?
-  cuisineType     Json // ["Italian", "Chinese", etc.]
+  cuisineType     String[] // ["Italian", "Chinese", etc.]
   rating          Float    @default(0)
   reviewCount     Int      @default(0)
   minDeliveryTime Int // minutes
@@ -132,7 +132,7 @@ model MenuItem {
 
   // Relations
   orderItems OrderItem[]
-  addOns     Json
+  addOns     AddOn[]
 
   @@map("menu_items")
 }
@@ -185,7 +185,7 @@ model OrderItem {
   menuItem    MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   quantity    Int
   price       Float
-  addOns      Json // JSON string of selected add-ons
+  addOns      String[] // JSON string of selected add-ons
   specialNote String?
   createdAt   DateTime @default(now())
 
