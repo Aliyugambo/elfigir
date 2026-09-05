@@ -9,7 +9,7 @@ import { useState } from 'react';
 function CartContent() {
   const { items, removeItem, updateQuantity, clear, getSubtotal, restaurantId } = useCartStore();
   const subtotal = getSubtotal();
-  const tax = subtotal * 0.005;
+  const tax = subtotal * 0.075;
   const total = subtotal + tax;
 
   if (items.length === 0) {

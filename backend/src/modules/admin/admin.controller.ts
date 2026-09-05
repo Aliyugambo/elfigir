@@ -351,4 +351,13 @@ export class AdminController {
   async deleteMenu(@Param('id') id: string) {
     return this.adminUseCase.deleteMenu(id);
   }
+
+  @Post('menu-items/migrate-categories')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Migrate old menu item categories to new categories' })
+  async migrateCategories() {
+    return this.adminUseCase.migrateCategories();
+  }
 }

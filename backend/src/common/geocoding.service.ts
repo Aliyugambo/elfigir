@@ -5,8 +5,9 @@ import { ConfigService } from '@nestjs/config';
 export class GeocodingService {
   constructor(private configService: ConfigService) {}
 
-  async geocode(address: string, city: string, state: string): Promise<{ latitude: number; longitude: number }> {
-    const query = encodeURIComponent(`${address}, ${city}, ${state}`);
+  async geocode(address: string, city?: string, state?: string): Promise<{ latitude: number; longitude: number }> {
+    const parts = [address, city, state].filter(Boolean);
+    const query = encodeURIComponent(parts.join(', '));
     const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`;
 
     try {

@@ -150,7 +150,7 @@ export class AdminRepository {
     }
     return this.prisma.user.update({
       where: { id: userId },
-      data: { isActive: true },
+      data: { isActive: true, emailVerified: true },
     });
   }
 
@@ -611,7 +611,7 @@ export class AdminRepository {
   }
 
   async listMenuItems(menuId?: string) {
-    const where: any = {};
+    const where: any = { isAvailable: true };
     if (menuId) {
       where.menuId = menuId;
     }
@@ -675,7 +675,58 @@ export class AdminRepository {
 
   async deleteMenuItem(id: string) {
     await this.getMenuItem(id);
-    return this.prisma.menuItem.delete({ where: { id } });
+    return this.prisma.menuItem.update({
+      where: { id },
+      data: { isAvailable: false },
+      include: {
+        addOns: true,
+        menu: true,
+      },
+    });
+  }
+
+  private readonly CATEGORY_MIGRATION_MAP: Record<string, string> = {
+    Breakfast: 'Elfijr Signature Bites',
+    Lunch: 'Rice Only',
+    Dinner: 'Family Packages',
+    'Fast Food': 'Elfijr Signature Bites',
+    Pizza: 'Elfijr Signature Bites',
+    Burger: 'Elfijr Signature Bites',
+    Chinese: 'Rice Only',
+    Italian: 'Pasta & Noodles',
+    Nigerian: 'Local Delights',
+    Indian: 'Rice Only',
+    Japanese: 'Elfijr Signature Bites',
+    Mexican: 'Elfijr Signature Bites',
+    Seafood: 'Proteins',
+    Vegetarian: 'Healthy Living',
+    Vegan: 'Healthy Living',
+    Salad: 'Fresh Salads',
+    Desserts: 'Milkshakes',
+    Drinks: 'Beverages',
+    Smoothies: 'Milkshakes',
+    Coffee: 'Hot Beverages',
+    Tea: 'Hot Beverages',
+    Bakery: 'Small Chops',
+    Snacks: 'Small Chops',
+    Soup: 'Pepper Soup',
+    Grill: 'Proteins',
+    Other: 'Elfijr Signature Bites',
+  };
+
+  async migrateCategories() {
+    const entries = Object.entries(this.CATEGORY_MIGRATION_MAP);
+    let totalUpdated = 0;
+
+    for (const [oldCategory, newCategory] of entries) {
+      const result = await this.prisma.menuItem.updateMany({
+        where: { category: oldCategory },
+        data: { category: newCategory },
+      });
+      totalUpdated += result.count;
+    }
+
+    return { message: 'Category migration completed', totalUpdated };
   }
 
   async uploadMenuItemImage(file: Express.Multer.File): Promise<{ url: string }> {

@@ -12,7 +12,10 @@ import { MenuGallery } from '@/components/MenuGallery';
 import { FaSearch, FaFire, FaStar } from 'react-icons/fa';
 import { useState } from 'react';
 
-const RESTAURANTS = ['Elfijr-Kitchen-dine-in', 'Elfijr-Kitchen-fast-food-outlet'];
+const RESTAURANTS = [
+  { slug: 'Elfijr-Kitchen-dine-in', label: 'Elfijr Kitchen Dine In' },
+  { slug: 'Elfijr-Kitchen-fast-food-outlet', label: 'Elfijr Kitchen Fast Food Outlet' },
+];
 
 export default function HomePage() {
   const router = useRouter();
@@ -29,8 +32,8 @@ export default function HomePage() {
     router.push(params.toString() ? `/?${params.toString()}` : '/');
   };
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category === selectedCategory ? '' : category);
+  const handleCategoryClick = (slug: string) => {
+    setSelectedCategory(slug === selectedCategory ? '' : slug);
     setSearch('');
   };
 
@@ -93,17 +96,17 @@ export default function HomePage() {
             >
               <div className="flex flex-wrap gap-2 mb-4 justify-center">
                 {RESTAURANTS.map(
-                  (category) => (
+                  ({ slug, label }) => (
                     <button
-                      key={category}
-                      onClick={() => handleCategoryClick(category)}
+                      key={slug}
+                      onClick={() => handleCategoryClick(slug)}
                       className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
-                        selectedCategory === category
+                        selectedCategory === slug
                           ? 'bg-white text-maroon shadow-md'
                           : 'bg-white/20 text-white hover:bg-white/40'
                       }`}
                     >
-                      {category}
+                      {label}
                     </button>
                   ),
                 )}
@@ -120,7 +123,7 @@ export default function HomePage() {
                 type="text"
                 placeholder={
                   selectedCategory
-                    ? `${selectedCategory} — search within...`
+                    ? `Search within ${selectedCategory}...`
                     : 'Search Food, cuisines...'
                 }
                 value={search}
@@ -163,7 +166,7 @@ export default function HomePage() {
               </h2>
               <p className="text-charcoal/80 text-sm sm:text-base">
                 {isFiltering
-                  ? 'Showing items from Elfijr Kitchen Dine In and Elfijr Kitchen Fast Food Outlet'
+                  ? 'Showing items based on your search and selected kitchen.'
                   : ''}
               </p>
             </div>

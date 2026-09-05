@@ -13,32 +13,28 @@ export default function AdminMenuItemsPage() {
   const queryClient = useQueryClient();
 
   const STANDARD_CATEGORIES = [
-    'Breakfast',
-    'Lunch',
-    'Dinner',
-    'Fast Food',
-    'Pizza',
-    'Burger',
-    'Chinese',
-    'Italian',
-    'Nigerian',
-    'Indian',
-    'Japanese',
-    'Mexican',
-    'Seafood',
-    'Vegetarian',
-    'Vegan',
-    'Salad',
-    'Desserts',
-    'Drinks',
-    'Smoothies',
-    'Coffee',
-    'Tea',
-    'Bakery',
-    'Snacks',
-    'Soup',
-    'Grill',
-    'Other',
+    'Rice Only',
+    'Family Packages',
+    'Fried Rice Combos',
+    'Arabian Rice Combos',
+    'Jollof Rice Combos',
+    'Biryani Rice Combos',
+    'Local Swallow Combos — Tuwon Semo',
+    'Local Swallow Combos — Tuwon Shinkafa',
+    'Local Swallow Combos — Tuwon Alkama',
+    'Pounded Yam',
+    'Proteins',
+    'Pepper Soup',
+    'Pasta & Noodles',
+    'Elfijr Signature Bites',
+    'Small Chops',
+    'Local Delights',
+    'Healthy Living',
+    'Fresh Salads',
+    'Milkshakes',
+    'Boba Tea',
+    'Beverages',
+    'Hot Beverages',
   ];
 
   const [selectedMenuId, setSelectedMenuId] = useState('');
@@ -184,6 +180,16 @@ export default function AdminMenuItemsPage() {
       refetch();
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Failed to delete menu item');
+    }
+  };
+
+  const handleMigrateCategories = async () => {
+    try {
+      await adminService.migrateCategories();
+      toast.success('Categories migrated successfully');
+      refetch();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to migrate categories');
     }
   };
 
@@ -361,18 +367,27 @@ export default function AdminMenuItemsPage() {
                 <h2 className="text-xl font-semibold text-charcoal">Menu Items</h2>
                 <p className="text-sm text-charcoal-light">Currently available items across the platform.</p>
               </div>
-              <select
-                value={selectedMenuId}
-                onChange={(e) => setSelectedMenuId(e.target.value)}
-                className="input-field w-auto text-sm"
-              >
-                <option value="">All Menus</option>
-                {menuList.map((menu) => (
-                  <option key={menu.id} value={menu.id}>
-                    {menu.restaurant.name} - {menu.name}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleMigrateCategories}
+                  className="btn-outline px-3 py-2 rounded-lg text-sm"
+                >
+                  Migrate Categories
+                </button>
+                <select
+                  value={selectedMenuId}
+                  onChange={(e) => setSelectedMenuId(e.target.value)}
+                  className="input-field w-auto text-sm"
+                >
+                  <option value="">All Menus</option>
+                  {menuList.map((menu) => (
+                    <option key={menu.id} value={menu.id}>
+                      {menu.restaurant.name} - {menu.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="space-y-4">
               {isLoading ? (

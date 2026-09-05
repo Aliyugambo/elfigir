@@ -9,6 +9,6 @@ import { OrderRepository } from './order.repository';
   imports: [CommonModule, AuthModule],
   controllers: [OrderController],
   providers: [OrderUseCase, OrderRepository],
-  exports: [OrderUseCase],
+  exports: [OrderUseCase, OrderRepository],
 })
 export class OrderModule {}

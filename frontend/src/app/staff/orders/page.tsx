@@ -41,6 +41,7 @@ export default function StaffOrdersPage() {
     },
     enabled: isAuthenticated && (user?.role === 'STAFF' || user?.role === 'SUPER_ADMIN'),
     retry: false,
+    refetchInterval: 3000,
   });
 
   useEffect(() => {

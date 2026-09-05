@@ -80,7 +80,7 @@ export class RestaurantRepository {
     if (filters.restaurantName) {
       where.menu = {
         restaurant: {
-          name: { contains: filters.restaurantName, mode: 'insensitive' },
+          slug: { contains: filters.restaurantName, mode: 'insensitive' },
         },
       };
     }

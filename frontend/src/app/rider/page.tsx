@@ -45,6 +45,7 @@ export default function RiderPortalPage() {
     queryFn: () => orderService.getStaffOrders({ page: 1, limit: 50 }),
     enabled: isAuthenticated && user?.role === 'DELIVERY',
     retry: false,
+    refetchInterval: 3000,
   });
 
   const updateMutation = useMutation({

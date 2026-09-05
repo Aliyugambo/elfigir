@@ -306,6 +306,11 @@ export const adminService = {
     return res.data;
   },
 
+  migrateCategories: async () => {
+    const res = await apiClient.post('/admin/menu-items/migrate-categories');
+    return res.data;
+  },
+
   uploadMenuItemImage: async (file: File): Promise<{ url: string }> => {
     const formData = new FormData();
     formData.append('image', file);

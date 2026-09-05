@@ -11,7 +11,6 @@ import { MenuItemCard } from '@/components/MenuItemCard';
 import { toast } from 'sonner';
 
 const CATEGORIES = [
-  'All',
   'Rice Only',
   'Family Packages',
   'Fried Rice Combos',
@@ -34,9 +33,6 @@ const CATEGORIES = [
   'Boba Tea',
   'Beverages',
   'Hot Beverages',
-  'Add-Ons for ELFIJR KITCHEN — DINE IN MENU and Main Course',
-  'Savouries',
-  'Beverages for the FAST FOOD OUTLET',
 ];
 
 export default function BrowsePage() {
@@ -66,7 +62,7 @@ function BrowseContent() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['menu-items', activeCategory, searchQuery],
     queryFn: () => {
-      const isKitchen = activeCategory.startsWith('Elfijr Kitchen');
+      const isKitchen = activeCategory.startsWith('Elfijr Kitchen') || activeCategory.startsWith('Elfijr-Kitchen');
       return menuItemService.getMenuItemsByCategory({
         ...(isKitchen
           ? { restaurantName: activeCategory }

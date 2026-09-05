@@ -33,6 +33,7 @@ export default function AdminOrdersPage() {
     queryFn: () => adminService.listOrders({ page: 1, limit: 50 }),
     enabled: isAuthenticated && user?.role === 'ADMIN',
     retry: false,
+    refetchInterval: 3000,
   });
 
   useEffect(() => {

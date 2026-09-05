@@ -10,9 +10,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-const RESTAURANT_NAMES = [
-  'Elfijr Kitchen Dine In',
-  'Elfijr Kitchen Fast Food Outlet',
+const RESTAURANTS = [
+  { slug: 'Elfijr-Kitchen-dine-in', label: 'Elfijr Kitchen Dine In' },
+  { slug: 'Elfijr-Kitchen-fast-food-outlet', label: 'Elfijr Kitchen Fast Food Outlet' },
 ];
 
 export function HeroSlider() {
@@ -20,9 +20,9 @@ export function HeroSlider() {
     queryKey: ['hero-menu-items'],
     queryFn: () =>
       Promise.all(
-        RESTAURANT_NAMES.map((name) =>
+        RESTAURANTS.map(({ slug }) =>
           menuItemService.getMenuItemsByCategory({
-            restaurantName: name,
+            restaurantName: slug,
             page: 1,
             limit: 12,
           }),

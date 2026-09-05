@@ -28,6 +28,7 @@ export default function OrdersPage() {
     queryKey: ['orders'],
     queryFn: () => orderService.getUserOrders(1, 20),
     enabled: isAuthenticated,
+    refetchInterval: 3000,
   });
 
   if (!isAuthenticated) {

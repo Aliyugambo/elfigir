@@ -3,14 +3,14 @@
 import { Suspense } from 'react';
 
 import { motion } from 'framer-motion';
-import { useCartStore } from '@/store/cart.store';
-import { useAuthStore } from '@/store/auth.store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { orderService } from '@/services/order.service';
 import { restaurantService } from '@/services/restaurant.service';
+import { useCartStore } from '@/store/cart.store';
+import { useAuthStore } from '@/store/auth.store';
 import Link from 'next/link';
-import { FaArrowLeft, FaCreditCard, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCreditCard, FaCheckCircle, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 export default function CheckoutPage() {
@@ -39,7 +39,7 @@ function CheckoutContent() {
   const [transferConfirmed, setTransferConfirmed] = useState(false);
 
   const subtotal = getSubtotal();
-  const tax = subtotal * 0.005;
+  const tax = subtotal * 0.075;
   const total = subtotal + tax;
 
   useEffect(() => {
@@ -344,14 +344,49 @@ function CheckoutContent() {
                  <h2 className="text-lg sm:text-xl font-bold text-charcoal mb-3 sm:mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center py-2 border-b border-cream">
-                      <div>
-                        <p className="font-semibold text-charcoal">{item.menuItem.name}</p>
-                        <p className="text-sm text-charcoal-light">Qty: {item.quantity}</p>
+                    <div key={item.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-2 border-b border-cream last:border-b-0">
+                      <div className="flex items-start gap-3">
+                        {item.menuItem.image && (
+                          <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-lg border border-cream flex-shrink-0" />
+                        )}
+                        <div>
+                          <p className="font-semibold text-charcoal text-sm sm:text-base">{item.menuItem.name}</p>
+                          <p className="text-xs sm:text-sm text-charcoal-light">₦{item.menuItem.price.toFixed(0)} each</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <button
+                              type="button"
+                              onClick={() => useCartStore.getState().updateQuantity(item.id, item.quantity - 1)}
+                              className="w-7 h-7 flex items-center justify-center rounded-full border border-cream hover:bg-cream text-charcoal text-xs transition"
+                            >
+                              <FaMinus />
+                            </button>
+                            <span className="text-sm font-semibold text-charcoal w-6 text-center">{item.quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => useCartStore.getState().updateQuantity(item.id, item.quantity + 1)}
+                              className="w-7 h-7 flex items-center justify-center rounded-full border border-cream hover:bg-cream text-charcoal text-xs transition"
+                            >
+                              <FaPlus />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <p className="font-semibold text-charcoal">
-                        ₦{(item.menuItem.price * item.quantity).toFixed(0)}
-                      </p>
+                      <div className="flex items-center justify-between sm:justify-end gap-3 sm:text-right">
+                        <p className="font-semibold text-charcoal text-sm sm:text-base">
+                          ₦{(item.menuItem.price * item.quantity).toFixed(0)}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            useCartStore.getState().removeItem(item.id);
+                            toast.success('Item removed from cart');
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1.5 rounded-full hover:bg-red-50 transition"
+                          title="Remove item"
+                        >
+                          <FaTrash className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -375,7 +410,7 @@ function CheckoutContent() {
                     <span className="text-charcoal font-semibold">₦{subtotal.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-charcoal-light">Tax (0.5%)</span>
+                    <span className="text-charcoal-light">Tax (7.5%)</span>
                     <span className="text-charcoal font-semibold">₦{tax.toFixed(0)}</span>
                   </div>
 

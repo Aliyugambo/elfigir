@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AdminRepository } from './admin.repository';
+import { OrderRepository } from '@/modules/orders/order.repository';
 import {
   CreateAdminDto,
   AdminSignInDto,
@@ -10,17 +11,20 @@ import {
   UpdateUserDto,
   CreateMenuItemDto,
   UpdateMenuItemDto,
-  UpdateStaffDto,
   CreateRestaurantDto,
   UpdateRestaurantDto,
   CreateMenuDto,
   UpdateMenuDto,
+  UpdateStaffDto,
 } from './admin.dto';
 import { PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
 export class AdminUseCase {
-  constructor(private adminRepository: AdminRepository) {}
+  constructor(
+    private adminRepository: AdminRepository,
+    private orderRepository: OrderRepository,
+  ) {}
 
   createAdmin(dto: CreateAdminDto) {
     return this.adminRepository.createAdmin(dto);
@@ -59,7 +63,12 @@ export class AdminUseCase {
   }
 
   updateOrderStatus(id: string, dto: UpdateAdminOrderStatusDto) {
-    return this.adminRepository.updateOrderStatus(id, dto);
+    return this.adminRepository.updateOrderStatus(id, dto).then((order) => {
+      return this.orderRepository
+        .notifyOnTransition(order, dto.status)
+        .catch((err) => console.error('notifyOnTransition failed:', err))
+        .then(() => order);
+    });
   }
 
   listUsers(filters: AdminUserFilterDto) {
@@ -116,6 +125,10 @@ export class AdminUseCase {
 
   deleteMenuItem(id: string) {
     return this.adminRepository.deleteMenuItem(id);
+  }
+
+  migrateCategories() {
+    return this.adminRepository.migrateCategories();
   }
 
   uploadMenuItemImage(file: Express.Multer.File) {

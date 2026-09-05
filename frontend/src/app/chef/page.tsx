@@ -29,12 +29,20 @@ export default function ChefPortalPage() {
     }
   }, [isAuthenticated, user, router]);
 
-  const { data, isLoading, refetch } = useQuery({
+  
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['chef-orders'],
     queryFn: () => orderService.getStaffOrders({ page: 1, limit: 50 }),
     enabled: isAuthenticated && user?.role === 'RESTAURANT',
     retry: false,
+    refetchInterval: 3000,
   });
+
+  useEffect(() => {
+    if (error) {
+      toast.error('Failed to load orders. Please refresh or check your session.');
+    }
+  }, [error]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status, cancelReason }: { id: string; status: string; cancelReason?: string }) =>

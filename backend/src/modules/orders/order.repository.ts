@@ -1,11 +1,15 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
+import { GeocodingService } from '@/common/geocoding.service';
 import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
 import { OrderStatus, PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
 export class OrderRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private geocodingService: GeocodingService,
+  ) {}
 
   async create(userId: string, dto: CreateOrderDto) {
     const orderNumber = `ORD-${Date.now()}`;
@@ -43,9 +47,23 @@ export class OrderRepository {
       });
     }
 
-    const tax = subtotal * 0.005; // 0.5% tax
+    const tax = subtotal * 0.075; // 7.5% tax
     const deliveryFee = 0;
     const totalAmount = subtotal + tax;
+
+    let deliveryLat: number | null = dto.deliveryLat ?? null;
+    let deliveryLng: number | null = dto.deliveryLng ?? null;
+
+    if (!deliveryLat || !deliveryLng) {
+      try {
+        const coords = await this.geocodingService.geocode(dto.deliveryAddress);
+        deliveryLat = coords.latitude;
+        deliveryLng = coords.longitude;
+      } catch {
+        deliveryLat = null;
+        deliveryLng = null;
+      }
+    }
 
     return this.prisma.order.create({
       data: {
@@ -63,8 +81,8 @@ export class OrderRepository {
         totalAmount,
         paymentMethod: dto.paymentMethod,
         deliveryAddress: dto.deliveryAddress,
-        deliveryLat: dto.deliveryLat,
-        deliveryLng: dto.deliveryLng,
+        deliveryLat,
+        deliveryLng,
         specialInstructions: dto.specialInstructions,
         status: OrderStatus.PENDING,
       },
@@ -147,17 +165,23 @@ export class OrderRepository {
       where.status = { in: [OrderStatus.READY_FOR_PICKUP, OrderStatus.OUT_FOR_DELIVERY] };
     }
 
+    console.log('[findStaffOrders] userId:', userId, 'role:', role, 'filters:', filters);
+
     if (role !== UserRole.ADMIN) {
       const staff = await this.prisma.user.findUnique({
         where: { id: userId },
         select: { restaurantId: true },
       });
 
+      console.log('[findStaffOrders] staff found:', JSON.stringify(staff));
+
       if (!staff) {
+        console.log('[findStaffOrders] staff not found, returning empty');
         return { orders: [], total: 0, page: filters.page, limit: filters.limit };
       }
 
       if (role === UserRole.RESTAURANT && !staff.restaurantId) {
+        console.log('[findStaffOrders] staff has no restaurantId, returning empty');
         return { orders: [], total: 0, page: filters.page, limit: filters.limit };
       }
 
@@ -165,6 +189,8 @@ export class OrderRepository {
         where.restaurantId = staff.restaurantId;
       }
     }
+
+    console.log('[findStaffOrders] query where:', JSON.stringify(where));
 
     const skip = (filters.page - 1) * filters.limit;
 
@@ -231,6 +257,18 @@ export class OrderRepository {
         `Order ${order.orderNumber} was approved by admin and sent to ${order.restaurant?.name}.`,
         'order_approved',
       );
+      await this.notifyRestaurant(
+        order.restaurantId,
+        'New order approved',
+        `Order ${order.orderNumber} from ${order.user?.firstName || 'a customer'} has been approved. Please start preparation.`,
+        'order_approved',
+      );
+      await this.createNotification(
+        order.userId,
+        'Order approved',
+        `Your order ${order.orderNumber} has been approved and is being processed.`,
+        'order_update',
+      );
     }
 
     if (status === OrderStatus.PREPARING) {
@@ -238,6 +276,12 @@ export class OrderRepository {
         'Order preparation started',
         `Chef at ${order.restaurant?.name} started preparing order ${order.orderNumber}.`,
         'order_preparing',
+      );
+      await this.createNotification(
+        order.userId,
+        'Order is being prepared',
+        `Your order ${order.orderNumber} is now being prepared.`,
+        'order_update',
       );
     }
 
@@ -247,6 +291,17 @@ export class OrderRepository {
         `Order ${order.orderNumber} from ${order.restaurant?.name} is ready for pickup.`,
         'order_ready',
       );
+      await this.notifyRiders(
+        'New order ready for pickup',
+        `Order ${order.orderNumber} from ${order.restaurant?.name} is ready for pickup.`,
+        'order_ready',
+      );
+      await this.createNotification(
+        order.userId,
+        'Order ready for pickup',
+        `Your order ${order.orderNumber} is ready for pickup and will be assigned to a rider soon.`,
+        'order_update',
+      );
     }
 
     if (status === OrderStatus.OUT_FOR_DELIVERY) {
@@ -254,6 +309,12 @@ export class OrderRepository {
         'Out for delivery',
         `Order ${order.orderNumber} is now out for delivery.`,
         'order_out_for_delivery',
+      );
+      await this.createNotification(
+        order.userId,
+        'Order out for delivery',
+        `Your order ${order.orderNumber} is now out for delivery.`,
+        'order_update',
       );
     }
 
@@ -271,13 +332,54 @@ export class OrderRepository {
       );
     }
 
+    if (status === OrderStatus.CANCELLED) {
+      await this.createNotification(
+        order.userId,
+        'Order cancelled',
+        `Your order ${order.orderNumber} has been cancelled.${order.cancelReason ? ` Reason: ${order.cancelReason}` : ''}`,
+        'order_update',
+      );
+    }
+
     if (status === OrderStatus.COMPLETED) {
       await this.notifyAdmins(
         'Order completed',
         `Order ${order.orderNumber} has been confirmed received by the customer.`,
         'order_completed',
       );
+      await this.createNotification(
+        order.userId,
+        'Order completed',
+        `Your order ${order.orderNumber} has been completed. Thank you!`,
+        'order_update',
+      );
     }
+  }
+
+  async notifyRiders(title: string, message: string, type: string) {
+    const riders = await this.prisma.user.findMany({
+      where: { role: UserRole.DELIVERY },
+      select: { id: true },
+    });
+
+    await Promise.all(
+      riders.map((rider) =>
+        this.createNotification(rider.id, title, message, type),
+      ),
+    );
+  }
+
+  async notifyRestaurant(restaurantId: string, title: string, message: string, type: string) {
+    const staff = await this.prisma.user.findMany({
+      where: { role: UserRole.RESTAURANT, restaurantId },
+      select: { id: true },
+    });
+
+    await Promise.all(
+      staff.map((member) =>
+        this.createNotification(member.id, title, message, type),
+      ),
+    );
   }
 
   async notifyAdmins(title: string, message: string, type: string) {
