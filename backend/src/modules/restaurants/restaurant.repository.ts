@@ -30,13 +30,13 @@ export class RestaurantRepository {
 
     if (filters.search) {
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { name: { contains: filters.search } },
+        { description: { contains: filters.search } },
       ];
     }
 
     if (filters.city) {
-      where.city = { contains: filters.city, mode: 'insensitive' };
+      where.city = { contains: filters.city };
     }
 
     if (filters.cuisineType && filters.cuisineType.length > 0) {
@@ -74,19 +74,19 @@ export class RestaurantRepository {
     };
 
     if (filters.category) {
-      where.category = { equals: filters.category, mode: 'insensitive' };
+      where.category = filters.category;
     }
 
     if (filters.restaurantName) {
       where.menu = {
         restaurant: {
-          slug: { contains: filters.restaurantName, mode: 'insensitive' },
+          slug: { contains: filters.restaurantName },
         },
       };
     }
 
     if (filters.search) {
-      where.name = { contains: filters.search, mode: 'insensitive' };
+      where.name = { contains: filters.search };
     }
 
     const [items, total] = await Promise.all([
