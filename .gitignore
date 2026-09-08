@@ -14,5 +14,4 @@ coverage/
 .turbo
 pnpm-lock.yaml
 yarn.lock
-*.tar.gz
-*.tgz
+
