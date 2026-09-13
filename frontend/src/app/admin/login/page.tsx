@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-charcoal">Admin Sign In</h1>
-          <p className="text-charcoal-light mt-1">Elfijr Control Panel</p>
+          <p className="text-charcoal-light mt-1">Elfijr Kitchen Control Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
