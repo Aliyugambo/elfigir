@@ -16,12 +16,15 @@ export default function AdminOrderDetailsPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['admin-order', orderId],
     queryFn: () => adminService.getOrder(orderId),
-    enabled: !!orderId && isAuthenticated && user?.role === 'ADMIN',
+    enabled:
+      !!orderId &&
+      isAuthenticated &&
+      (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'),
     retry: false,
   });
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'ADMIN') {
+    if (!isAuthenticated || (user?.role !== 'ADMIN' && user?.role !== 'SUPER_ADMIN')) {
       router.replace('/admin/login');
     }
   }, [isAuthenticated, user, router]);

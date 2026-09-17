@@ -28,7 +28,7 @@ export class AuthController {
     
     if (dto.role === UserRole.RESTAURANT || dto.role === UserRole.DELIVERY) {
       try {
-        await this.authUseCase.sendVerificationEmail(result.id);
+        await this.authUseCase.sendVerificationEmail(result.id, dto.password);
       } catch (error) {
         console.error('Failed to send verification email:', error);
       }

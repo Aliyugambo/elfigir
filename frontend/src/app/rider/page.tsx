@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { FaMotorcycle, FaCheckCircle, FaMapMarkerAlt, FaEye } from 'react-icons/fa';
 
-const MapEmbed = dynamic(() => import('@/components/MapEmbed'), {
+const LiveDeliveryMap = dynamic(() => import('@/components/LiveDeliveryMap'), {
   ssr: false,
   loading: () => (
     <div className="h-80 w-full bg-cream rounded-lg border border-cream animate-pulse flex items-center justify-center">
@@ -108,8 +108,6 @@ export default function RiderPortalPage() {
               const dropoff = customerCoords(order);
               const showMap =
                 order.status === 'READY_FOR_PICKUP' || order.status === 'OUT_FOR_DELIVERY';
-              const showDirections =
-                order.status === 'OUT_FOR_DELIVERY' && dropoff.lat && dropoff.lng;
 
               return (
                 <div
@@ -195,29 +193,15 @@ export default function RiderPortalPage() {
 
                   {expandedOrderId === order.id && showMap && (
                     <div className="mt-4 space-y-3">
-                      {showDirections && (
-                        <MapEmbed
-                          pickupLat={pickup.lat}
-                          pickupLng={pickup.lng}
-                          pickupLabel={pickup.label}
-                          pickupAddress={pickup.address}
-                          dropoffLat={dropoff.lat}
-                          dropoffLng={dropoff.lng}
-                          dropoffLabel={dropoff.label}
-                          dropoffAddress={dropoff.address}
-                        />
-                      )}
-                      {!showDirections && (
-                        <div className="text-sm text-charcoal-light mb-2">
-                          Navigate to: <strong>{pickup.label}</strong>
-                          <MapEmbed
-                            pickupLat={pickup.lat}
-                            pickupLng={pickup.lng}
-                            pickupLabel={pickup.label}
-                            pickupAddress={pickup.address}
-                          />
-                        </div>
-                      )}
+                      <LiveDeliveryMap
+                        orderId={order.id}
+                        isRider
+                        pickup={pickup}
+                        dropoff={dropoff}
+                      />
+                      <p className="text-sm text-charcoal-light">
+                        Route: {pickup.address || pickup.label} to {dropoff.address || dropoff.label}
+                      </p>
                     </div>
                   )}
                 </div>

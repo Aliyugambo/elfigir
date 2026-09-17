@@ -1,14 +1,15 @@
-import { useMemo, useState, useEffect } from 'react';
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
   Polyline,
+  useMap,
 } from 'react-leaflet';
 import L from 'leaflet';
+import { useEffect, useMemo, useState } from 'react';
 
-type LatLng = { lat: number; lng: number; label: string };
+type LatLng = { lat: number; lng: number; label: string; address?: string };
 
 type MapEmbedProps = {
   pickupLat?: number | null;
@@ -19,11 +20,50 @@ type MapEmbedProps = {
   dropoffLng?: number | null;
   dropoffLabel?: string;
   dropoffAddress?: string;
+  riderLat?: number | null;
+  riderLng?: number | null;
+  riderLabel?: string;
   height?: string;
 };
 
 function hasCoords(lat?: number | null, lng?: number | null): boolean {
   return lat != null && lng != null && lat !== 0 && lng !== 0;
+}
+
+async function geocodeAddress(address: string): Promise<{ lat: number; lng: number } | null> {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+      q: address,
+      format: 'json',
+      limit: '1',
+    })}`,
+  );
+
+  if (!response.ok) return null;
+  const results = (await response.json()) as Array<{ lat: string; lon: string }>;
+  if (!results[0]) return null;
+
+  return { lat: Number(results[0].lat), lng: Number(results[0].lon) };
+}
+
+function MapViewport({ locations }: { locations: LatLng[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (locations.length === 0) return;
+
+    if (locations.length === 1) {
+      map.setView([locations[0].lat, locations[0].lng], 15);
+      return;
+    }
+
+    map.fitBounds(
+      locations.map((location) => [location.lat, location.lng] as [number, number]),
+      { padding: [36, 36] },
+    );
+  }, [locations, map]);
+
+  return null;
 }
 
 const iconUrl = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.7/images/marker-icon.png';
@@ -74,35 +114,94 @@ export default function MapEmbed({
   dropoffLng,
   dropoffLabel = 'Drop-off',
   dropoffAddress,
+  riderLat,
+  riderLng,
+  riderLabel = 'Rider',
   height = '320px',
 }: MapEmbedProps) {
   const [mounted, setMounted] = useState(false);
+  const [resolvedPickup, setResolvedPickup] = useState<{ lat: number; lng: number } | null>(null);
+  const [resolvedDropoff, setResolvedDropoff] = useState<{ lat: number; lng: number } | null>(null);
+  const [route, setRoute] = useState<L.LatLngExpression[] | null>(null);
+  const [isResolving, setIsResolving] = useState(false);
+
   useEffect(() => setMounted(true), []);
 
-  const { pickup, dropoff, polyline, center, zoom } = useMemo(() => {
-    const hasPickup = hasCoords(pickupLat, pickupLng);
-    const hasDropoff = hasCoords(dropoffLat, dropoffLng);
+  useEffect(() => {
+    let cancelled = false;
+
+    const resolveLocations = async () => {
+      setIsResolving(true);
+      setRoute(null);
+
+      const [pickupResult, dropoffResult] = await Promise.all([
+        hasCoords(pickupLat, pickupLng)
+          ? Promise.resolve({ lat: pickupLat!, lng: pickupLng! })
+          : pickupAddress
+            ? geocodeAddress(pickupAddress).catch(() => null)
+            : Promise.resolve(null),
+        hasCoords(dropoffLat, dropoffLng)
+          ? Promise.resolve({ lat: dropoffLat!, lng: dropoffLng! })
+          : dropoffAddress
+            ? geocodeAddress(dropoffAddress).catch(() => null)
+            : Promise.resolve(null),
+      ]);
+
+      if (cancelled) return;
+      setResolvedPickup(pickupResult);
+      setResolvedDropoff(dropoffResult);
+      setIsResolving(false);
+
+      const currentRider = hasCoords(riderLat, riderLng)
+        ? { lat: riderLat!, lng: riderLng! }
+        : null;
+      const routeStart = currentRider || pickupResult;
+      if (!routeStart || !dropoffResult) return;
+
+      const routeResponse = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${routeStart.lng},${routeStart.lat};${dropoffResult.lng},${dropoffResult.lat}?overview=full&geometries=geojson`,
+      ).catch(() => null);
+      if (!routeResponse?.ok || cancelled) return;
+
+      const routeData = await routeResponse.json() as {
+        routes?: Array<{ geometry?: { coordinates: Array<[number, number]> } }>;
+      };
+      const coordinates = routeData.routes?.[0]?.geometry?.coordinates;
+      if (coordinates && !cancelled) {
+        setRoute(coordinates.map(([lng, lat]) => [lat, lng]));
+      }
+    };
+
+    resolveLocations();
+    return () => {
+      cancelled = true;
+    };
+  }, [pickupAddress, pickupLat, pickupLng, dropoffAddress, dropoffLat, dropoffLng, riderLat, riderLng]);
+
+  const rider = hasCoords(riderLat, riderLng)
+    ? { lat: riderLat!, lng: riderLng!, label: riderLabel }
+    : null;
+
+  const { pickup, dropoff, center, zoom } = useMemo(() => {
+    const hasPickup = resolvedPickup != null;
+    const hasDropoff = resolvedDropoff != null;
 
     const p: LatLng | null = hasPickup
-      ? { lat: pickupLat!, lng: pickupLng!, label: pickupLabel }
+      ? { ...resolvedPickup!, label: pickupLabel, address: pickupAddress }
       : null;
 
     const d: LatLng | null = hasDropoff
-      ? { lat: dropoffLat!, lng: dropoffLng!, label: dropoffLabel }
+      ? { ...resolvedDropoff!, label: dropoffLabel, address: dropoffAddress }
       : null;
-
-    let poly: L.LatLngExpression[] | null = null;
-    if (p && d) {
-      poly = [[p.lat, p.lng], [d.lat, d.lng]];
-    }
 
     let center: L.LatLngExpression = [0, 0];
     let zoom = 13;
 
-    if (p && d) {
+    const routeStart = rider || p;
+    if (routeStart && d) {
       center = [
-        (p.lat + d.lat) / 2,
-        (p.lng + d.lng) / 2,
+        (routeStart.lat + d.lat) / 2,
+        (routeStart.lng + d.lng) / 2,
       ];
       zoom = 13;
     } else if (p) {
@@ -113,18 +212,8 @@ export default function MapEmbed({
       zoom = 15;
     }
 
-    return { pickup: p, dropoff: d, polyline: poly, center, zoom };
-  }, [pickupLat, pickupLng, pickupLabel, dropoffLat, dropoffLng, dropoffLabel]);
-
-  const fallbackAddress = useMemo(() => {
-    if (pickupAddress && !pickup && !dropoff) {
-      return { address: pickupAddress, label: pickupLabel };
-    }
-    if (dropoffAddress && !dropoff) {
-      return { address: dropoffAddress, label: dropoffLabel };
-    }
-    return null;
-  }, [pickupAddress, dropoffAddress, pickup, dropoff, pickupLabel, dropoffLabel]);
+    return { pickup: p, dropoff: d, center, zoom };
+  }, [dropoffAddress, dropoffLabel, pickupAddress, pickupLabel, resolvedDropoff, resolvedPickup, rider]);
 
   if (!mounted) {
     return (
@@ -135,7 +224,15 @@ export default function MapEmbed({
     );
   }
 
-  if (!pickup && !dropoff && !fallbackAddress) {
+  if (isResolving && !pickup && !dropoff) {
+    return (
+      <div style={{ height }} className="w-full bg-cream rounded-lg border border-cream flex items-center justify-center">
+        <p className="text-charcoal-light text-sm">Finding delivery locations...</p>
+      </div>
+    );
+  }
+
+  if (!pickup && !dropoff) {
     return (
       <div
         style={{ height }}
@@ -157,6 +254,7 @@ export default function MapEmbed({
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={false}
       >
+        <MapViewport locations={[pickup, rider, dropoff].filter((location): location is LatLng => Boolean(location))} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -167,7 +265,7 @@ export default function MapEmbed({
             position={[pickup.lat, pickup.lng]}
             icon={getIcon(pickup.label) ?? undefined}
           >
-            <Popup>{pickup.label}</Popup>
+            <Popup>{pickup.label}{pickup.address ? `: ${pickup.address}` : ''}</Popup>
           </Marker>
         )}
 
@@ -176,11 +274,20 @@ export default function MapEmbed({
             position={[dropoff.lat, dropoff.lng]}
             icon={getIcon(dropoff.label) ?? undefined}
           >
-            <Popup>{dropoff.label}</Popup>
+            <Popup>{dropoff.label}{dropoff.address ? `: ${dropoff.address}` : ''}</Popup>
           </Marker>
         )}
 
-        {polyline && <Polyline positions={polyline} color="#D84A51" />}
+        {rider && (
+          <Marker
+            position={[rider.lat, rider.lng]}
+            icon={getIcon(rider.label) ?? undefined}
+          >
+            <Popup>{rider.label} is here now</Popup>
+          </Marker>
+        )}
+
+        {route && <Polyline positions={route} color="#D84A51" weight={5} />}
       </MapContainer>
     </div>
   );

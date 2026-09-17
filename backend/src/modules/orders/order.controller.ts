@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, UseGuards, Req, Query, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { OrderUseCase } from './order.use-case';
-import { CreateOrderDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
+import { CreateOrderDto, UpdateDeliveryLocationDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
 import { JwtGuard } from '@/modules/auth/jwt.guard';
 import { RolesGuard } from '@/common/roles.guard';
 import { Roles } from '@/common/roles.decorator';
@@ -45,6 +45,27 @@ export class OrderController {
     @Body() dto: UpdateOrderStatusDto,
   ) {
     return this.orderUseCase.updateStatusByRole(req.user.sub, req.user.role, id, dto);
+  }
+
+  @Post(':id/tracking/location')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.DELIVERY)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update the delivery rider live location' })
+  async updateDeliveryLocation(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() dto: UpdateDeliveryLocationDto,
+  ) {
+    return this.orderUseCase.updateDeliveryLocation(req.user.sub, id, dto);
+  }
+
+  @Get(':id/tracking')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get live delivery tracking for an order' })
+  async getDeliveryTracking(@Req() req: any, @Param('id') id: string) {
+    return this.orderUseCase.getDeliveryTracking(req.user.sub, req.user.role, id);
   }
 
   @Post(':id/confirm-transfer')

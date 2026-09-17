@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import logo from '@/logo.png';
@@ -12,13 +13,17 @@ import { adminService, AdminNotification } from '@/services/admin.service';
 import { FaBell, FaBars, FaTimes } from 'react-icons/fa';
 
 function NotificationsBell() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const { user } = useAuthStore();
 
   const { data } = useQuery({
     queryKey: ['admin-notifications'],
     queryFn: () => adminService.listNotifications(),
-    refetchInterval: 30000,
+    enabled: user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN',
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 
   const notifications: AdminNotification[] = data ?? [];
@@ -27,6 +32,17 @@ function NotificationsBell() {
   const markRead = async (id: string) => {
     await adminService.markNotificationRead(id);
     queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+  };
+
+  const handleNotificationClick = async (notification: AdminNotification) => {
+    if (!notification.isRead) {
+      await markRead(notification.id);
+    }
+
+    if (notification.orderId) {
+      setOpen(false);
+      router.push(`/admin/orders/${notification.orderId}`);
+    }
   };
 
   return (
@@ -58,7 +74,7 @@ function NotificationsBell() {
             notifications.map((n) => (
               <button
                 key={n.id}
-                onClick={() => markRead(n.id)}
+                onClick={() => handleNotificationClick(n)}
                 className={`block w-full text-left px-4 py-3 border-b border-maroon hover:bg-maroon/50 ${
                   n.isRead ? '' : 'bg-mustard/10'
                 }`}

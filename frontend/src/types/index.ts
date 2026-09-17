@@ -25,6 +25,8 @@ export type Restaurant = {
   minOrderValue: number;
   address: string;
   city: string;
+  latitude: number;
+  longitude: number;
   isOpen: boolean;
   bankName?: string;
   accountNumber?: string;
@@ -69,9 +71,36 @@ export type Order = {
   paymentMethod: string;
   paymentStatus: string;
   deliveryAddress: string;
+  deliveryLat?: number | null;
+  deliveryLng?: number | null;
   specialInstructions?: string;
   createdAt: string;
   restaurant: Restaurant;
+};
+
+export type DeliveryTracking = {
+  orderId: string;
+  orderNumber: string;
+  status: OrderStatus;
+  deliveryAddress: string;
+  deliveryLat?: number | null;
+  deliveryLng?: number | null;
+  restaurant: {
+    name: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+  };
+  tracking?: {
+    latitude: number;
+    longitude: number;
+    heading?: number | null;
+    speed?: number | null;
+    distanceMeters?: number | null;
+    etaSeconds?: number | null;
+    arrivedAt?: string | null;
+    lastUpdatedAt: string;
+  } | null;
 };
 
 export type OrderItem = {

@@ -104,7 +104,7 @@ export class AdminRepository {
   }
 
   async getDashboard() {
-    const [customers, chefs, riders, restaurants, orders, pendingRiders] =
+    const [customers, chefs, riders, restaurants, orders, pendingRiders, revenueSummary, totalOrderAmount] =
       await Promise.all([
         this.prisma.user.count({ where: { role: UserRole.CUSTOMER } }),
         this.prisma.user.count({ where: { role: UserRole.RESTAURANT } }),
@@ -114,10 +114,26 @@ export class AdminRepository {
         this.prisma.user.count({
           where: { role: UserRole.DELIVERY, isActive: false },
         }),
+        this.prisma.order.aggregate({
+          _sum: { totalAmount: true },
+          where: {
+            paymentStatus: PaymentStatus.COMPLETED,
+            status: { not: OrderStatus.CANCELLED },
+          },
+        }),
+        this.prisma.order.aggregate({
+          _sum: { totalAmount: true },
+          where: { status: { not: OrderStatus.CANCELLED } },
+        }),
       ]);
 
     return {
       counts: { customers, chefs, riders, restaurants, orders },
+      financial: {
+        totalRevenue: Number(revenueSummary._sum.totalAmount || 0),
+        totalOrders: orders,
+        totalOrderAmount: Number(totalOrderAmount._sum.totalAmount || 0),
+      },
       pendingRiderApprovals: pendingRiders,
     };
   }
@@ -597,10 +613,34 @@ export class AdminRepository {
   }
 
   async listNotifications(adminId: string) {
-    return this.prisma.notification.findMany({
+    const notifications = await this.prisma.notification.findMany({
       where: { userId: adminId },
       orderBy: { createdAt: 'desc' },
     });
+
+    const orderNumberPattern = /\bORD-\d+\b/i;
+    const orderNumbers = notifications
+      .map((notification) =>
+        `${notification.title} ${notification.message}`.match(orderNumberPattern)?.[0],
+      )
+      .filter((orderNumber): orderNumber is string => Boolean(orderNumber));
+
+    if (orderNumbers.length === 0) {
+      return notifications;
+    }
+
+    const orders = await this.prisma.order.findMany({
+      where: { orderNumber: { in: orderNumbers } },
+      select: { id: true, orderNumber: true },
+    });
+    const orderIdsByNumber = new Map(orders.map((order) => [order.orderNumber, order.id]));
+
+    return notifications.map((notification) => ({
+      ...notification,
+      orderId: orderIdsByNumber.get(
+        `${notification.title} ${notification.message}`.match(orderNumberPattern)?.[0] || '',
+      ),
+    }));
   }
 
   async markNotificationRead(adminId: string, id: string) {

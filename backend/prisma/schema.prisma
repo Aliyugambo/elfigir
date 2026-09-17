@@ -32,6 +32,8 @@ model User {
 
   // Relations
   orders             Order[]
+  deliveryOrders     Order[] @relation("DeliveryRider")
+  trackingUpdates    DeliveryTracking[]
   reviews            Review[]
   favorites          Favorite[]
   addresses          Address[]
@@ -157,6 +159,7 @@ model Order {
   restaurantId          String
   restaurant            Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   items                 OrderItem[]
+  tracking              DeliveryTracking?
   status                OrderStatus   @default(PENDING)
   subtotal              Float
   deliveryFee           Float
@@ -171,11 +174,33 @@ model Order {
   specialInstructions   String?
   estimatedDeliveryTime DateTime?
   actualDeliveryTime    DateTime?
+  riderId               String?
+  rider                 User?         @relation("DeliveryRider", fields: [riderId], references: [id], onDelete: SetNull)
   cancelReason          String?
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 
   @@map("orders")
+}
+
+model DeliveryTracking {
+  id                 String   @id @default(cuid())
+  orderId            String   @unique
+  order              Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  riderId            String
+  rider              User     @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  latitude           Float
+  longitude          Float
+  heading            Float?
+  speed              Float?
+  distanceMeters     Int?
+  etaSeconds         Int?
+  arrivedAt          DateTime?
+  lastUpdatedAt      DateTime @updatedAt
+  createdAt          DateTime @default(now())
+
+  @@index([riderId])
+  @@map("delivery_tracking")
 }
 
 model OrderItem {

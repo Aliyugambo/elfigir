@@ -23,6 +23,8 @@ export default function AdminOrdersPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const [selectedStatus, setSelectedStatus] = useState<Record<string, OrderStatus>>({});
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   const {
     data: ordersData,
@@ -109,6 +111,102 @@ export default function AdminOrdersPage() {
 
   const orders = ordersData?.orders || [];
 
+  const filteredOrders = orders.filter((order: any) => {
+    const created = new Date(order.createdAt);
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    if (start && created < start) return false;
+    if (end) {
+      const endOfDay = new Date(end);
+      endOfDay.setHours(23, 59, 59, 999);
+      if (created > endOfDay) return false;
+    }
+
+    return true;
+  });
+
+  const totalRevenue = filteredOrders.reduce((sum: number, order: any) => sum + Number(order.totalAmount || 0), 0);
+  const totalCompletedRevenue = filteredOrders.reduce((sum: number, order: any) => {
+    const isCompleted = ['DELIVERED', 'COMPLETED'].includes(order.status);
+    return sum + (isCompleted ? Number(order.totalAmount || 0) : 0);
+  }, 0);
+  const paymentBreakdown = filteredOrders.reduce((acc: Record<string, number>, order: any) => {
+    const key = order.paymentMethod || 'N/A';
+    acc[key] = (acc[key] || 0) + Number(order.totalAmount || 0);
+    return acc;
+  }, {});
+
+  const handleDownloadOrders = async () => {
+    try {
+      if (filteredOrders.length === 0) {
+        toast.error('No orders found for the selected date range');
+        return;
+      }
+
+      const [{ jsPDF }, { default: autoTable }] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+      ]);
+
+      const doc = new jsPDF();
+      const rows = filteredOrders;
+
+      doc.setFillColor(246, 245, 240);
+      doc.rect(0, 0, 210, 56, 'F');
+      doc.setFontSize(18);
+      doc.setTextColor(30, 41, 59);
+      doc.text('Elfigir Accounting Report', 14, 20);
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+      doc.text(`Date Range: ${startDate || 'All time'} to ${endDate || 'Current'}`, 14, 34);
+      doc.text(`Total Orders: ${rows.length}`, 14, 40);
+      doc.text(`Total Revenue: ₦${totalRevenue.toLocaleString()}`, 14, 46);
+
+      const summaryY = 62;
+      doc.setFontSize(12);
+      doc.text('Summary', 14, summaryY);
+      doc.setFontSize(10);
+      doc.text(`Completed Revenue: ₦${totalCompletedRevenue.toLocaleString()}`, 14, summaryY + 10);
+
+      const paymentEntries = Object.entries(paymentBreakdown);
+      let paymentY = summaryY + 20;
+      paymentEntries.forEach(([method, value]) => {
+        doc.text(`${method}: ₦${Number(value).toLocaleString()}`, 14, paymentY);
+        paymentY += 8;
+      });
+
+      const tableRows = rows.map((order: any) => [
+        order.orderNumber,
+        `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim(),
+        order.restaurant?.name || '',
+        new Date(order.createdAt).toLocaleDateString(),
+        order.status,
+        order.paymentStatus,
+        order.paymentMethod,
+        `₦${Number(order.totalAmount || 0).toLocaleString()}`,
+      ]);
+
+      const finalY = paymentY + 12;
+      autoTable(doc, {
+        head: [['Order Number', 'Customer', 'Restaurant', 'Date', 'Status', 'Payment Status', 'Payment Method', 'Total Amount']],
+        body: tableRows,
+        startY: finalY,
+        styles: { fontSize: 7 },
+        headStyles: { fillColor: [17, 24, 39] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+        margin: { left: 14, right: 14 },
+      });
+
+      doc.save('elfigir-accounting-report.pdf');
+      toast.success('Accounting PDF downloaded');
+    } catch (err: any) {
+      console.error('Export PDF failed:', err);
+      toast.error(err instanceof Error ? err.message : 'Failed to export orders');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-secondary">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -117,13 +215,70 @@ export default function AdminOrdersPage() {
             <h1 className="text-3xl font-bold text-charcoal">Order Management</h1>
             <p className="text-charcoal-light mt-1">View and control orders across the platform.</p>
           </div>
-          <button
-            type="button"
-            onClick={() => router.push('/admin/dashboard')}
-            className="btn-outline px-4 py-2 rounded-lg"
-          >
-            Back to Dashboard
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleDownloadOrders}
+              className="btn-primary px-4 py-2 rounded-lg"
+            >
+              Download Orders PDF
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/admin/dashboard')}
+              className="btn-outline px-4 py-2 rounded-lg"
+            >
+              Back to Dashboard
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6 bg-white rounded-lg border border-cream p-4">
+          <div className="flex flex-col md:flex-row gap-3 md:items-end">
+            <div>
+              <label className="block text-sm font-medium text-charcoal mb-2">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="input-field"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-charcoal mb-2">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="input-field"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setStartDate('');
+                setEndDate('');
+              }}
+              className="btn-outline px-4 py-2 rounded-lg"
+            >
+              Clear Dates
+            </button>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3 mb-8">
+          <div className="card">
+            <p className="text-sm text-charcoal-light">Total Revenue</p>
+            <p className="text-2xl font-bold text-primary">₦{totalRevenue.toLocaleString()}</p>
+          </div>
+          <div className="card">
+            <p className="text-sm text-charcoal-light">Orders in Range</p>
+            <p className="text-2xl font-bold text-primary">{filteredOrders.length}</p>
+          </div>
+          <div className="card">
+            <p className="text-sm text-charcoal-light">Completed Revenue</p>
+            <p className="text-2xl font-bold text-primary">₦{totalCompletedRevenue.toLocaleString()}</p>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -133,13 +288,13 @@ export default function AdminOrdersPage() {
                 <div key={idx} className="h-28 rounded-lg bg-white animate-pulse" />
               ))}
             </div>
-          ) : orders.length === 0 ? (
+          ) : filteredOrders.length === 0 ? (
             <div className="rounded-lg bg-white border border-cream p-8 text-center">
-              <p className="text-charcoal-light">No orders found yet.</p>
+              <p className="text-charcoal-light">No orders found for the selected date range.</p>
             </div>
           ) : (
             <div className="space-y-4">
-               {orders.map((order: any) => (
+               {filteredOrders.map((order: any) => (
                 <div key={order.id} className="bg-white rounded-lg border border-cream p-4 sm:p-6 shadow-sm">
                   <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
                     <div>

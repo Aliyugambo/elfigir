@@ -24,6 +24,19 @@ export const orderService = {
     return response.data;
   },
 
+  getDeliveryTracking: async (orderId: string) => {
+    const response = await apiClient.get(`/orders/${orderId}/tracking`);
+    return response.data;
+  },
+
+  updateDeliveryLocation: async (
+    orderId: string,
+    data: { latitude: number; longitude: number; heading?: number; speed?: number },
+  ) => {
+    const response = await apiClient.post(`/orders/${orderId}/tracking/location`, data);
+    return response.data;
+  },
+
   updateStatus: async (id: string, data: { status: string; cancelReason?: string }) => {
     const response = await apiClient.patch(`/orders/${id}/status`, data);
     return response.data;

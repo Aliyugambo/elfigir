@@ -19,9 +19,25 @@ export class EmailService {
     });
   }
 
-  async sendVerificationEmail(email: string, token: string, firstName: string) {
+  async sendVerificationEmail(
+    email: string,
+    token: string,
+    firstName: string,
+    credentials?: { password: string },
+  ) {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     const verificationLink = `${frontendUrl}/verify-email?token=${token}`;
+    const loginLink = `${frontendUrl}/login`;
+    const credentialsSection = credentials
+      ? `
+          <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; margin: 24px 0;">
+            <h3 style="margin: 0 0 12px; color: #333;">Your login details</h3>
+            <p style="margin: 6px 0;"><strong>Username:</strong> ${email}</p>
+            <p style="margin: 6px 0;"><strong>Password:</strong> ${credentials.password}</p>
+            <p style="margin: 14px 0 0;"><a href="${loginLink}" style="color: #2563eb;">Login to Elfigir</a></p>
+          </div>
+        `
+      : '';
 
     const mailOptions = {
       from: this.configService.get<string>('SMTP_FROM') || 'noreply@elfigir.com',
@@ -31,6 +47,7 @@ export class EmailService {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
           <h2 style="color: #2563eb;">Welcome to Elfigir, ${firstName}!</h2>
           <p>Thank you for joining our team. Please verify your email address to activate your account.</p>
+          ${credentialsSection}
           <p>Click the button below to verify your email:</p>
           <div style="margin: 30px 0;">
             <a href="${verificationLink}" 

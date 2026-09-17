@@ -145,6 +145,23 @@ export default function AdminDashboardPage() {
           ))}
         </div>
 
+        {stats && (
+          <div className="grid gap-4 md:grid-cols-3 mb-8">
+            <div className="card">
+              <p className="text-sm text-charcoal-light">Total Revenue</p>
+              <p className="text-2xl font-bold text-primary">₦{Number(stats.financial?.totalRevenue || 0).toLocaleString()}</p>
+            </div>
+            <div className="card">
+              <p className="text-sm text-charcoal-light">Total Orders</p>
+              <p className="text-2xl font-bold text-primary">{stats.financial?.totalOrders ?? 0}</p>
+            </div>
+            <div className="card">
+              <p className="text-sm text-charcoal-light">Total Order Amount</p>
+              <p className="text-2xl font-bold text-primary">₦{Number(stats.financial?.totalOrderAmount || 0).toLocaleString()}</p>
+            </div>
+          </div>
+        )}
+
         {stats && stats.pendingRiderApprovals > 0 && (
           <div className="bg-mustard/10 border border-mustard/30 rounded-lg p-4 mb-6 text-maroon">
             {stats.pendingRiderApprovals} rider(s) awaiting approval.

@@ -26,12 +26,12 @@ export default function AdminNotificationsPage() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['admin-notifications'],
     queryFn: () => adminService.listNotifications(),
-    enabled: isAuthenticated && user?.role === 'ADMIN',
+    enabled: isAuthenticated && (user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN'),
     retry: false,
   });
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'ADMIN') {
+    if (!isAuthenticated || (user?.role !== 'ADMIN' && user?.role !== 'SUPER_ADMIN')) {
       router.replace('/admin/login');
     }
   }, [isAuthenticated, user, router]);
@@ -44,6 +44,16 @@ export default function AdminNotificationsPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
     } catch {
       toast.error('Failed to mark notification as read');
+    }
+  };
+
+  const handleNotificationClick = async (notification: AdminNotification) => {
+    if (!notification.isRead) {
+      await handleMarkRead(notification.id);
+    }
+
+    if (notification.orderId) {
+      router.push(`/admin/orders/${notification.orderId}`);
     }
   };
 
@@ -107,7 +117,7 @@ export default function AdminNotificationsPage() {
                     ? 'bg-white border-cream hover:bg-cream'
                     : 'bg-primary/5 border-primary/20 hover:bg-primary/10'
                 }`}
-                onClick={() => !n.isRead && handleMarkRead(n.id)}
+                onClick={() => handleNotificationClick(n)}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">

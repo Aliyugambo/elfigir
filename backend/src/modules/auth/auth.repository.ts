@@ -224,7 +224,7 @@ export class AuthRepository {
     });
   }
 
-  async sendVerificationEmail(userId: string) {
+  async sendVerificationEmail(userId: string, password?: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -238,7 +238,12 @@ export class AuthRepository {
     }
 
     const token = await this.createEmailVerificationToken(userId);
-    await this.emailService.sendVerificationEmail(user.email, token, user.firstName);
+    await this.emailService.sendVerificationEmail(
+      user.email,
+      token,
+      user.firstName,
+      password ? { password } : undefined,
+    );
 
     return { message: 'Verification email sent successfully' };
   }

@@ -7,6 +7,9 @@ import { useAuthStore } from '@/store/auth.store';
 import { orderService } from '@/services/order.service';
 import { toast } from 'sonner';
 import { FaArrowLeft, FaCheckCircle, FaMotorcycle } from 'react-icons/fa';
+import dynamic from 'next/dynamic';
+
+const LiveDeliveryMap = dynamic(() => import('@/components/LiveDeliveryMap'), { ssr: false });
 
 export default function OrderDetailsPage() {
   const router = useRouter();
@@ -123,6 +126,27 @@ export default function OrderDetailsPage() {
               <p className="font-medium text-charcoal">{new Date(order.createdAt).toLocaleString()}</p>
             </div>
           </div>
+
+          {order.status === 'OUT_FOR_DELIVERY' && (
+            <div>
+              <h2 className="text-lg font-semibold text-charcoal mb-2">Live delivery tracking</h2>
+              <LiveDeliveryMap
+                orderId={order.id}
+                pickup={{
+                  lat: order.restaurant?.latitude,
+                  lng: order.restaurant?.longitude,
+                  label: order.restaurant?.name || 'Restaurant',
+                  address: order.restaurant?.address,
+                }}
+                dropoff={{
+                  lat: order.deliveryLat,
+                  lng: order.deliveryLng,
+                  label: 'Delivery address',
+                  address: order.deliveryAddress,
+                }}
+              />
+            </div>
+          )}
 
           <div>
             <h2 className="text-lg font-semibold text-charcoal mb-2">Order Items</h2>

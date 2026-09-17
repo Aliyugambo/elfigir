@@ -57,3 +57,19 @@ export class VerifyPaystackDto {
   @IsNotEmpty()
   reference!: string;
 }
+
+export class UpdateDeliveryLocationDto {
+  @IsNumber()
+  latitude!: number;
+
+  @IsNumber()
+  longitude!: number;
+
+  @IsNumber()
+  @IsOptional()
+  heading?: number;
+
+  @IsNumber()
+  @IsOptional()
+  speed?: number;
+}

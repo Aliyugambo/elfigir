@@ -101,7 +101,7 @@ export default function SignupPage() {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-charcoal">Create Account</h1>
-          <p className="text-charcoal-light mt-1">Join Elfigir today</p>
+          <p className="text-charcoal-light mt-1">Join Elfijr Kitchen today</p>
         </div>
 
         {/* Google Sign Up Button */}

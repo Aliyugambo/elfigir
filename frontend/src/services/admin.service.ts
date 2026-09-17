@@ -88,6 +88,7 @@ export type AdminRestaurant = {
 
 export type AdminNotification = {
   id: string;
+  orderId?: string;
   title: string;
   message: string;
   type: string;
@@ -102,6 +103,11 @@ export type DashboardStats = {
     riders: number;
     restaurants: number;
     orders: number;
+  };
+  financial: {
+    totalRevenue: number;
+    totalOrders: number;
+    totalOrderAmount: number;
   };
   pendingRiderApprovals: number;
 };

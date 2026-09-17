@@ -26,8 +26,8 @@ export class AuthUseCase {
     return this.authRepository.getUserById(userId);
   }
 
-  async sendVerificationEmail(userId: string) {
-    return this.authRepository.sendVerificationEmail(userId);
+  async sendVerificationEmail(userId: string, password?: string) {
+    return this.authRepository.sendVerificationEmail(userId, password);
   }
 
   async verifyEmail(token: string) {

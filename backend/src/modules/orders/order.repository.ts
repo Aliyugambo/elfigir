@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
 import { GeocodingService } from '@/common/geocoding.service';
-import { CreateOrderDto, UpdateOrderStatusDto } from './order.dto';
+import { CreateOrderDto, UpdateDeliveryLocationDto, UpdateOrderStatusDto } from './order.dto';
 import { OrderStatus, PaymentStatus, UserRole } from '@prisma/client';
 
 @Injectable()
@@ -104,6 +104,7 @@ export class OrderRepository {
         },
         restaurant: true,
         user: true,
+        tracking: true,
       },
     });
   }
@@ -111,11 +112,15 @@ export class OrderRepository {
   async updatePaymentStatus(orderId: string, status: PaymentStatus) {
     return this.prisma.order.update({
       where: { id: orderId },
-      data: { paymentStatus: status },
+      data: {
+        paymentStatus: status,
+        status: status === PaymentStatus.COMPLETED ? OrderStatus.CONFIRMED : undefined,
+      },
       include: {
         items: { include: { menuItem: true } },
         restaurant: true,
         user: true,
+        tracking: true,
       },
     });
   }
@@ -235,6 +240,9 @@ export class OrderRepository {
       where: { id },
       data: {
         status: dto.status,
+        riderId: role === UserRole.DELIVERY && dto.status === OrderStatus.OUT_FOR_DELIVERY
+          ? userId
+          : undefined,
         cancelReason: dto.cancelReason,
         actualDeliveryTime: dto.status === OrderStatus.DELIVERED ? new Date() : undefined,
       },
@@ -404,5 +412,110 @@ export class OrderRepository {
     return this.prisma.notification.create({
       data: { userId, title, message, type },
     });
+  }
+
+  async updateDeliveryLocation(userId: string, orderId: string, dto: UpdateDeliveryLocationDto) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { tracking: true, user: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.riderId !== userId || order.status !== OrderStatus.OUT_FOR_DELIVERY) {
+      throw new BadRequestException('This order is not assigned to you for delivery');
+    }
+
+    const distanceMeters = order.deliveryLat != null && order.deliveryLng != null
+      ? Math.round(this.distanceInMeters(dto.latitude, dto.longitude, order.deliveryLat, order.deliveryLng))
+      : null;
+    const etaSeconds = distanceMeters == null ? null : Math.max(0, Math.round(distanceMeters / 8.33));
+    const hasArrived = distanceMeters != null && distanceMeters <= 100;
+    const arrivedAt = order.tracking?.arrivedAt ?? (hasArrived ? new Date() : null);
+
+    const tracking = await this.prisma.deliveryTracking.upsert({
+      where: { orderId },
+      create: {
+        orderId,
+        riderId: userId,
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+        heading: dto.heading,
+        speed: dto.speed,
+        distanceMeters,
+        etaSeconds,
+        arrivedAt,
+      },
+      update: {
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+        heading: dto.heading,
+        speed: dto.speed,
+        distanceMeters,
+        etaSeconds,
+        arrivedAt,
+      },
+    });
+
+    if (hasArrived && !order.tracking?.arrivedAt) {
+      await Promise.all([
+        this.createNotification(
+          order.userId,
+          'Rider has arrived',
+          `Your rider has arrived at the delivery address for order ${order.orderNumber}.`,
+          'rider_arrived',
+        ),
+        this.createNotification(
+          userId,
+          'You have arrived',
+          `You have arrived at the delivery address for order ${order.orderNumber}.`,
+          'rider_arrived',
+        ),
+      ]);
+    }
+
+    return tracking;
+  }
+
+  async getDeliveryTracking(userId: string, role: string, orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        tracking: true,
+        restaurant: { select: { name: true, address: true, latitude: true, longitude: true } },
+        user: { select: { id: true, firstName: true, lastName: true } },
+      },
+    });
+
+    if (!order) throw new NotFoundException('Order not found');
+    if (role === UserRole.CUSTOMER && order.userId !== userId) {
+      throw new BadRequestException('You can only track your own orders');
+    }
+    if (role === UserRole.DELIVERY && order.riderId !== userId) {
+      throw new BadRequestException('This order is not assigned to you');
+    }
+
+    return {
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      deliveryAddress: order.deliveryAddress,
+      deliveryLat: order.deliveryLat,
+      deliveryLng: order.deliveryLng,
+      restaurant: order.restaurant,
+      tracking: order.tracking,
+    };
+  }
+
+  private distanceInMeters(latitudeA: number, longitudeA: number, latitudeB: number, longitudeB: number) {
+    const earthRadius = 6371000;
+    const toRadians = (value: number) => value * Math.PI / 180;
+    const latitudeDelta = toRadians(latitudeB - latitudeA);
+    const longitudeDelta = toRadians(longitudeB - longitudeA);
+    const value = Math.sin(latitudeDelta / 2) ** 2
+      + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB)) * Math.sin(longitudeDelta / 2) ** 2;
+    return earthRadius * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
   }
 }

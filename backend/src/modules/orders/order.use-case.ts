@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { CreateOrderDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
+import { CreateOrderDto, UpdateDeliveryLocationDto, UpdateOrderStatusDto, VerifyPaystackDto } from './order.dto';
 import { PaymentStatus, UserRole } from '@prisma/client';
 import axios from 'axios';
 
@@ -27,6 +33,14 @@ export class OrderUseCase {
 
   async updateStatusByRole(userId: string, role: string, id: string, dto: UpdateOrderStatusDto) {
     return this.orderRepository.updateStatusByRole(userId, role, id, dto);
+  }
+
+  async updateDeliveryLocation(userId: string, orderId: string, dto: UpdateDeliveryLocationDto) {
+    return this.orderRepository.updateDeliveryLocation(userId, orderId, dto);
+  }
+
+  async getDeliveryTracking(userId: string, role: string, orderId: string) {
+    return this.orderRepository.getDeliveryTracking(userId, role, orderId);
   }
 
   async confirmTransfer(userId: string, orderId: string) {
@@ -63,6 +77,12 @@ export class OrderUseCase {
     }
 
     const updated = await this.orderRepository.updatePaymentStatus(orderId, PaymentStatus.COMPLETED);
+
+    await this.orderRepository.notifyAdmins(
+      'Payment received',
+      `Paystack payment received for order ${order.orderNumber} from ${order.user?.firstName || 'a customer'} ${order.user?.lastName || ''}.`,
+      'payment_received',
+    );
 
     await this.orderRepository.createNotification(
       order.userId,
@@ -125,16 +145,32 @@ export class OrderUseCase {
       throw new BadRequestException('This endpoint is only for Paystack payments');
     }
 
+    if (order.paymentStatus === PaymentStatus.COMPLETED) {
+      return order;
+    }
+
     const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
     if (!paystackSecretKey) {
       throw new BadRequestException('Paystack is not configured');
     }
 
-    const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
-      headers: {
-        Authorization: `Bearer ${paystackSecretKey}`,
-      },
-    });
+    let response;
+    try {
+      response = await axios.get(
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${paystackSecretKey}`,
+          },
+          timeout: 10000,
+        },
+      );
+    } catch (error: any) {
+      const paystackMessage = error?.response?.data?.message;
+      throw new ServiceUnavailableException(
+        paystackMessage || 'Paystack could not be reached. Please try again.',
+      );
+    }
 
     const paystackData = response.data;
 
@@ -143,11 +179,17 @@ export class OrderUseCase {
     }
 
     const paystackAmount = paystackData.data.amount / 100;
-    if (Math.abs(paystackAmount - order.totalAmount) > 100) {
+    if (Math.abs(paystackAmount - order.totalAmount) > 0.01) {
       throw new BadRequestException('Payment amount does not match order total');
     }
 
     const updated = await this.orderRepository.updatePaymentStatus(orderId, PaymentStatus.COMPLETED);
+
+    await this.orderRepository.notifyAdmins(
+      'New Paystack order',
+      `Paystack payment received for order ${order.orderNumber} from ${order.user?.firstName || 'a customer'} ${order.user?.lastName || ''}. Please review the order and approve it for preparation.`,
+      'payment_received',
+    );
 
     await this.orderRepository.createNotification(
       order.userId,
@@ -156,7 +198,7 @@ export class OrderUseCase {
       'payment_confirmed',
     );
 
-    await this.orderRepository.createNotification(
+    await this.orderRepository.notifyRestaurant(
       order.restaurantId,
       'Payment received',
       `Payment received for order ${order.orderNumber} via Paystack. Please start preparation.`,
