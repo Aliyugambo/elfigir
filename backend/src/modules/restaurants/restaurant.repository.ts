@@ -1,23 +1,64 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
-import { CreateRestaurantDto, UpdateRestaurantDto, RestaurantFilterDto, MenuItemFilterDto } from './restaurant.dto';
+import {
+  CreateRestaurantDto,
+  UpdateRestaurantDto,
+  RestaurantFilterDto,
+  MenuItemFilterDto,
+} from './restaurant.dto';
 
 @Injectable()
 export class RestaurantRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateRestaurantDto) {
-    const slug = dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+  private parseCuisineType(value: string | null | undefined): string[] {
+    if (!value) {
+      return [];
+    }
 
-    return this.prisma.restaurant.create({
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return value ? [value] : [];
+    }
+  }
+
+  private restaurantToResponse(restaurant: any) {
+    if (!restaurant) {
+      return restaurant;
+    }
+
+    return {
+      ...restaurant,
+      cuisineType: this.parseCuisineType(restaurant.cuisineType),
+    };
+  }
+
+  private restaurantsToResponse(restaurants: any[]) {
+    return restaurants.map((restaurant) =>
+      this.restaurantToResponse(restaurant),
+    );
+  }
+
+  async create(dto: CreateRestaurantDto) {
+    const slug =
+      dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+
+    const { cuisineType, ...restaurantData } = dto;
+
+    const restaurant = await this.prisma.restaurant.create({
       data: {
-        ...dto,
+        ...restaurantData,
+        cuisineType: JSON.stringify(cuisineType),
         slug,
       },
       include: {
         menus: true,
       },
     });
+
+    return this.restaurantToResponse(restaurant);
   }
 
   async findAll(filters: RestaurantFilterDto) {
@@ -40,8 +81,17 @@ export class RestaurantRepository {
     }
 
     if (filters.cuisineType && filters.cuisineType.length > 0) {
-      where.cuisineType = { hasSome: filters.cuisineType };
-    }
+  where.AND = [
+    ...(where.AND || []),
+    {
+      OR: filters.cuisineType.map((cuisine) => ({
+        cuisineType: {
+          contains: JSON.stringify(cuisine),
+        },
+      })),
+    },
+  ];
+}
 
     if (filters.minRating) {
       where.rating = { gte: filters.minRating };
@@ -59,7 +109,7 @@ export class RestaurantRepository {
     ]);
 
     return {
-      data: restaurants,
+      data: this.restaurantsToResponse(restaurants),
       total,
       page: filters.page || 1,
       limit: filters.limit || 10,
@@ -107,8 +157,20 @@ export class RestaurantRepository {
       this.prisma.menuItem.count({ where }),
     ]);
 
+    const parsedItems = items.map((item) => ({
+      ...item,
+      menu: item.menu
+        ? {
+            ...item.menu,
+            restaurant: item.menu.restaurant
+              ? this.restaurantToResponse(item.menu.restaurant)
+              : item.menu.restaurant,
+          }
+        : item.menu,
+    }));
+
     return {
-      data: items,
+      data: parsedItems,
       total,
       page: filters.page || 1,
       limit: filters.limit || 12,
@@ -116,7 +178,7 @@ export class RestaurantRepository {
   }
 
   async findById(id: string) {
-    return this.prisma.restaurant.findUnique({
+    const restaurant = await this.prisma.restaurant.findUnique({
       where: { id },
       include: {
         menus: {
@@ -130,10 +192,12 @@ export class RestaurantRepository {
         },
       },
     });
+
+    return this.restaurantToResponse(restaurant);
   }
 
   async findBySlug(slug: string) {
-    return this.prisma.restaurant.findUnique({
+    const restaurant = await this.prisma.restaurant.findUnique({
       where: { slug },
       include: {
         menus: {
@@ -143,10 +207,12 @@ export class RestaurantRepository {
         },
       },
     });
+
+    return this.restaurantToResponse(restaurant);
   }
 
   async findBySlugs(slugs: string[]) {
-    return this.prisma.restaurant.findMany({
+    const restaurants = await this.prisma.restaurant.findMany({
       where: { slug: { in: slugs } },
       include: {
         menus: {
@@ -156,22 +222,35 @@ export class RestaurantRepository {
         },
       },
     });
+
+    return this.restaurantsToResponse(restaurants);
   }
 
   async update(id: string, dto: UpdateRestaurantDto) {
-    return this.prisma.restaurant.update({
+    const { cuisineType, ...restaurantData } = dto;
+
+    const restaurant = await this.prisma.restaurant.update({
       where: { id },
-      data: dto,
+      data: {
+        ...restaurantData,
+        ...(cuisineType !== undefined
+          ? { cuisineType: JSON.stringify(cuisineType) }
+          : {}),
+      },
     });
+
+    return this.restaurantToResponse(restaurant);
   }
 
   async updateRating(id: string, rating: number, reviewCount: number) {
-    return this.prisma.restaurant.update({
+    const restaurant = await this.prisma.restaurant.update({
       where: { id },
       data: {
         rating,
         reviewCount,
       },
     });
+
+    return this.restaurantToResponse(restaurant);
   }
 }

@@ -10,6 +10,36 @@ export class OrderRepository {
     private prisma: PrismaService,
     private geocodingService: GeocodingService,
   ) {}
+  private parseAddOns(value: string | null | undefined): string[] {
+    if (!value) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return value ? [value] : [];
+    }
+  }
+
+  private orderToResponse(order: any) {
+    if (!order) {
+      return order;
+    }
+
+    return {
+      ...order,
+      items: order.items?.map((item: any) => ({
+        ...item,
+        addOns: this.parseAddOns(item.addOns),
+      })),
+    };
+  }
+
+  private ordersToResponse(orders: any[]) {
+    return orders.map((order) => this.orderToResponse(order));
+  }
 
   async create(userId: string, dto: CreateOrderDto) {
     const orderNumber = `ORD-${Date.now()}`;
@@ -42,7 +72,7 @@ export class OrderRepository {
         menuItemId: item.menuItemId,
         quantity: item.quantity,
         price: menuItem.price,
-        addOns: item.addOns || [],
+        addOns: JSON.stringify(item.addOns || []),
         specialNote: item.specialNote,
       });
     }
@@ -65,7 +95,7 @@ export class OrderRepository {
       }
     }
 
-    return this.prisma.order.create({
+      const order = await this.prisma.order.create({
       data: {
         orderNumber,
         userId,
@@ -91,10 +121,11 @@ export class OrderRepository {
         restaurant: true,
       },
     });
+    return this.orderToResponse(order);
   }
 
   async findById(id: string) {
-    return this.prisma.order.findUnique({
+     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
         items: {
@@ -107,10 +138,11 @@ export class OrderRepository {
         tracking: true,
       },
     });
+   return this.orderToResponse(order);
   }
 
   async updatePaymentStatus(orderId: string, status: PaymentStatus) {
-    return this.prisma.order.update({
+     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: {
         paymentStatus: status,
@@ -123,10 +155,11 @@ export class OrderRepository {
         tracking: true,
       },
     });
+   return this.orderToResponse(order);
   }
 
   async updateStatus(orderId: string, status: OrderStatus) {
-    return this.prisma.order.update({
+    const order = await this.prisma.order.update({
       where: { id: orderId },
       data: { status },
       include: {
@@ -135,6 +168,7 @@ export class OrderRepository {
         user: true,
       },
     });
+  return this.orderToResponse(order);
   }
 
   async findByUserId(userId: string, skip: number, take: number) {
@@ -152,7 +186,10 @@ export class OrderRepository {
       this.prisma.order.count({ where: { userId } }),
     ]);
 
-    return { orders, total };
+    return {
+      orders: this.ordersToResponse(orders),
+      total,
+    };
   }
 
   async findStaffOrders(
@@ -214,7 +251,12 @@ export class OrderRepository {
       this.prisma.order.count({ where }),
     ]);
 
-    return { orders, total, page: filters.page, limit: filters.limit };
+        return {
+      orders: this.ordersToResponse(orders),
+      total,
+      page: filters.page,
+      limit: filters.limit,
+    };
   }
 
   async updateStatusByRole(userId: string, role: string, id: string, dto: UpdateOrderStatusDto) {
@@ -255,7 +297,7 @@ export class OrderRepository {
 
     await this.notifyOnTransition(updated, dto.status);
 
-    return updated;
+     return this.orderToResponse(updated);
   }
 
   async notifyOnTransition(order: any, status: OrderStatus) {

@@ -29,6 +29,18 @@ export class AdminRepository {
     private cloudinaryService: CloudinaryService,
     private geocodingService: GeocodingService,
   ) {}
+private parseCuisineType(value: string | null | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return value ? [value] : [];
+  }
+}
 
   private async assertEmailAvailable(email: string) {
     const existing = await this.prisma.user.findUnique({ where: { email } });
@@ -490,40 +502,47 @@ export class AdminRepository {
       orderBy: { createdAt: 'desc' },
     });
   }
+async createRestaurant(dto: CreateRestaurantDto) {
+  const slug =
+    dto.slug ||
+    dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
 
-  async createRestaurant(dto: CreateRestaurantDto) {
-    const slug = dto.slug || (dto.name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now());
+  let latitude = dto.latitude;
+  let longitude = dto.longitude;
 
-    let latitude = dto.latitude;
-    let longitude = dto.longitude;
-
-    if (latitude === undefined || longitude === undefined) {
-      try {
-        const coords = await this.geocodingService.geocode(dto.address, dto.city, dto.state);
-        latitude = coords.latitude;
-        longitude = coords.longitude;
-      } catch (error) {
-        latitude = 0;
-        longitude = 0;
-      }
+  if (latitude === undefined || longitude === undefined) {
+    try {
+      const coords = await this.geocodingService.geocode(
+        dto.address,
+        dto.city,
+        dto.state,
+      );
+      latitude = coords.latitude;
+      longitude = coords.longitude;
+    } catch (error) {
+      latitude = 0;
+      longitude = 0;
     }
-
-    return this.prisma.restaurant.create({
-      data: {
-        ...dto,
-        slug,
-        latitude,
-        longitude,
-        banner: dto.banner ?? null,
-        isVerified: true,
-      },
-      include: {
-        menus: true,
-      },
-    });
   }
 
-  async getRestaurant(id: string) {
+  const { cuisineType, ...restaurantData } = dto;
+
+  return this.prisma.restaurant.create({
+    data: {
+      ...restaurantData,
+      cuisineType: JSON.stringify(cuisineType),
+      slug,
+      latitude,
+      longitude,
+      banner: dto.banner ?? null,
+      isVerified: true,
+    },
+    include: {
+      menus: true,
+    },
+  });
+}
+async getRestaurant(id: string) {
     const restaurant = await this.prisma.restaurant.findUnique({
       where: { id },
       include: {
@@ -533,25 +552,43 @@ export class AdminRepository {
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found');
     }
-    return restaurant;
+    return {
+  ...restaurant,
+  cuisineType: this.parseCuisineType(restaurant.cuisineType),
+};
+  }
+async updateRestaurant(id: string, dto: UpdateRestaurantDto) {
+  await this.getRestaurant(id);
+
+  const { cuisineType, ...restaurantData } = dto;
+
+  const data: any = {
+    ...restaurantData,
+  };
+
+  if (cuisineType !== undefined) {
+    data.cuisineType = JSON.stringify(cuisineType);
   }
 
-  async updateRestaurant(id: string, dto: UpdateRestaurantDto) {
-    await this.getRestaurant(id);
-
-    const data: any = { ...dto };
-    if (data.banner === undefined) {
-      delete data.banner;
-    }
-
-    return this.prisma.restaurant.update({
-      where: { id },
-      data,
-      include: {
-        menus: true,
-      },
-    });
+  if (data.banner === undefined) {
+    delete data.banner;
   }
+
+  const restaurant = await this.prisma.restaurant.update({
+    where: { id },
+    data,
+    include: {
+      menus: true,
+    },
+  });
+
+  return {
+    ...restaurant,
+    cuisineType: cuisineType !== undefined
+      ? cuisineType
+      : this.parseCuisineType(restaurant.cuisineType),
+  };
+}
 
   async uploadRestaurantImage(file: Express.Multer.File): Promise<{ url: string }> {
     const url = await this.cloudinaryService.uploadImage(file, 'elfigir/restaurants');
