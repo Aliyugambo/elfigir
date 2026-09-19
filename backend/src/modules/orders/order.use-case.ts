@@ -18,8 +18,8 @@ export class OrderUseCase {
     return this.orderRepository.create(userId, dto);
   }
 
-  async getOrder(id: string) {
-    return this.orderRepository.findById(id);
+  async getOrder(id: string, userId: string, role: string) {
+    return this.orderRepository.findByIdForUser(id, userId, role);
   }
 
   async getUserOrders(userId: string, page: number = 1, limit: number = 10) {
@@ -76,11 +76,24 @@ export class OrderUseCase {
       throw new NotFoundException('Order not found');
     }
 
-    const updated = await this.orderRepository.updatePaymentStatus(orderId, PaymentStatus.COMPLETED);
+    if (order.paymentMethod !== 'BANK_TRANSFER') {
+      throw new BadRequestException(
+        'Admin payment confirmation is only available for bank transfer orders',
+      );
+    }
+
+    if (order.paymentStatus === PaymentStatus.COMPLETED) {
+      return order;
+    }
+
+    const updated = await this.orderRepository.updatePaymentStatus(
+      orderId,
+      PaymentStatus.COMPLETED,
+    );
 
     await this.orderRepository.notifyAdmins(
-      'Payment received',
-      `Paystack payment received for order ${order.orderNumber} from ${order.user?.firstName || 'a customer'} ${order.user?.lastName || ''}.`,
+      'Bank transfer payment received',
+      `Bank transfer for order ${order.orderNumber} from ${order.user?.firstName || 'a customer'} ${order.user?.lastName || ''} has been confirmed.`,
       'payment_received',
     );
 

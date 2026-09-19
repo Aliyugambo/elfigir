@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '@/common/prisma.service';
 import { GeocodingService } from '@/common/geocoding.service';
 import { CreateOrderDto, UpdateDeliveryLocationDto, UpdateOrderStatusDto } from './order.dto';
@@ -10,32 +10,84 @@ export class OrderRepository {
     private prisma: PrismaService,
     private geocodingService: GeocodingService,
   ) {}
-  private parseAddOns(value: string | null | undefined): string[] {
-    if (!value) {
-      return [];
-    }
-
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return value ? [value] : [];
-    }
+private parseAddOns(value: string | null | undefined): string[] {
+  if (!value) {
+    return [];
   }
 
-  private orderToResponse(order: any) {
-    if (!order) {
-      return order;
-    }
-
-    return {
-      ...order,
-      items: order.items?.map((item: any) => ({
-        ...item,
-        addOns: this.parseAddOns(item.addOns),
-      })),
-    };
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return value ? [value] : [];
   }
+}
+ private parseCuisineType(value: string | null | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return value ? [value] : [];
+  }
+}
+
+private readonly safeUserSelect = {
+  id: true,
+  email: true,
+  phone: true,
+  firstName: true,
+  lastName: true,
+  profileImage: true,
+  address: true,
+  city: true,
+  state: true,
+  country: true,
+  zipCode: true,
+  role: true,
+};
+
+private orderToResponse(order: any) {
+  if (!order) {
+    return order;
+  }
+
+  return {
+    ...order,
+
+    items: order.items?.map((item: any) => ({
+      ...item,
+      addOns: this.parseAddOns(item.addOns),
+    })),
+
+    restaurant: order.restaurant
+      ? {
+          ...order.restaurant,
+          cuisineType: this.parseCuisineType(order.restaurant.cuisineType),
+        }
+      : order.restaurant,
+
+    user: order.user
+      ? {
+          id: order.user.id,
+          email: order.user.email,
+          firstName: order.user.firstName,
+          lastName: order.user.lastName,
+          phone: order.user.phone,
+          profileImage: order.user.profileImage,
+          address: order.user.address,
+          city: order.user.city,
+          state: order.user.state,
+          country: order.user.country,
+          zipCode: order.user.zipCode,
+          role: order.user.role,
+        }
+      : order.user,
+  };
+}
 
   private ordersToResponse(orders: any[]) {
     return orders.map((order) => this.orderToResponse(order));
@@ -125,7 +177,7 @@ export class OrderRepository {
   }
 
   async findById(id: string) {
-     const order = await this.prisma.order.findUnique({
+    const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
         items: {
@@ -134,11 +186,71 @@ export class OrderRepository {
           },
         },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
         tracking: true,
       },
     });
-   return this.orderToResponse(order);
+
+    return this.orderToResponse(order);
+  }
+
+  async findByIdForUser(id: string, userId: string, role: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: {
+          include: {
+            menuItem: true,
+          },
+        },
+        restaurant: true,
+        user: {
+          select: this.safeUserSelect,
+        },
+        tracking: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (role === UserRole.ADMIN) {
+      return this.orderToResponse(order);
+    }
+
+    if (role === UserRole.CUSTOMER) {
+      if (order.userId !== userId) {
+        throw new ForbiddenException('You can only access your own orders');
+      }
+
+      return this.orderToResponse(order);
+    }
+
+    if (role === UserRole.RESTAURANT) {
+      const staff = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { restaurantId: true },
+      });
+
+      if (!staff?.restaurantId || order.restaurantId !== staff.restaurantId) {
+        throw new ForbiddenException('You can only access orders for your restaurant');
+      }
+
+      return this.orderToResponse(order);
+    }
+
+    if (role === UserRole.DELIVERY) {
+      if (order.riderId !== userId) {
+        throw new ForbiddenException('This order is not assigned to you');
+      }
+
+      return this.orderToResponse(order);
+    }
+
+    throw new ForbiddenException('You are not allowed to access this order');
   }
 
   async updatePaymentStatus(orderId: string, status: PaymentStatus) {
@@ -146,12 +258,13 @@ export class OrderRepository {
       where: { id: orderId },
       data: {
         paymentStatus: status,
-        status: status === PaymentStatus.COMPLETED ? OrderStatus.CONFIRMED : undefined,
       },
       include: {
         items: { include: { menuItem: true } },
         restaurant: true,
-        user: true,
+        user: {
+  select: this.safeUserSelect,
+},
         tracking: true,
       },
     });
@@ -165,7 +278,9 @@ export class OrderRepository {
       include: {
         items: { include: { menuItem: true } },
         restaurant: true,
-        user: true,
+      user: {
+  select: this.safeUserSelect,
+},
       },
     });
   return this.orderToResponse(order);
@@ -199,40 +314,65 @@ export class OrderRepository {
   ) {
     const where: any = {};
 
-    if (filters.status) {
-      where.status = filters.status;
+    if (role === UserRole.ADMIN) {
+      if (filters.status) {
+        where.status = filters.status;
+      }
     } else if (role === UserRole.RESTAURANT) {
-      where.status = { in: [OrderStatus.CONFIRMED, OrderStatus.PREPARING] };
-    } else if (role === UserRole.DELIVERY) {
-      where.status = { in: [OrderStatus.READY_FOR_PICKUP, OrderStatus.OUT_FOR_DELIVERY] };
-    }
+      const allowedStatuses: OrderStatus[] = [
+        OrderStatus.CONFIRMED,
+        OrderStatus.PREPARING,
+      ];
 
-    console.log('[findStaffOrders] userId:', userId, 'role:', role, 'filters:', filters);
+      if (filters.status && !allowedStatuses.includes(filters.status as OrderStatus)) {
+        throw new BadRequestException(
+          'Restaurant staff can only view CONFIRMED or PREPARING orders',
+        );
+      }
 
-    if (role !== UserRole.ADMIN) {
+      where.status = filters.status
+        ? filters.status
+        : { in: allowedStatuses };
+
       const staff = await this.prisma.user.findUnique({
         where: { id: userId },
         select: { restaurantId: true },
       });
 
-      console.log('[findStaffOrders] staff found:', JSON.stringify(staff));
-
-      if (!staff) {
-        console.log('[findStaffOrders] staff not found, returning empty');
+      if (!staff?.restaurantId) {
         return { orders: [], total: 0, page: filters.page, limit: filters.limit };
       }
 
-      if (role === UserRole.RESTAURANT && !staff.restaurantId) {
-        console.log('[findStaffOrders] staff has no restaurantId, returning empty');
-        return { orders: [], total: 0, page: filters.page, limit: filters.limit };
+      where.restaurantId = staff.restaurantId;
+    } else if (role === UserRole.DELIVERY) {
+      const allowedStatuses: OrderStatus[] = [
+        OrderStatus.READY_FOR_PICKUP,
+        OrderStatus.OUT_FOR_DELIVERY,
+      ];
+
+      if (filters.status && !allowedStatuses.includes(filters.status as OrderStatus)) {
+        throw new BadRequestException(
+          'Delivery riders can only view READY_FOR_PICKUP or OUT_FOR_DELIVERY orders',
+        );
       }
 
-      if (role === UserRole.RESTAURANT) {
-        where.restaurantId = staff.restaurantId;
+      if (filters.status === OrderStatus.READY_FOR_PICKUP) {
+        where.status = OrderStatus.READY_FOR_PICKUP;
+      } else if (filters.status === OrderStatus.OUT_FOR_DELIVERY) {
+        where.status = OrderStatus.OUT_FOR_DELIVERY;
+        where.riderId = userId;
+      } else {
+        where.OR = [
+          { status: OrderStatus.READY_FOR_PICKUP },
+          {
+            status: OrderStatus.OUT_FOR_DELIVERY,
+            riderId: userId,
+          },
+        ];
       }
+    } else {
+      throw new ForbiddenException('You are not allowed to view staff orders');
     }
-
-    console.log('[findStaffOrders] query where:', JSON.stringify(where));
 
     const skip = (filters.page - 1) * filters.limit;
 
@@ -242,7 +382,9 @@ export class OrderRepository {
         include: {
           items: { include: { menuItem: true } },
           restaurant: true,
-          user: true,
+          user: {
+            select: this.safeUserSelect,
+          },
         },
         orderBy: { createdAt: 'desc' },
         skip,
@@ -251,7 +393,7 @@ export class OrderRepository {
       this.prisma.order.count({ where }),
     ]);
 
-        return {
+    return {
       orders: this.ordersToResponse(orders),
       total,
       page: filters.page,
@@ -259,45 +401,150 @@ export class OrderRepository {
     };
   }
 
-  async updateStatusByRole(userId: string, role: string, id: string, dto: UpdateOrderStatusDto) {
-    const order = await this.prisma.order.findUnique({ where: { id } });
+  async updateStatusByRole(
+    userId: string,
+    role: string,
+    id: string,
+    dto: UpdateOrderStatusDto,
+  ) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+    });
+
     if (!order) {
       throw new NotFoundException('Order not found');
     }
 
-    const allowedByRole: Record<string, OrderStatus[]> = {
-      [UserRole.ADMIN]: Object.values(OrderStatus),
-      [UserRole.RESTAURANT]: [OrderStatus.PREPARING, OrderStatus.READY_FOR_PICKUP],
-      [UserRole.DELIVERY]: [OrderStatus.OUT_FOR_DELIVERY, OrderStatus.DELIVERED],
-    };
+    if (role === UserRole.ADMIN) {
+      const updated = await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: dto.status,
+          cancelReason: dto.cancelReason,
+          actualDeliveryTime:
+            dto.status === OrderStatus.DELIVERED ? new Date() : undefined,
+        },
+        include: {
+          items: { include: { menuItem: true } },
+          restaurant: true,
+          user: {
+            select: this.safeUserSelect,
+          },
+          tracking: true,
+        },
+      });
 
-    const allowed = allowedByRole[role] ?? [];
-    if (!allowed.includes(dto.status)) {
-      throw new BadRequestException(
-        `Role ${role} is not allowed to set status to ${dto.status}`,
-      );
+      await this.notifyOnTransition(updated, dto.status);
+      return this.orderToResponse(updated);
+    }
+
+    if (role === UserRole.RESTAURANT) {
+      const staff = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { restaurantId: true },
+      });
+
+      if (!staff?.restaurantId || order.restaurantId !== staff.restaurantId) {
+        throw new ForbiddenException(
+          'You can only update orders for your restaurant',
+        );
+      }
+
+      const validTransition =
+        (order.status === OrderStatus.CONFIRMED &&
+          dto.status === OrderStatus.PREPARING) ||
+        (order.status === OrderStatus.PREPARING &&
+          dto.status === OrderStatus.READY_FOR_PICKUP);
+
+      if (!validTransition) {
+        throw new BadRequestException(
+          `Invalid restaurant order transition: ${order.status} -> ${dto.status}`,
+        );
+      }
+    } else if (role === UserRole.DELIVERY) {
+      if (dto.status === OrderStatus.OUT_FOR_DELIVERY) {
+        if (order.status !== OrderStatus.READY_FOR_PICKUP) {
+          throw new BadRequestException(
+            'Only READY_FOR_PICKUP orders can be taken for delivery',
+          );
+        }
+
+        const claimed = await this.prisma.order.updateMany({
+          where: {
+            id,
+            status: OrderStatus.READY_FOR_PICKUP,
+            riderId: null,
+          },
+          data: {
+            status: OrderStatus.OUT_FOR_DELIVERY,
+            riderId: userId,
+          },
+        });
+
+        if (claimed.count !== 1) {
+          throw new BadRequestException(
+            'This order has already been assigned or is no longer ready for pickup',
+          );
+        }
+
+        const updated = await this.prisma.order.findUnique({
+          where: { id },
+          include: {
+            items: { include: { menuItem: true } },
+            restaurant: true,
+            user: {
+              select: this.safeUserSelect,
+            },
+            tracking: true,
+          },
+        });
+
+        if (!updated) {
+          throw new NotFoundException('Order not found');
+        }
+
+        await this.notifyOnTransition(updated, OrderStatus.OUT_FOR_DELIVERY);
+        return this.orderToResponse(updated);
+      }
+
+      if (dto.status === OrderStatus.DELIVERED) {
+        if (
+          order.status !== OrderStatus.OUT_FOR_DELIVERY ||
+          order.riderId !== userId
+        ) {
+          throw new ForbiddenException(
+            'You can only mark your assigned delivery as delivered',
+          );
+        }
+      } else {
+        throw new BadRequestException(
+          `Delivery riders cannot set order status to ${dto.status}`,
+        );
+      }
+    } else {
+      throw new ForbiddenException('You are not allowed to update order status');
     }
 
     const updated = await this.prisma.order.update({
       where: { id },
       data: {
         status: dto.status,
-        riderId: role === UserRole.DELIVERY && dto.status === OrderStatus.OUT_FOR_DELIVERY
-          ? userId
-          : undefined,
         cancelReason: dto.cancelReason,
-        actualDeliveryTime: dto.status === OrderStatus.DELIVERED ? new Date() : undefined,
+        actualDeliveryTime:
+          dto.status === OrderStatus.DELIVERED ? new Date() : undefined,
       },
       include: {
         items: { include: { menuItem: true } },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
+        tracking: true,
       },
     });
 
     await this.notifyOnTransition(updated, dto.status);
-
-     return this.orderToResponse(updated);
+    return this.orderToResponse(updated);
   }
 
   async notifyOnTransition(order: any, status: OrderStatus) {
@@ -459,7 +706,12 @@ export class OrderRepository {
   async updateDeliveryLocation(userId: string, orderId: string, dto: UpdateDeliveryLocationDto) {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
-      include: { tracking: true, user: true },
+      include: {
+  tracking: true,
+  user: {
+    select: this.safeUserSelect,
+  },
+},
     });
 
     if (!order) {

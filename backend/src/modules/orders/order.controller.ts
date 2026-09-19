@@ -105,8 +105,8 @@ export class OrderController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get order by ID' })
-  async getById(@Param('id') id: string) {
-    return this.orderUseCase.getOrder(id);
+  async getById(@Param('id') id: string, @Req() req: any) {
+    return this.orderUseCase.getOrder(id, req.user.sub, req.user.role);
   }
 
   @Get()

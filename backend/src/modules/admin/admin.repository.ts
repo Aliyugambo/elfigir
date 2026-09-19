@@ -29,6 +29,22 @@ export class AdminRepository {
     private cloudinaryService: CloudinaryService,
     private geocodingService: GeocodingService,
   ) {}
+
+  private readonly safeUserSelect = {
+    id: true,
+    email: true,
+    phone: true,
+    firstName: true,
+    lastName: true,
+    profileImage: true,
+    address: true,
+    city: true,
+    state: true,
+    country: true,
+    zipCode: true,
+    role: true,
+  };
+
 private parseCuisineType(value: string | null | undefined): string[] {
   if (!value) {
     return [];
@@ -200,7 +216,9 @@ private parseCuisineType(value: string | null | undefined): string[] {
             },
           },
           restaurant: true,
-          user: true,
+          user: {
+            select: this.safeUserSelect,
+          },
         },
         orderBy: { createdAt: 'desc' },
         skip,
@@ -225,7 +243,9 @@ private parseCuisineType(value: string | null | undefined): string[] {
           },
         },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -236,7 +256,12 @@ private parseCuisineType(value: string | null | undefined): string[] {
   async confirmPayment(id: string) {
     const order = await this.prisma.order.findUnique({
       where: { id },
-      include: { restaurant: true, user: true },
+      include: {
+        restaurant: true,
+        user: {
+          select: this.safeUserSelect,
+        },
+      },
     });
 
     if (!order) {
@@ -253,7 +278,9 @@ private parseCuisineType(value: string | null | undefined): string[] {
       include: {
         items: { include: { menuItem: true } },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
       },
     });
   }
@@ -266,7 +293,9 @@ private parseCuisineType(value: string | null | undefined): string[] {
           include: { menuItem: true },
         },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
       },
     });
 
@@ -291,7 +320,9 @@ private parseCuisineType(value: string | null | undefined): string[] {
           include: { menuItem: true },
         },
         restaurant: true,
-        user: true,
+        user: {
+          select: this.safeUserSelect,
+        },
       },
     });
   }

@@ -11,6 +11,7 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  ParseEnumPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -76,7 +77,7 @@ export class AdminController {
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List staff by role (CHEF or DELIVERY)' })
-  async listStaff(@Param('role') role: UserRole) {
+  async listStaff(@Param('role', new ParseEnumPipe(UserRole)) role: UserRole) {
     return this.adminUseCase.listStaff(role);
   }
 
