@@ -1,17 +1,31 @@
 .env
 .env.local
 .env.*.local
+.env.production
+.env.production.local
+
 node_modules/
+**/node_modules/
+
 dist/
 build/
 .next/
+
 *.log
+*.tsbuildinfo
+
 .DS_Store
-.vscode
-.idea
-.env.production.local
+.vscode/
+.idea/
+
 coverage/
-.turbo
+.turbo/
+
 pnpm-lock.yaml
 yarn.lock
 
+# Deployment backups and temporary files
+*.backup-*
+*.bak
+tmp/
+**/tmp/
